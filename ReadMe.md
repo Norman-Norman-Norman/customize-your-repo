@@ -1551,6 +1551,31 @@ MCP (Model Context Protocol) provides external gateway capabilities for Copilot.
 **Loading:** Session start
 **Best For:** External gateways
 
+### MCP Capabilities: Tools, Resources, and Prompts
+
+MCP servers can expose three types of capabilities to Copilot:
+
+| Capability | What It Does | How to Use |
+|------------|--------------|------------|
+| **Tools** | Functions Copilot can call (query DB, create issue, fetch URL) | Auto-invoked in agent mode, or reference with `#toolName` |
+| **Resources** | Direct access to data (files, database tables, API responses) | Chat → Add Context → MCP Resources |
+| **Prompts** | Preconfigured prompts for common tasks | Type `/mcp.serverName.promptName` in chat |
+
+**Using MCP Tools in Chat:**
+
+1. Open the Chat view and enter agent mode
+2. Click the **Tools** button to see available MCP tools (grouped by server)
+3. Tools are auto-invoked based on your request, or explicitly reference with `#`
+4. Review and approve tool invocations when prompted
+
+**Using MCP Resources:**
+
+Resources let you add external data directly to your chat context. For example, a database MCP server might expose tables as resources you can reference.
+
+**Using MCP Prompts:**
+
+Some MCP servers provide ready-made prompts. Invoke them with slash commands formatted as `/mcp.serverName.promptName`.
+
 ### Instructions vs. MCP Capabilities
 
 These two primitives are complementary:
@@ -1647,14 +1672,48 @@ For user-specific or legacy configurations:
 
 > **Note:** Environment variables like `${env:GITHUB_TOKEN}` reference values from your local environment or `.env` file. Never commit actual secrets to the repository.
 
+### Input Variables for Sensitive Data
+
+Avoid hardcoding secrets in your configuration. Use input variables that prompt for values on first use:
+
+```json
+{
+  "servers": {
+    "database": {
+      "command": "npx",
+      "args": ["@your-org/db-mcp-server"],
+      "env": {
+        "DATABASE_URL": "${input:database-url}"
+      }
+    }
+  },
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "database-url",
+      "description": "Database connection string",
+      "password": true
+    }
+  ]
+}
+```
+
+VS Code securely stores these values after the first prompt.
+
 ### Discovering MCP Servers
 
 This guide focuses on **how to configure and use** MCP servers in your repository, not on which servers to choose.
 
-For a curated list of available MCP servers and discovery tools, see:
-- **[code.visualstudio.com/docs/copilot/chat/mcp-servers](https://code.visualstudio.com/docs/copilot/chat/mcp-servers)** – Official VS Code MCP documentation with server recommendations
+For discovering MCP servers:
+- **[GitHub MCP Server Registry](https://github.com/mcp)** – Browse and install servers directly from VS Code's Extensions view (`@mcp` search)
+- **[Official MCP Server Repository](https://github.com/modelcontextprotocol/servers)** – Reference implementations and community servers
+- **[VS Code MCP Documentation](https://code.visualstudio.com/docs/copilot/chat/mcp-servers)** – Complete setup guide and configuration reference
 
 > **Note:** MCP security considerations, server trust models, and evaluation criteria are covered in the official documentation linked above. This guide assumes servers have already been vetted for your use case.
+
+### Tool Sets: Grouping Related Tools
+
+As you add MCP servers, the tool list can grow large. Group related tools into **tool sets** for easier management. See the [VS Code tool sets documentation](https://code.visualstudio.com/docs/copilot/chat/chat-tools#_group-tools-with-tool-sets) for configuration details.
 
 ### Example Use Cases
 
