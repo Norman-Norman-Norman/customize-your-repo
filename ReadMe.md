@@ -316,7 +316,27 @@ Effective instructions files encode team knowledge. Use these questions to surfa
 3. **"What would a new hire need to know on day one?"** → This becomes context
 4. **"What libraries or patterns have been deprecated?"** → This becomes the "avoid" list
 
-> **Practical tip:** Review the last 10-20 PR comments from the team. Repeated feedback indicates rules that should be codified in the instructions file.
+### Mining PR Comments for Patterns
+
+**Ask your team:** "What feedback do you find yourself giving over and over in code reviews?"
+
+Common answers reveal the rules that should be in your instructions file. Even better—if you have access to GitHub's MCP server, Copilot can analyze your PR history directly.
+
+**💬 Try this prompt:**
+
+```
+Review the last 20 merged PRs in this repository and identify:
+
+1. Repeated feedback patterns in review comments
+2. Common issues that reviewers flag
+3. Style or convention corrections that appear multiple times
+4. Any "please don't do X, do Y instead" patterns
+
+Summarize these as candidate rules for our copilot-instructions.md file,
+organized by category (code style, testing, architecture, etc.).
+```
+
+This surfaces the tribal knowledge that experienced team members carry but haven't documented—the exact gaps that cause Copilot to produce code that fails review.
 
 ### Use the "Good vs Bad" Pattern
 
