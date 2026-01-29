@@ -808,15 +808,6 @@ tools: ['editFiles', 'createFile']      # Optional: restrict tools
 | **No model specification** | Inconsistent results across sessions | Specify model for reproducibility |
 | **No reference to instructions** | Prompt ignores team conventions | Reference copilot-instructions.md explicitly |
 
-### Mode Reference
-
-| Mode | Copilot Can... | Recommendation |
-|------|----------------|----------------|
-| `agent` | Create files, edit multiple files, run commands | ✅ **Recommended** for most tasks |
-| `ask` | Talk back, explain, suggest | ✅ Good for design discussions, Q&A |
-| `edit` | Modify selected code only | ⚠️ Too constrained for most workflows |
-| Custom agent | Use that agent's persona and tools | ✅ Great for specialized workflows |
-
 ### Implement Variables
 
 Use `{{variableName}}` syntax to create parameterized prompts:
@@ -966,6 +957,30 @@ Skills represent discrete capabilities that Copilot can invoke when contextually
 **Loading:** Description match → on-demand
 **Best For:** Reusable capabilities across tools
 
+### How Skills Load vs. Other Primitives
+
+Understanding when each primitive loads is key to using them effectively:
+
+| Primitive | When It Loads | What Triggers It |
+|-----------|---------------|------------------|
+| **Always-on Instructions** | Every session start | Automatic—just exists in `.github/copilot-instructions.md` |
+| **File-based Instructions** | When working in matching files | `applyTo` glob pattern matches current file |
+| **Skills** | When description matches user intent | Copilot analyzes the request and matches to skill descriptions |
+
+**The key difference:** Instructions are loaded based on *where you are* (file patterns). Skills are loaded based on *what you're trying to do* (intent matching).
+
+**Example scenario:**
+
+```
+User: "How do I run the integration tests for the auth module?"
+```
+
+- **Instructions** already loaded: General coding standards from `copilot-instructions.md`
+- **File-based instructions** NOT loaded: User isn't editing a specific file yet
+- **Skill activated**: "Run integration tests" skill matches the intent, loads its specialized knowledge
+
+This means skills are ideal for workflow knowledge—things that aren't tied to specific files but require understanding your team's processes.
+
 ### Agent Skills (Preview)
 
 VS Code Insiders includes **Agent Skills** (Preview) — an open standard for teaching Copilot specialized capabilities through folders containing instructions, scripts, and resources. Unlike custom instructions that primarily define coding guidelines, skills focus on specialized workflows and capabilities.
@@ -997,30 +1012,6 @@ Skills excel at encoding procedural knowledge—the "how to do things" that go b
 - "Set up local development environment from scratch"
 - "Create a new API endpoint following our patterns"
 - "Debug a failing CI build"
-
-### How Skills Load vs. Instructions
-
-Understanding when each primitive loads is key to using them effectively:
-
-| Primitive | When It Loads | What Triggers It |
-|-----------|---------------|------------------|
-| **Always-on Instructions** | Every session start | Automatic—just exists in `.github/copilot-instructions.md` |
-| **File-based Instructions** | When working in matching files | `applyTo` glob pattern matches current file |
-| **Skills** | When description matches user intent | Copilot analyzes the request and matches to skill descriptions |
-
-**The key difference:** Instructions are loaded based on *where you are* (file patterns). Skills are loaded based on *what you're trying to do* (intent matching).
-
-**Example scenario:**
-
-```
-User: "How do I run the integration tests for the auth module?"
-```
-
-- **Instructions** already loaded: General coding standards from `copilot-instructions.md`
-- **File-based instructions** NOT loaded: User isn't editing a specific file yet
-- **Skill activated**: "Run integration tests" skill matches the intent, loads its specialized knowledge
-
-This means skills are ideal for workflow knowledge—things that aren't tied to specific files but require understanding your team's processes.
 
 ### Skills vs. MCP Servers: When to Use Which
 
@@ -1308,9 +1299,7 @@ You are a meticulous code reviewer focused on code quality and team standards.
 - Use **prompts** for specific tasks ("do this thing")
 - Use **custom agents** for behavioral changes ("be this way")
 
----
-
-## Building Custom Agents
+### Creating Custom Agents
 
 The recommended approach for creating custom agents is through VS Code's built-in interface combined with agent-assisted iteration.
 
@@ -1606,6 +1595,8 @@ MCP and Skills both extend what Copilot can *do*, which creates some conceptual 
 - Use **MCP** when you need to *connect to external systems* (APIs, databases, services)
 - Use **both** when complex workflows require external integrations
 
+> **See also:** The [Skills section](#skills-vs-mcp-servers-when-to-use-which) provides a detailed decision guide with practical examples for choosing between Skills and MCP.
+
 ### Configuring MCP Servers
 
 MCP servers can be configured in two ways: VS Code settings (user-level) or a repository-level configuration file.
@@ -1721,17 +1712,6 @@ As you add MCP servers, the tool list can grow large. Group related tools into *
 - **"Test this API endpoint"** → Fetch MCP
 - **"Take a screenshot of the login page"** → Puppeteer MCP
 
-### Instructions vs. MCP Comparison
-
-This is an important distinction:
-
-| | Custom Instructions | MCP |
-|-|---------------------|-----|
-| **What** | Text context for AI | External tool access |
-| **How** | Just knowledge | Actual capabilities |
-| **Example** | "We use PostgreSQL" | Can query PostgreSQL |
-| **Updates** | Manual | Real-time |
-
 **Instructions provide knowledge. MCP provides capabilities.**
 
 ---
@@ -1757,6 +1737,15 @@ The following guidelines help determine which primitive to use for a given requi
 
 **Summary:** Reusable task automation.
 
+### Use Skills When...
+- Workflow knowledge needs to be captured ("how we do things")
+- The capability leverages locally-installed tools
+- No external authentication is required
+- Portability across different AI agents matters
+- Procedures aren't tied to specific files
+
+**Summary:** Reusable capabilities and procedural knowledge.
+
 ### Use Custom Agents When...
 - Copilot should adopt a specific expert persona
 - Different contexts require different behaviors
@@ -1780,11 +1769,13 @@ Is it a general rule for all code?
 ├── YES → Always-On Instructions
 └── NO → Is it a repeatable task?
     ├── YES → Prompt File
-    └── NO → Do you need a specific AI behavior?
-        ├── YES → Custom Agent
-        └── NO → Do you need external data/actions?
-            ├── YES → MCP
-            └── NO → Direct conversation
+    └── NO → Is it workflow/process knowledge?
+        ├── YES → Skill
+        └── NO → Do you need a specific AI behavior?
+            ├── YES → Custom Agent
+            └── NO → Do you need external data/actions?
+                ├── YES → MCP
+                └── NO → Direct conversation
 ```
 
 ---
@@ -2104,8 +2095,12 @@ Codebases evolve; customizations should as well:
 ### Official Documentation
 
 - [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
-- [Awesome Copilot Repository](https://github.com/github/awesome-copilot) - Community examples, prompts, and resources
-- [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) - Building custom integrations
+- [VS Code Copilot Customization](https://code.visualstudio.com/docs/copilot/copilot-customization) – Instructions, prompts, and agents
+- [VS Code MCP Servers](https://code.visualstudio.com/docs/copilot/chat/mcp-servers) – MCP setup and configuration
+- [VS Code Chat Tools](https://code.visualstudio.com/docs/copilot/chat/chat-tools) – Tool sets and tool management
+- [Model Context Protocol](https://modelcontextprotocol.io/) – MCP specification and server development
+- [Agent Skills Specification](https://agentskills.io/home) – Skills standard and examples
+- [Awesome Copilot Repository](https://github.com/github/awesome-copilot) – Community examples, prompts, and resources
 
 ### Community Resources
 
