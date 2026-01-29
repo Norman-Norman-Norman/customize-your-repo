@@ -70,7 +70,7 @@ This guide covers each primitive's strengths and ideal use cases. By the end, yo
 | [**Prompts (Slash Commands)**](#prompt-files-slash-commands) | `.github/prompts/` | `*.prompt.md` | User invokes | One-shot workflows |
 | [**Skills**](#skills) | `.github/skills/` | Folder with `skill.md` | Description match → on-demand | Reusable capabilities |
 | [**Custom Agents**](#custom-agents) | `.github/agents/` | `*.agent.md` | Top-level OR as subagent | Constrained workflows |
-| [**MCP**](#mcp-model-context-protocol) | `.vscode/settings.json` | `mcpServers` config | Session start | External gateways |
+| [**MCP**](#mcp-model-context-protocol) | `.vscode/mcp.json` | `servers` config | Session start | External gateways |
 
 Each primitive addresses a distinct need:
 
@@ -1584,9 +1584,46 @@ MCP and Skills both extend what Copilot can *do*, which creates some conceptual 
 
 ### Configuring MCP Servers
 
-MCP servers can be configured in VS Code settings or project configuration:
+MCP servers can be configured in two ways: VS Code settings (user-level) or a repository-level configuration file.
 
-**VS Code Settings (.vscode/settings.json):**
+**Option 1: Repository Configuration (.vscode/mcp.json)**
+
+For team-shared MCP configurations that live in the repo:
+
+```json
+{
+  "servers": {
+    "github": {
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${env:GITHUB_TOKEN}"
+      }
+    },
+    "database": {
+      "command": "npx", 
+      "args": ["@your-org/db-mcp-server"],
+      "env": {
+        "DATABASE_URL": "${env:DATABASE_URL}"
+      }
+    },
+    "fetch": {
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-fetch"]
+    }
+  }
+}
+```
+
+This approach is preferred for team projects because:
+- Configuration is version-controlled and reviewed in PRs
+- New team members get MCP capabilities automatically
+- Consistent tooling across the team
+
+**Option 2: VS Code Settings (.vscode/settings.json)**
+
+For user-specific or legacy configurations:
+
 ```json
 {
   "github.copilot.chat.mcpServers": {
@@ -1607,6 +1644,8 @@ MCP servers can be configured in VS Code settings or project configuration:
   }
 }
 ```
+
+> **Note:** Environment variables like `${env:GITHUB_TOKEN}` reference values from your local environment or `.env` file. Never commit actual secrets to the repository.
 
 ### Discovering MCP Servers
 
