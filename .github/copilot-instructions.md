@@ -16,7 +16,9 @@ This repository contains "The Definitive Guide to Customizing Your Repo for GitH
 - All technical claims must align with official documentation:
   - https://code.visualstudio.com/docs/copilot
   - https://docs.github.com/en/copilot
-- When uncertain about current Copilot features, recommend fetching latest docs
+- **Always fetch the latest documentation before answering questions about Copilot features** — your training data may be outdated
+- Use the Microsoft docs tools to search and fetch from code.visualstudio.com
+- Use the fetch_webpage tool for docs.github.com/en/copilot pages
 - Never invent frontmatter fields, tool names, or configuration options
 
 ### The Six Primitives
@@ -31,6 +33,21 @@ When discussing customization options, reference the correct primitive:
 | Skills | `.github/skills/` | Portable capabilities |
 | Custom Agents | `.github/agents/*.agent.md` | Specialized personas |
 | MCP | `.vscode/mcp.json` | External integrations |
+
+### Detailed Topic References
+
+For in-depth documentation guidelines on each primitive, refer to the topic-specific instruction files:
+
+| Topic | Instruction File | Applies To |
+|-------|------------------|------------|
+| Always-on Instructions | `.github/instructions/always-on-instructions.instructions.md` | `**/copilot-instructions.md` |
+| File-based Instructions | `.github/instructions/file-based-instructions.instructions.md` | `**/*.instructions.md` |
+| Prompts | `.github/instructions/prompts.instructions.md` | `**/*.prompt.md` |
+| Skills | `.github/instructions/skills.instructions.md` | `**/skills/**,**/SKILL.md` |
+| Custom Agents | `.github/instructions/custom-agents.instructions.md` | `**/*.agent.md` |
+| MCP | `.github/instructions/mcp.instructions.md` | `**/mcp.json,**/mcp/**` |
+
+These files automatically activate when working on related content.
 
 ### Structure Conventions
 - Use H2 (`##`) for main sections

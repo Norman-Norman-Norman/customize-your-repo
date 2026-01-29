@@ -4,6 +4,72 @@
 
 ---
 
+## Introduction
+
+Imagine your first day at a new company. Someone hands you a laptop, points at a million lines of code, and says "add a feature to checkout." No architecture docs. No style guide. No one to ask why the last three developers quit.
+
+You start reading. In one file, 2+2 equals 5. In another file, 2+2 equals 0. Someone invented their own math system three years ago and never documented it. The function called `save()` actually deletes things. The `UserService` doesn't handle users—that's in `AccountManager`, except when it's in `ProfileHandler`, except on Tuesdays.
+
+None of this matches anything you learned. It's not wrong, exactly—it's *bespoke*. Someone built a custom framework on top of a custom ORM on top of a custom router, and the only person who understood it left for a startup in 2019.
+
+Now someone asks you to make a change. You do your best. You give them something reasonable based on everything you've read. They get mad. *"Why would you use Redux? We use React Query! It's obvious!"* 
+
+It wasn't obvious. It was in a file you hadn't opened yet.
+
+**That's Copilot's reality—*every single time you open a file.***
+
+It's not hallucinating. It's doing exactly what you'd do: making the best possible guess from incomplete context. The suggestions you reject? Those are reasonable choices for a codebase Copilot hasn't been taught to understand. The "wrong" answers? They're only wrong because Copilot doesn't know your team decided to do things differently.
+
+This guide fixes that.
+
+**The right mental model: Copilot is a new developer on your team.**
+
+Think about what makes code easy for a new team member to work with:
+- Easy to read, well-formed code
+- Small, modular functions with clear responsibilities
+- Good naming conventions (not everything called `i`, `temp`, or `data`)
+- Comprehensive tests that document expected behavior
+- Clear architectural patterns
+
+These same qualities make code easier for Copilot to understand and extend correctly. Code that's maintainable for humans is maintainable for AI. Code that confuses junior developers will confuse Copilot too.
+
+### The Three Pillars of Copilot Success
+
+Copilot's output quality depends on three factors:
+
+| Pillar | Impact | What You Control |
+|--------|--------|------------------|
+| **Model Selection** | The underlying reasoning capability | Choose the right model for the task (Claude Sonnet 4 for complex reasoning, GPT-4o for speed) |
+| **Codebase Quality** | How well Copilot can understand your code | Write clean, well-documented, modular code |
+| **Repository Configuration** | The context and rules Copilot operates with | **This guide**  the six customization primitives |
+
+Your **model selection** matters  different models excel at different tasks. Claude Sonnet 4 handles complex multi-step reasoning exceptionally well. GPT-4o provides faster responses for simpler tasks. Choosing the right model for your workflow amplifies everything else.
+
+Your **codebase quality** matters  a well-structured codebase with clear naming, small functions, and comprehensive tests gives Copilot better context to work with. Messy, tangled code confuses AI just as much as it confuses human developers.
+
+But even with the best model and cleanest codebase, **repository configuration** is what transforms Copilot from a generic assistant into a team-aware partner. This guide is the complete reference for setting up your repository for the best possible outcomes with GitHub Copilot.
+
+---
+
+This guide is structured in two parts:
+
+**Part 1: Tuning Copilot for Your Current Codebase**
+This guide focuses on the customization primitives that help Copilot understand your existing codebaseyour conventions, patterns, and preferences. These tools work with your code as it exists today.
+
+**Part 2: Refactoring for Better AI Collaboration** *(Coming Soon)*
+The companion guide will cover how to refactor and restructure code so AI agents have an easier time understanding and modifying it. Better code organization benefits both human developers and AI assistants.
+
+When properly configured, Copilot can:
+
+- Respect team coding conventions automatically
+- Follow architectural patterns without prompting
+- Avoid deprecated libraries and anti-patterns
+- Generate code that passes PR review on the first try
+
+This guide provides a comprehensive walkthrough of every customization primitive available in GitHub Copilot. By the end, development teams will have the knowledge to transform Copilot from a generic assistant into a context-aware team member that understands the nuances of their specific codebase.
+
+---
+
 ## Why Customize?
 
 ### The Cost of Not Customizing
