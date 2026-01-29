@@ -83,6 +83,20 @@ Each primitive addresses a distinct need:
 
 The following sections examine each primitive in detail, including implementation guidance and practical examples.
 
+> **💡 Pro Tip: Fetch the Latest Documentation**
+>
+> GitHub Copilot's customization features evolve rapidly. When asking Copilot to generate instructions, prompts, agents, or skills, include a request to fetch the latest documentation first:
+>
+> ```
+> First, fetch the latest guidance from:
+> - https://code.visualstudio.com/docs/copilot
+> - https://docs.github.com/en/copilot
+>
+> Then create [your artifact] following current best practices.
+> ```
+>
+> This ensures your generated artifacts use current syntax, frontmatter fields, and recommended patterns rather than potentially outdated information.
+
 ---
 
 ## Always-On Instructions
@@ -856,7 +870,11 @@ Use the agent directly to generate new prompt files:
 **💬 Try this prompt:**
 
 ```
-Create a new prompt file at `.github/prompts/{{promptName}}.prompt.md`.
+First, fetch the latest prompt file documentation from:
+- https://code.visualstudio.com/docs/copilot/copilot-customization
+- https://docs.github.com/en/copilot/customizing-copilot/adding-repository-custom-instructions-for-github-copilot
+
+Then create a new prompt file at `.github/prompts/{{promptName}}.prompt.md`.
 
 ## Prompt Requirements
 
@@ -1421,7 +1439,11 @@ The following prompt generates new custom agent configurations through the agent
 **💬 Try this prompt:**
 
 ```
-Create a new custom agent at `.github/agents/{{modeName}}.agent.md`.
+First, fetch the latest custom agent documentation from:
+- https://code.visualstudio.com/docs/copilot/copilot-customization
+- https://docs.github.com/en/copilot/customizing-copilot/extending-copilot-chat-in-vs-code
+
+Then create a new custom agent at `.github/agents/{{modeName}}.agent.md`.
 
 ## Persona Details
 **Role:** {{roleDescription}}
@@ -1771,7 +1793,11 @@ Use the agent directly to design MCP server configurations:
 **💬 Try this prompt:**
 
 ```
-Help me design an MCP server for the following use case:
+First, fetch the latest MCP documentation from:
+- https://code.visualstudio.com/docs/copilot/chat/mcp-servers
+- https://modelcontextprotocol.io/introduction
+
+Then help me design an MCP server for the following use case:
 
 **What I want Copilot to be able to do:** {{capability}}
 **External system it needs to connect to:** {{externalSystem}}
