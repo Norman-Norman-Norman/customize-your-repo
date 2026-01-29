@@ -167,7 +167,7 @@ This helps Copilot understand not just *what* to do, but *why*—leading to bett
 
 The following example demonstrates a comprehensive instructions file for a production application:
 
-```markdown
+````markdown
 # Project Guidelines for Copilot
 
 ## Project Overview
@@ -241,7 +241,7 @@ interface ApiResponse<T> {
 - Use React.memo() sparingly and only with profiler data
 - Image optimization via next/image is mandatory
 - No unoptimized images in production
-```
+````
 
 ---
 
@@ -322,7 +322,7 @@ Effective instructions files encode team knowledge. Use these questions to surfa
 
 Copilot responds more effectively to examples than to abstract rules. Instead of stating "prefer functional patterns," demonstrate the preference:
 
-```markdown
+````markdown
 ## Data Transformation
 
 ✅ **Preferred:**
@@ -344,7 +344,7 @@ for (let i = 0; i < users.length; i++) {
 
 **Why:** Declarative patterns are easier to read and less error-prone. 
 Our eslint config will flag the imperative version anyway.
-```
+````
 
 ### Include Rationale
 
@@ -462,7 +462,7 @@ File-based instructions use the `.instructions.md` extension with YAML frontmatt
 
 **File:** `.github/instructions/api-routes.instructions.md`
 
-```markdown
+````markdown
 ---
 name: 'API Route Guidelines'
 description: 'Conventions for REST API endpoints'
@@ -486,7 +486,7 @@ interface ApiResponse<T> {
   error?: { code: string; message: string; };
 }
 ```
-```
+````
 
 ### Creating File-Based Instructions
 
@@ -1897,7 +1897,7 @@ Prompts should be specific enough to produce consistent results while remaining 
 ### Example 1: A React Component Library
 
 **Instructions (.github/copilot-instructions.md):**
-```markdown
+````markdown
 # Component Library Guidelines
 
 ## Design System
@@ -1931,7 +1931,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 )
 Button.displayName = "Button"
 ```
-```
+````
 
 **Component Generator Prompt (.github/prompts/new-primitive.prompt.md):**
 ```markdown
@@ -1954,7 +1954,7 @@ Follow the patterns in our existing Button and Dialog components.
 ### Example 2: A Full-Stack SaaS Application
 
 **Instructions (.github/copilot-instructions.md):**
-```markdown
+````markdown
 # Platform Development Guidelines
 
 ## Architecture
@@ -1990,7 +1990,7 @@ src/
 - All queries must include `organizationId` filter
 - Use `getServerSession()` for auth context
 - Never expose data across orgs
-```
+````
 
 **API Generator Prompt (.github/prompts/new-server-action.prompt.md):**
 ```markdown
@@ -2018,7 +2018,7 @@ Create a new server action `{{actionName}}` in `src/server/actions/{{domain}}.ts
 ### Example 3: A Python Data Pipeline
 
 **Instructions (.github/copilot-instructions.md):**
-```markdown
+````markdown
 # Data Pipeline Standards
 
 ## Python Version
@@ -2053,7 +2053,7 @@ def process_data(df: pd.DataFrame) -> pd.DataFrame:
 - Fixtures for all test data
 - Parametrized tests for edge cases
 - Integration tests for full pipeline runs
-```
+````
 
 ---
 
