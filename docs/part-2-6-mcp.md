@@ -11,6 +11,46 @@ MCP (Model Context Protocol) provides external gateway capabilities for Copilot.
 **Loading:** Session start
 **Best For:** External gateways
 
+> **Scope:** This section covers how GitHub Copilot *consumes* MCP servers — configuration, tool discovery, and invocation. It does not cover MCP server security, authentication implementation, or building custom MCP servers. For those topics, see the [MCP specification](https://modelcontextprotocol.io).
+
+### How MCP Servers Expose Tools
+
+MCP servers expose capabilities as **tools** that Copilot can discover and invoke. When Copilot starts a session with an MCP server configured, it queries the server for its available tools.
+
+**The discovery flow:**
+
+1. **Copilot connects** to the MCP server at session start
+2. **Server responds** with a list of tools, each with:
+   - Tool name (e.g., `create_issue`, `query_database`)
+   - Description (helps Copilot decide when to use it)
+   - Input schema (JSON Schema defining required parameters)
+3. **Copilot adds tools** to its available capabilities
+4. **During conversation**, Copilot matches user requests to tool descriptions
+5. **When invoked**, Copilot constructs the parameters and calls the tool
+
+**Example tool definition (from server's perspective):**
+
+```json
+{
+  "name": "create_issue",
+  "description": "Create a new GitHub issue in a repository",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "owner": { "type": "string", "description": "Repository owner" },
+      "repo": { "type": "string", "description": "Repository name" },
+      "title": { "type": "string", "description": "Issue title" },
+      "body": { "type": "string", "description": "Issue body (markdown)" }
+    },
+    "required": ["owner", "repo", "title"]
+  }
+}
+```
+
+**What Copilot sees:** A tool called `create_issue` that it can call when users want to create GitHub issues. Copilot reads the description and schema to understand when and how to use it.
+
+**What you see:** When Copilot decides to use the tool, it shows you the tool name and parameters before execution, giving you a chance to approve or modify.
+
 ### Instructions vs. MCP Capabilities
 
 These two primitives are complementary:
