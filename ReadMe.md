@@ -1560,6 +1560,28 @@ These two primitives are complementary:
 
 A configuration might include an instruction stating "always use our inventory API" alongside an MCP server that enables Copilot to actually call that API.
 
+### MCP vs. Skills: Understanding the Overlap
+
+MCP and Skills both extend what Copilot can *do*, which creates some conceptual overlap:
+
+| Aspect | Skills | MCP |
+|--------|--------|-----|
+| **Purpose** | Teach Copilot *how* to do something | Give Copilot *access* to external systems |
+| **Scope** | Repository-specific workflows | Cross-cutting integrations |
+| **Example** | "Run tests with coverage and format the report" | "Query the production database" |
+| **Invocation** | Copilot matches intent to skill description | Tools appear in Copilot's available actions |
+
+**When they overlap:** Both can enable capabilities like "fetch data from an API." A Skill might describe the workflow and preferred patterns, while MCP provides the actual HTTP fetch capability.
+
+**When they work together:** Skills often *orchestrate* MCP tools. For example:
+- A "Deploy Preview" skill might use MCP's GitHub tools to create a branch, then MCP's Vercel tools to trigger deployment
+- A "Database Migration" skill describes the safe migration process while MCP provides the actual database access
+
+**Rule of thumb:**
+- Use **Skills** when you need to encode *workflow knowledge* (steps, patterns, guardrails)
+- Use **MCP** when you need to *connect to external systems* (APIs, databases, services)
+- Use **both** when complex workflows require external integrations
+
 ### Configuring MCP Servers
 
 MCP servers can be configured in VS Code settings or project configuration:
