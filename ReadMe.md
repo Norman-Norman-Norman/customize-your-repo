@@ -1461,22 +1461,22 @@ Then create a new custom agent at `.github/agents/{{modeName}}.agent.md`.
    - Key expertise areas
    - Personality traits
 
-2. **Methodology Section**  
+3. **Methodology Section**  
    - How this persona approaches problems
    - What questions they always ask
    - Their decision-making framework
 
-3. **Response Format Section**
+4. **Response Format Section**
    - Structure of typical responses
    - When to use examples vs. explanations
    - Preferred formatting (bullets, numbered, headers)
 
-4. **Guardrails Section**
+5. **Guardrails Section**
    - What this persona never does
    - When to defer to other experts
    - Limitations to acknowledge
 
-5. **Signature Behaviors**
+6. **Signature Behaviors**
    - Unique phrases or approaches
    - Consistent patterns users can expect
    - Quality markers in responses
@@ -1725,8 +1725,8 @@ As you add MCP servers, the tool list can grow large. Group related tools into *
 
 This is an important distinction:
 
-| | Custom Instructions | Skills (MCP) |
-|-|---------------------|--------------|
+| | Custom Instructions | MCP |
+|-|---------------------|-----|
 | **What** | Text context for AI | External tool access |
 | **How** | Just knowledge | Actual capabilities |
 | **Example** | "We use PostgreSQL" | Can query PostgreSQL |
