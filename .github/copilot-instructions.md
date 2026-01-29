@@ -39,6 +39,13 @@ When discussing customization options, reference the correct primitive:
 - Add rationale ("Why") for recommendations
 - Use tables for comparisons and quick reference
 
+### Formatting Rules
+- **Code examples**: Use fenced code blocks with language identifiers (```typescript, ```markdown, etc.)
+- **User prompts**: Format as blockquotes with the "💬 Try this prompt:" header pattern
+- **Everything else**: Use normal markdown formatting (no blockquotes, no special containers)
+- Don't use blockquotes for general explanatory text, tips, or notes
+- Don't use special formatting for section introductions or descriptions
+
 ### What NOT to Do
 - Don't use first person ("I think...")
 - Don't include outdated information (moment.js examples, class components, etc.)

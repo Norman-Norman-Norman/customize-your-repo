@@ -162,9 +162,7 @@ This helps Copilot understand not just *what* to do, but *why*—leading to bett
 
 ### Complete Example: Production Next.js Project
 
-The following example demonstrates a comprehensive instructions file for a production application:
-
-```markdown
+``````markdown
 # Project Guidelines for Copilot
 
 ## Project Overview
@@ -178,6 +176,30 @@ We prioritize reliability over cutting-edge features.
 - Stripe for payments
 - Deployed on Vercel
 
+### Directory Structure
+```
+src/
+├── app/                    # Next.js App Router pages
+│   ├── (auth)/            # Auth-required routes (grouped)
+│   ├── (public)/          # Public routes
+│   └── api/               # API routes (webhooks only)
+├── components/
+│   ├── ui/                # Shared UI primitives
+│   └── features/          # Feature-specific components
+├── lib/                   # Shared utilities
+├── server/
+│   ├── actions/           # Server Actions
+│   ├── db/                # Database queries (Prisma)
+│   └── services/          # Business logic
+└── types/                 # Shared TypeScript types
+```
+
+### Data Flow
+1. Client components call Server Actions for mutations
+2. Server Components fetch data directly via Prisma
+3. TanStack Query for client-side cache invalidation
+4. Never use Route Handlers except for webhooks
+
 ## Coding Standards
 
 ### TypeScript
@@ -185,6 +207,7 @@ We prioritize reliability over cutting-edge features.
 - No `any` types except in test mocks
 - Prefer interfaces over types for object shapes
 - Use discriminated unions for complex state
+- Export types from `types/` directory, not inline
 
 ### React Patterns
 ```typescript
@@ -202,6 +225,146 @@ useEffect(() => {
 }, []);
 ```
 
+### Server Actions
+```typescript
+// ✅ Good: Validated, authorized, audited
+export async function updateInventory(input: UpdateInventoryInput) {
+  const validated = updateInventorySchema.parse(input);
+  const session = await auth();
+  if (!session) throw new UnauthorizedError();
+  
+  await auditLog('inventory.update', { userId: session.user.id, ...validated });
+  return db.inventory.update({ where: { id: validated.id }, data: validated });
+}
+
+// ❌ Bad: No validation, no auth check
+export async function updateInventory(data: any) {
+  return db.inventory.update({ data });
+}
+```
+
+## Testing Requirements
+
+### Test Structure
+- Co-locate unit tests with source: `Component.tsx` → `Component.test.tsx`
+- Integration tests in `__tests__/integration/`
+- E2E tests in `e2e/` using Playwright
+
+### Coverage Requirements
+- Minimum 80% line coverage for `server/` directory
+- All Server Actions must have integration tests
+- All user-facing flows must have E2E tests
+
+### Testing Patterns
+```typescript
+// ✅ Good: Descriptive test with clear arrange/act/assert
+describe('updateInventory', () => {
+  it('should update quantity and log audit event', async () => {
+    // Arrange
+    const item = await createTestInventoryItem({ quantity: 10 });
+    
+    // Act
+    await updateInventory({ id: item.id, quantity: 15 });
+    
+    // Assert
+    const updated = await db.inventory.findUnique({ where: { id: item.id } });
+    expect(updated?.quantity).toBe(15);
+    expect(await getAuditLogs('inventory.update')).toHaveLength(1);
+  });
+});
+
+// ❌ Bad: Vague test name, no clear structure
+test('inventory works', async () => {
+  const result = await updateInventory({ id: '1', quantity: 5 });
+  expect(result).toBeTruthy();
+});
+```
+
+### Mocking Guidelines
+- Use `vi.mock()` for external services only
+- Never mock Prisma in integration tests (use test database)
+- Reset mocks in `beforeEach`, not `afterEach`
+
+## Error Handling
+
+### Error Types
+Use our custom error hierarchy:
+- `AppError` - Base class for all application errors
+- `ValidationError` - Invalid input (400)
+- `UnauthorizedError` - Not authenticated (401)
+- `ForbiddenError` - Not authorized (403)  
+- `NotFoundError` - Resource doesn't exist (404)
+
+### Error Pattern
+```typescript
+// ✅ Good: Specific error with context
+if (!warehouse) {
+  throw new NotFoundError('Warehouse', warehouseId);
+}
+
+// ❌ Bad: Generic error
+if (!warehouse) {
+  throw new Error('Not found');
+}
+```
+
+## Security Guidelines
+
+### Authentication
+- All `/app/(auth)/` routes require session
+- Use `auth()` from NextAuth, never roll your own
+- Session checks happen in Server Components, not middleware
+
+### Authorization
+- All queries must include `organizationId` filter
+- Use `assertCanAccess(resource, session)` helper
+- Never trust client-provided organization IDs
+
+### Data Validation
+- Validate ALL external input with Zod schemas
+- Schemas live in `lib/schemas/` 
+- Reuse schemas between client and server
+
+## Performance Guidelines
+
+### Database
+- Always use `select` to limit returned fields
+- Use `include` sparingly (prefer separate queries)
+- Add indexes for any field used in WHERE clauses
+
+### React
+- Use `React.memo()` only when profiler shows need
+- Prefer Server Components for static content
+- Use `loading.tsx` for Suspense boundaries
+
+## Dependencies
+
+### Approved Libraries
+- Date handling: `date-fns` (NOT moment.js)
+- Forms: `react-hook-form` + `zod`
+- Styling: Tailwind CSS only
+- Icons: `lucide-react`
+
+### Deprecated (Do Not Use)
+- `moment.js` - Use `date-fns` instead
+- `axios` - Use native `fetch`
+- `lodash` - Use native methods or `es-toolkit`
+- Class components - Use functional components
+
+## Git Conventions
+
+### Branch Naming
+- `feature/INV-123-add-bulk-import`
+- `fix/INV-456-quantity-calculation`
+- `chore/update-dependencies`
+
+### Commit Messages
+Follow Conventional Commits:
+- `feat(inventory): add bulk import endpoint`
+- `fix(auth): handle expired session redirect`
+- `test(warehouse): add integration tests for transfer`
+``````
+
 ---
 
 ## Creating an Instructions File
@@ -217,7 +380,7 @@ The recommended approach for creating instructions files is through VS Code's bu
    - **User Profile:** Personal instructions across all workspaces
 4. Use the agent to generate the initial content
 
-### Agent-Driven Generation (Best Practice)
+### Agent-Driven Generation (Advanced)
 
 Rather than manually writing instructions, let the agent analyze the repository and generate appropriate instructions:
 
@@ -272,6 +435,17 @@ Effective instructions files encode team knowledge. Use these questions to surfa
 4. **"What libraries or patterns have been deprecated?"** → This becomes the "avoid" list
 
 > **Practical tip:** Review the last 10-20 PR comments from the team. Repeated feedback indicates rules that should be codified in the instructions file.
+
+> **💬 Try this prompt:**
+>
+> *Analyze the last 20 merged pull requests in this repository. Look at the review comments and identify:*
+>
+> *1. Repeated feedback patterns (things reviewers keep asking for)*
+> *2. Common mistakes that get flagged*
+> *3. Style or convention corrections*
+> *4. Architectural concerns raised multiple times*
+>
+> *Summarize these as candidate rules for our copilot-instructions.md file.*
 
 ### Use the "Good vs Bad" Pattern
 
@@ -349,81 +523,11 @@ If instructions are not being applied, verify:
 - File is located in the `.github/` folder
 - VS Code window has been reloaded after creating the file
 
-### Bootstrap: Auto-Generate Instructions via Agent
-
-For a quick start, ask the agent to analyze your codebase and generate a complete instructions file:
-
-> **💬 Try this prompt:**
->
-> *Analyze this codebase and generate a comprehensive .github/copilot-instructions.md file.*
->
-> *Your Analysis Should Cover:*
-> *1. Detect the tech stack - Look at package.json, requirements.txt, go.mod, etc.*
-> *2. Identify patterns - What coding patterns are consistently used?*
-> *3. Find conventions - Naming, file structure, import organization*
-> *4. Spot testing patterns - How are tests structured and named?*
-> *5. Check for config files - ESLint, Prettier, tsconfig settings that imply preferences*
->
-> *Output Format:*
-> *Generate a complete `.github/copilot-instructions.md` file with:*
-> *- Project overview (inferred from README or package description)*
-> *- Tech stack (from dependencies)*
-> *- Code style rules (from linter configs + observed patterns)*
-> *- Good vs Bad examples (from actual code in the repo)*
-> *- Testing requirements (from test files structure)*
-> *- Architecture notes (from folder structure)*
->
-> *Make the instructions specific to THIS codebase, not generic best practices.*
-
-This approach works well because:
-- Agent can explore the full codebase dynamically
-- Results are specific to each repository
-- Human can review and refine the generated output
-- No manual analysis required
-
-### Quick Start: Roll Out Instructions Across All Repos
-
-For organizations wanting to bootstrap Copilot Instructions Files across multiple repositories, use the GitHub MCP server combined with an agent to automate the rollout:
-
-> **💬 Try this prompt:**
->
-> *Help me roll out Copilot Instructions Files across my organization:*
->
-> *1. First, check if there's already a tracking issue for "copilot instructions" in our main repo*
->
-> *2. Search for all repositories in my org (owner:MY-ORG-NAME)*
->
-> *3. For each repository that doesn't have a .github/copilot-instructions.md file:*
->    *- Create a tracking issue with:*
->      *- Title: "Add Copilot Instructions File"*
->      *- Body: Include a template for the instructions file and link to our standards doc*
->      *- Labels: ["enhancement", "copilot"]*
->
-> *4. Optionally, assign the issues to the appropriate code owners*
-
-> **💬 Alternative: Create a PR directly for each repo:**
->
-> *For each repository in my org (owner:MY-ORG-NAME) that lacks a .github/copilot-instructions.md:*
->
-> *1. Check if the file already exists*
-> *2. If missing, create a new branch called "add-copilot-instructions"*
-> *3. Add a starter instructions file based on our template*
-> *4. Create a pull request with:*
->    *- Title: "Add Copilot Instructions File"*
->    *- Body: Explain what the file does and link to documentation*
->    *- Base: main*
-
-This MCP-powered approach enables:
-- **Bulk operations** across dozens or hundreds of repos
-- **Tracking visibility** via issues in each repository
-- **Consistent templates** applied organization-wide
-- **Code owner involvement** through assignments and PR reviews
-
 ---
 
 ## File-Based Instructions
 
-While always-on instructions apply globally, file-based instructions provide targeted rules for specific areas of a codebase.
+While always-on instructions apply globally, file-based instructions provide targeted rules for specific areas of a codebase. The markdown content follows the same format as [Always-On Instructions](#always-on-instructions) — the key difference is the frontmatter that controls when they activate.
 
 ### Overview
 
@@ -447,11 +551,11 @@ File-based instructions use the `.instructions.md` extension with YAML frontmatt
 | `name` | Display name (defaults to filename) |
 | `applyTo` | Glob pattern for automatic application |
 
-### Example Structure
+### Example
 
 **File:** `.github/instructions/api-routes.instructions.md`
 
-```markdown
+``````markdown
 ---
 name: 'API Route Guidelines'
 description: 'Conventions for REST API endpoints'
@@ -475,7 +579,19 @@ interface ApiResponse<T> {
   error?: { code: string; message: string; };
 }
 ```
+
+## Error Handling
+```typescript
+// ✅ Good: Standardized error response
+return NextResponse.json({ 
+  success: false, 
+  error: { code: 'NOT_FOUND', message: 'Resource not found' }
+}, { status: 404 });
+
+// ❌ Bad: Inconsistent error format
+return NextResponse.json({ error: 'Not found' }, { status: 404 });
 ```
+``````
 
 ### Creating File-Based Instructions
 
@@ -553,9 +669,10 @@ The `agent` field in the frontmatter determines how Copilot executes the prompt:
 
 | Mode | What It Does | Best For |
 |------|--------------|----------|
-| `ask` | Responds conversationally | Questions, explanations, brainstorming |
-| `edit` | Modifies the current file/selection | Refactoring, bug fixes, enhancements |
-| `agent` | Takes autonomous action across files | Multi-file changes, scaffolding, complex tasks |
+| `ask` | Read-only — responds conversationally, no file changes | Questions, explanations, brainstorming, code review |
+| `agent` | Takes autonomous action — creates/edits files, runs commands | Multi-file changes, scaffolding, bug fixes, any task that modifies code |
+
+**Note:** An `edit` mode exists but is not recommended. Use `agent` for any task that requires modifying files.
 
 ### Essential Prompt Files Every Repo Needs
 
@@ -619,7 +736,7 @@ Create a new API route at `src/app/api/{{resourceName}}/route.ts`:
 
 ```markdown
 ---
-agent: 'edit'
+agent: 'agent'
 description: 'Analyze and fix a bug with explanation'
 model: 'Claude Sonnet 4'
 ---
@@ -674,9 +791,9 @@ Review the selected code and provide:
 
 ```markdown
 ---
-agent: 'edit'
+agent: 'agent'
 description: 'Generate comprehensive documentation'
-model: 'GPT-4o'
+model: 'Claude Sonnet 4'
 ---
 
 Add documentation to the selected code including:
@@ -752,7 +869,7 @@ tools: ['editFiles', 'createFile']      # Optional: restrict tools
 | **Typing directly into .prompt.md files** | Syntax errors, inconsistent formatting | Use gear icon or ask agent to generate |
 | **Vague instructions** | "Make me a component" produces inconsistent results | Be specific about requirements, structure, patterns |
 | **Not using variables** | Prompt can only do one specific thing | Use `{{variableName}}` for reusable parts |
-| **Ignoring mode selection** | Wrong mode causes unexpected behavior | Match mode to task (ask/edit/agent) |
+| **Using edit mode** | Less reliable than agent mode | Use `ask` for read-only, `agent` for any changes |
 | **No model specification** | Inconsistent results across sessions | Specify model for reproducibility |
 | **No reference to instructions** | Prompt ignores team conventions | Reference copilot-instructions.md explicitly |
 
@@ -760,10 +877,11 @@ tools: ['editFiles', 'createFile']      # Optional: restrict tools
 
 | Mode | Copilot Can... | Best For |
 |------|----------------|----------|
-| `ask` | Talk back, explain, suggest | Design discussions, Q&A, brainstorming |
-| `edit` | Modify selected code only | Refactoring, fixing, enhancing a specific section |
-| `agent` | Create files, edit multiple files, run commands | Scaffolding, multi-file changes, complex tasks |
+| `ask` | Talk back, explain, suggest (read-only) | Design discussions, Q&A, brainstorming, code review |
+| `agent` | Create files, edit files, run commands | Any task that modifies code — scaffolding, bug fixes, refactoring |
 | Custom agent | Use that agent's persona and tools | Specialized workflows with defined behavior |
+
+**Note:** An `edit` mode exists but is not recommended. Use `agent` instead for any file modifications.
 
 ### Implement Variables
 
@@ -820,7 +938,7 @@ Use the agent directly to generate new prompt files:
 >
 > *Prompt Requirements:*
 > *- Purpose: {{purposeDescription}}*
-> *- Mode: {{mode:ask|edit|agent}}*
+> *- Mode: `ask` (read-only) or `agent` (makes changes)*
 > *- Model: Claude Sonnet 4 (or specify)*
 >
 > *Prompt Structure Guidelines:*
@@ -901,21 +1019,382 @@ Specificity produces consistent, high-quality outputs.
 
 Skills represent discrete capabilities that Copilot can invoke when contextually relevant. Unlike prompts (which users invoke explicitly), skills activate automatically based on description matching.
 
+**Location:** `.github/skills/`
 **Loading:** Description match → on-demand
 **Best For:** Reusable capabilities across tools
 
-### Agent Skills (Preview)
+### Agent Skills
 
-VS Code Insiders includes **Agent Skills** (Preview) — an open standard for teaching Copilot specialized capabilities through folders containing instructions, scripts, and resources. Unlike custom instructions that primarily define coding guidelines, skills focus on specialized workflows and capabilities.
+**Agent Skills** is an open standard for teaching Copilot specialized capabilities through folders containing instructions, scripts, and resources. Unlike custom instructions that primarily define coding guidelines, skills focus on specialized workflows and capabilities.
 
 **Key differences from other primitives:**
 - Skills work across multiple AI agents (VS Code, GitHub Copilot CLI, GitHub Copilot coding agent)
-- Portable via the open standard at [agentskills.io/home](https://agentskills.io/home)
+- Portable via the open standard at [agentskills.io](https://agentskills.io)
 - Include scripts and resources alongside instructions
+- Loaded on-demand, not always in context
 
-For full documentation, examples, and the skill specification, visit [agentskills.io/home](https://agentskills.io/home).
+For full documentation and the specification, visit [agentskills.io](https://agentskills.io).
 
-Agent Skills is currently available in VS Code Insiders. As this feature matures, skills will become a primary mechanism for extending Copilot capabilities.
+### Directory Structure
+
+Every skill lives in its own folder with a `SKILL.md` file:
+
+```
+.github/
+└── skills/
+    ├── image-manipulation/
+    │   └── SKILL.md
+    ├── github-issues/
+    │   ├── SKILL.md
+    │   └── templates/
+    │       ├── bug-report.md
+    │       └── feature-request.md
+    └── web-testing/
+        ├── SKILL.md
+        └── scripts/
+            └── playwright-setup.sh
+```
+
+**Minimum structure:**
+```
+skill-name/
+└── SKILL.md          # Required: instructions + metadata
+```
+
+**Complex skill with resources:**
+```
+skill-name/
+├── SKILL.md          # Required: main instructions
+├── scripts/          # Optional: executable code (Python, Bash, JS)
+├── references/       # Optional: additional documentation
+└── assets/           # Optional: templates, images, data files
+```
+
+### SKILL.md Format
+
+The `SKILL.md` file contains YAML frontmatter and Markdown instructions:
+
+``````markdown
+---
+name: image-manipulation
+description: Resize, convert, compress, and batch-process images using ImageMagick. Use when the user mentions image optimization, format conversion, thumbnail generation, or bulk image operations.
+metadata:
+  author: your-org
+  version: "1.0"
+---
+
+# Image Manipulation with ImageMagick
+
+## When to Use This Skill
+
+Use this skill when:
+- User wants to resize, crop, or convert images
+- User mentions image optimization or compression
+- User needs to batch process multiple images
+- User asks about ImageMagick commands
+
+## Prerequisites
+
+ImageMagick must be installed:
+- macOS: `brew install imagemagick`
+- Ubuntu: `sudo apt install imagemagick`
+- Windows: Download from imagemagick.org
+
+## Instructions
+
+### Resizing Images
+
+To resize an image while maintaining aspect ratio:
+
+```bash
+magick input.jpg -resize 800x600 output.jpg
+```
+
+To resize to exact dimensions (may distort):
+
+```bash
+magick input.jpg -resize 800x600! output.jpg
+```
+
+### Batch Processing
+
+Process all images in a directory:
+
+```bash
+for img in *.jpg; do
+  magick "$img" -resize 50% "resized_$img"
+done
+```
+
+### Format Conversion
+
+Convert between formats:
+
+```bash
+magick input.png output.jpg
+magick input.jpg -quality 85 output.webp
+```
+
+## Common Patterns
+
+| Task | Command |
+|------|---------|
+| Resize to width | `magick in.jpg -resize 800x out.jpg` |
+| Resize to height | `magick in.jpg -resize x600 out.jpg` |
+| Create thumbnail | `magick in.jpg -thumbnail 150x150^ -gravity center -extent 150x150 thumb.jpg` |
+| Compress JPEG | `magick in.jpg -quality 80 out.jpg` |
+| Convert to WebP | `magick in.png out.webp` |
+
+## Edge Cases
+
+- **Animated GIFs**: Use `-coalesce` before processing
+- **CMYK images**: Convert to RGB first with `-colorspace sRGB`
+- **Large batches**: Process in chunks to avoid memory issues
+``````
+
+### Frontmatter Fields
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `name` | Yes | 1-64 chars, lowercase, hyphens only, must match directory name |
+| `description` | Yes | 1-1024 chars, describe WHAT it does AND WHEN to use it |
+| `metadata` | No | Key-value pairs (author, version, etc.) |
+| `license` | No | License name or reference |
+| `compatibility` | No | Environment requirements |
+
+### Name Validation Rules
+
+Skill names must follow strict rules:
+
+✅ **Valid:**
+- `image-manipulation`
+- `github-issues`
+- `web-testing`
+
+❌ **Invalid:**
+- `Image-Manipulation` (uppercase not allowed)
+- `-image` (cannot start with hyphen)
+- `image-` (cannot end with hyphen)
+- `image--manipulation` (consecutive hyphens not allowed)
+
+### Complete Example: GitHub Issues Skill
+
+A skill that uses templates and integrates with the GitHub MCP:
+
+**Directory structure:**
+```
+github-issues/
+├── SKILL.md
+└── templates/
+    ├── bug-report.md
+    └── feature-request.md
+```
+
+**SKILL.md:**
+``````markdown
+---
+name: github-issues
+description: Create well-structured GitHub issues using team templates. Use when the user wants to file a bug, request a feature, or create any GitHub issue. Ensures consistent formatting and required fields.
+metadata:
+  author: your-org
+  version: "1.0"
+---
+
+# GitHub Issue Creation
+
+## When to Use This Skill
+
+Use this skill when:
+- User wants to create a GitHub issue
+- User found a bug and wants to report it
+- User wants to request a new feature
+- User mentions "file an issue" or "create a ticket"
+
+## Required Tools
+
+This skill works with the GitHub MCP server. Ensure it's configured in `.vscode/mcp.json`.
+
+## Instructions
+
+### For Bug Reports
+
+1. Gather information about the bug:
+   - Steps to reproduce
+   - Expected vs actual behavior
+   - Environment details
+
+2. Use the bug report template at `templates/bug-report.md`
+
+3. Create the issue using the GitHub MCP `create_issue` tool
+
+### For Feature Requests
+
+1. Clarify the feature requirements
+2. Use the feature template at `templates/feature-request.md`
+3. Create the issue with appropriate labels
+
+## Templates
+
+### Bug Report Template
+
+See [templates/bug-report.md](templates/bug-report.md):
+
+```markdown
+## Bug Description
+{Brief description}
+
+## Steps to Reproduce
+1. 
+2. 
+3. 
+
+## Expected Behavior
+{What should happen}
+
+## Actual Behavior
+{What actually happens}
+
+## Environment
+- OS: 
+- Version: 
+- Browser (if applicable): 
+
+## Screenshots
+{If applicable}
+```
+
+### Feature Request Template
+
+See [templates/feature-request.md](templates/feature-request.md):
+
+```markdown
+## Feature Description
+{What feature is being requested}
+
+## Use Case
+{Why this feature is needed}
+
+## Proposed Solution
+{How it might work}
+
+## Alternatives Considered
+{Other approaches}
+```
+``````
+
+### Bootstrap Skills with a Skill-Creator Skill
+
+Skills can create skills. Add a skill-creator skill to your repository, and you'll be able to bootstrap new skills with a simple prompt:
+
+> 💬 Try this prompt:
+>
+> `Create a skill for linting SQL queries`
+
+The skill-creator handles the tedious parts — directory structure, SKILL.md boilerplate, frontmatter validation, and best practices — while you focus on the domain knowledge.
+
+**Example skill-creator description:**
+```yaml
+description: Creates new Agent Skills following the agentskills.io specification. Use when the user wants to create a skill, build agent capabilities, or package procedural knowledge.
+```
+
+This pattern is recursive: the skill-creator skill is itself a skill, which means it's only loaded when you're actually creating skills. A [reference implementation](https://github.com/anthropics/skills) is available in the Anthropic skills repository.
+
+### Why Skills Instead of Always-On Instructions?
+
+A practical example from real usage: ImageMagick image processing.
+
+**The Problem:**
+Originally, ImageMagick instructions were in the always-on `copilot-instructions.md` file. This meant:
+- Hundreds of lines about image processing were loaded for *every* request
+- Simple CSS edits had to process context about `magick` commands
+- The instructions consumed context window even when irrelevant
+
+**The Solution:**
+Moving ImageMagick to a skill means:
+- The agent only sees a brief description until actually needed
+- When you say "resize these images," the skill activates
+- When you say "update the CSS," no image processing context is loaded
+
+**Rule of Thumb:**
+- **Always-on instructions**: Rules that apply to most/all coding tasks (style, testing patterns, architecture)
+- **Skills**: Specialized capabilities used occasionally (image processing, specific integrations, complex workflows)
+
+If you find yourself thinking "this is useful, but it doesn't need to be in context all the time" — that's a skill.
+
+### How Skills Load: Description Matching
+
+Unlike file-based instructions (which use `applyTo` patterns), skills load **on-demand via description matching**. Here's what happens under the hood:
+
+1. **Every system prompt includes a list of available skills** — just their names and descriptions
+2. **The agent decides which skills are relevant** based on matching the user's request to skill descriptions
+3. **Only then is the full skill content loaded** into context
+
+This makes skills lightweight while enabling powerful capabilities. However, it means **your skill's description is critical**:
+
+```markdown
+---
+description: 'Use this skill when the user needs to resize, convert, or optimize images using ImageMagick. Handles batch processing of image files.'
+---
+```
+
+**Description Best Practices:**
+- Be explicit about **when** to load the skill (triggers)
+- Be explicit about **what value** it provides (capabilities)
+- Include key action words users might say ("resize", "convert", "optimize")
+- Keep it scannable — the agent reads many descriptions to make a decision
+
+**Ineffective description:**
+```markdown
+description: 'Image processing skill'
+```
+
+**Effective description:**
+```markdown
+description: 'Resize, convert, compress, and batch-process images using ImageMagick. Use when the user mentions image optimization, format conversion, or bulk image operations.'
+```
+
+### What the Spec Does (and Doesn't) Control
+
+The [agentskills.io](https://agentskills.io) specification intentionally leaves certain decisions to the **host** (VS Code, GitHub CLI, coding agent):
+
+| Controlled by Spec | Left to Host |
+|-------------------|--------------|
+| Skill file format (SKILL.md) | File system locations |
+| Frontmatter fields | Installation process |
+| Description requirements | Runtime environment |
+| Resource references | Package management |
+| Compatibility declarations | Discovery mechanism |
+
+This design allows the same skill to work across different agents while each host optimizes for its environment. A skill written for VS Code will also work with the GitHub CLI and coding agent without modification.
+
+**Compatibility Field:**
+Skills can declare which environments they support:
+
+```markdown
+---
+compatibility:
+  - vscode
+  - github-cli
+  - coding-agent
+---
+```
+
+This helps hosts decide whether to surface a skill in their environment.
+
+### Debugging Skills: See What's Loaded
+
+VS Code's **Chat Debug View** reveals exactly what skills and instructions are loaded for each request. This is invaluable for understanding why a skill did or didn't activate:
+
+1. Open the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
+2. Run **"Developer: Show Chat Debug View"**
+3. Send a request in Copilot Chat
+4. Click on the request in the debug panel to see:
+   - Full system prompt
+   - List of available skills (with descriptions)
+   - List of available instructions
+   - Which skills were loaded for this request
+
+This view shows that skills appear as a list of descriptions in every system prompt. When you see a skill wasn't activated, check whether its description clearly matches what the user asked for.
 
 ### Skills vs. MCP Servers: When to Use Which
 
@@ -1189,6 +1668,45 @@ You are a meticulous code reviewer focused on code quality and team standards.
 - Include code examples for fixes
 - Reference team standards when applicable
 ```
+
+### Sub-Agents: Context Isolation for Complex Workflows
+
+Custom agents can be invoked as **sub-agents** by other workflows. This pattern solves a critical problem: long-running, context-heavy tasks can cause the main conversation to lose focus or "forget" important details.
+
+**Why Sub-Agents Matter:**
+- Each sub-agent runs in isolated context
+- Prevents context bleed between unrelated tasks
+- Allows heavy workflows without overwhelming the main conversation
+- Sub-agent returns a summary, not the full context
+
+**The Pattern:**
+```
+Main conversation: "Implement this feature and create a PR"
+├── Sub-agent 1: Makes code changes (isolated context)
+├── Sub-agent 2: Runs tests (isolated context)  
+└── Sub-agent 3: Creates PR (isolated context)
+```
+
+Each sub-agent focuses on its specific task without inheriting irrelevant context from sibling tasks. The main agent orchestrates and receives summarized results.
+
+**When to Use Sub-Agents:**
+- Tasks that require deep, specialized context
+- Workflows where different steps shouldn't influence each other
+- Long-running operations that might otherwise cause context drift
+- Batch operations (e.g., processing many files independently)
+
+**Defining Handoffs:**
+```markdown
+---
+name: 'Code Reviewer'
+handoffs:
+  - label: 'Implement Fixes'
+    agent: 'agent'
+    prompt: 'Implement the fixes identified in the review above.'
+---
+```
+
+The `handoffs` field creates natural workflow transitions, where one agent can spawn another for specialized work.
 
 ### Prompt vs. Custom Agent Comparison
 
