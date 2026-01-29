@@ -6,28 +6,9 @@
 
 ## Introduction
 
-GitHub Copilot probably isn't hallucinating. It's making a best effort based on its context—just like you would if someone dropped you into a million-line codebase and asked you to make changes after an hour of reading code.
+GitHub Copilot is a powerful AI coding assistant, but out of the box, it operates without knowledge of team conventions, architectural decisions, or codebase-specific patterns. When Copilot suggests `var` in a TypeScript-strict codebase or recommends class components to a functional-only React team, it reveals a fundamental gap: **Copilot doesn't know what it doesn't know.**
 
-**The right mental model: Copilot is a new developer on your team.**
-
-Think about what makes code easy for a new team member to work with:
-- Easy to read, well-formed code
-- Small, modular functions with clear responsibilities
-- Good naming conventions (not everything called `i`, `temp`, or `data`)
-- Comprehensive tests that document expected behavior
-- Clear architectural patterns
-
-These same qualities make code easier for Copilot to understand and extend correctly. Code that's maintainable for humans is maintainable for AI. Code that confuses junior developers will confuse Copilot too.
-
-This guide is structured in two parts:
-
-**Part 1: Tuning Copilot for Your Current Codebase**
-This guide focuses on the customization primitives that help Copilot understand your existing codebase—your conventions, patterns, and preferences. These tools work with your code as it exists today.
-
-**Part 2: Refactoring for Better AI Collaboration** *(Coming Soon)*
-The companion guide will cover how to refactor and restructure code so AI agents have an easier time understanding and modifying it. Better code organization benefits both human developers and AI assistants.
-
-When properly configured, Copilot can:
+This gap represents both a challenge and an opportunity. GitHub Copilot provides a robust customization framework that allows development teams to encode their tribal knowledge, coding standards, and workflows directly into the AI assistant. When properly configured, Copilot can:
 
 - Respect team coding conventions automatically
 - Follow architectural patterns without prompting
@@ -48,30 +29,30 @@ This guide provides a comprehensive walkthrough of every customization primitive
 6. [Skills](#skills)
 7. [Custom Agents](#custom-agents)
 8. [MCP (Model Context Protocol)](#mcp-model-context-protocol)
-9. [The Decision Matrix](#the-decision-matrix)
-10. [Frequently Asked Questions](#frequently-asked-questions)
-11. [Real-World Examples](#real-world-examples)
-12. [Best Practices](#best-practices)
-13. [Resources](#resources)
+9. [How to Build Custom MCP Servers](#how-to-build-custom-mcp-servers)
+10. [The Decision Matrix](#the-decision-matrix)
+11. [Frequently Asked Questions](#frequently-asked-questions)
+12. [Real-World Examples](#real-world-examples)
+13. [Best Practices](#best-practices)
+14. [Advanced Tips](#advanced-tips)
+15. [Resources](#resources)
 
 ---
 
 ## The Customization Primitives
 
-As GitHub Copilot evolves rapidly with agentic capabilities, the customization surface has expanded to six distinct primitives. Some of these overlap in functionality—and that's okay. The goal isn't to use every primitive; it's to choose the right ones for your specific outcomes.
+GitHub Copilot provides six distinct customization primitives. Each serves a specific purpose and loads at different points in the interaction lifecycle. Understanding when each primitive activates is essential for effective configuration.
 
-This guide covers each primitive's strengths and ideal use cases. By the end, you'll be able to make informed decisions about which tools best fit your team's workflows.
+| Primitive | Loading | Best For |
+|-----------|---------|----------|
+| **Always-on Instructions** | Every session | Codebase guardrails |
+| **File-based Instructions** | Pattern match / description match | Area-specific rules |
+| **Prompts (Slash Commands)** | User invokes | One-shot workflows |
+| **Skills** | Description match → on-demand | Reusable capabilities |
+| **Custom Agents** | Top-level OR as subagent | Constrained workflows |
+| **MCP** | Session start | External gateways |
 
-| Primitive | Location | Naming Convention | Loading | Best For |
-|-----------|----------|-------------------|---------|----------|
-| [**Always-on Instructions**](#always-on-instructions) | `.github/` | `copilot-instructions.md` | Every session | Codebase guardrails |
-| [**File-based Instructions**](#file-based-instructions) | `.github/instructions/` | `*.instructions.md` | Pattern match / description match | Area-specific rules |
-| [**Prompts (Slash Commands)**](#prompt-files-slash-commands) | `.github/prompts/` | `*.prompt.md` | User invokes | One-shot workflows |
-| [**Skills**](#skills) | `.github/skills/` | Folder with `skill.md` | Description match → on-demand | Reusable capabilities |
-| [**Custom Agents**](#custom-agents) | `.github/agents/` | `*.agent.md` | Top-level OR as subagent | Constrained workflows |
-| [**MCP**](#mcp-model-context-protocol) | `.vscode/mcp.json` | `servers` config | Session start | External gateways |
-
-Each primitive addresses a distinct need:
+This table represents the complete customization surface area. Each primitive addresses a distinct need:
 
 - **Always-on Instructions** – Global rules that apply to every Copilot interaction in the repository
 - **File-based Instructions** – Targeted rules that activate based on file patterns or context
@@ -82,27 +63,13 @@ Each primitive addresses a distinct need:
 
 The following sections examine each primitive in detail, including implementation guidance and practical examples.
 
-> **💡 Pro Tip: Fetch the Latest Documentation**
->
-> GitHub Copilot's customization features evolve rapidly. When asking Copilot to generate instructions, prompts, agents, or skills, include a request to fetch the latest documentation first:
->
-> ```
-> First, fetch the latest guidance from:
-> - https://code.visualstudio.com/docs/copilot
-> - https://docs.github.com/en/copilot
->
-> Then create [your artifact] following current best practices.
-> ```
->
-> This ensures your generated artifacts use current syntax, frontmatter fields, and recommended patterns rather than potentially outdated information.
-
 ---
 
 ## Always-On Instructions
 
 ### Overview
 
-Always-on instructions represent the foundational layer of Copilot customization. These instructions load automatically at the start of every Copilot session and apply to all interactions within the repository.
+Always-on instructions (also known as the **Copilot Instructions File**) represent the foundational layer of Copilot customization. These instructions load automatically at the start of every Copilot session and apply to all interactions within the repository.
 
 **Location:** `.github/copilot-instructions.md`
 
@@ -180,7 +147,7 @@ This helps Copilot understand not just *what* to do, but *why*—leading to bett
 
 The following example demonstrates a comprehensive instructions file for a production application:
 
-````markdown
+```markdown
 # Project Guidelines for Copilot
 
 ## Project Overview
@@ -254,7 +221,7 @@ interface ApiResponse<T> {
 - Use React.memo() sparingly and only with profiler data
 - Image optimization via next/image is mandatory
 - No unoptimized images in production
-````
+```
 
 ---
 
@@ -274,8 +241,6 @@ The recommended approach for creating instructions files is through VS Code's bu
 ### Agent-Driven Generation (Best Practice)
 
 Rather than manually writing instructions, let the agent analyze the repository and generate appropriate instructions:
-
-**💬 Try this prompt:**
 
 ```
 Analyze this repository and create a .github/copilot-instructions.md file that:
@@ -322,6 +287,8 @@ This is particularly effective because the agent validates build commands and te
 
 ### Gathering Team Knowledge
 
+### Gathering Team Knowledge
+
 Effective instructions files encode team knowledge. Use these questions to surface the most valuable rules:
 
 1. **"What does Copilot frequently get wrong?"** → These become explicit rules
@@ -329,33 +296,13 @@ Effective instructions files encode team knowledge. Use these questions to surfa
 3. **"What would a new hire need to know on day one?"** → This becomes context
 4. **"What libraries or patterns have been deprecated?"** → This becomes the "avoid" list
 
-### Mining PR Comments for Patterns
-
-**Ask your team:** "What feedback do you find yourself giving over and over in code reviews?"
-
-Common answers reveal the rules that should be in your instructions file. Even better—if you have access to GitHub's MCP server, Copilot can analyze your PR history directly.
-
-**💬 Try this prompt:**
-
-```
-Review the last 20 merged PRs in this repository and identify:
-
-1. Repeated feedback patterns in review comments
-2. Common issues that reviewers flag
-3. Style or convention corrections that appear multiple times
-4. Any "please don't do X, do Y instead" patterns
-
-Summarize these as candidate rules for our copilot-instructions.md file,
-organized by category (code style, testing, architecture, etc.).
-```
-
-This surfaces the tribal knowledge that experienced team members carry but haven't documented—the exact gaps that cause Copilot to produce code that fails review.
+> **Practical tip:** Review the last 10-20 PR comments from the team. Repeated feedback indicates rules that should be codified in the instructions file.
 
 ### Use the "Good vs Bad" Pattern
 
 Copilot responds more effectively to examples than to abstract rules. Instead of stating "prefer functional patterns," demonstrate the preference:
 
-````markdown
+```markdown
 ## Data Transformation
 
 ✅ **Preferred:**
@@ -377,7 +324,7 @@ for (let i = 0; i < users.length; i++) {
 
 **Why:** Declarative patterns are easier to read and less error-prone. 
 Our eslint config will flag the imperative version anyway.
-````
+```
 
 ### Include Rationale
 
@@ -398,8 +345,6 @@ When Copilot understands intent, it can apply rules more intelligently.
 ### Iterating with the Agent
 
 After initial generation, refine the instructions file through conversation:
-
-**💬 Try this prompt:**
 
 ```
 Review the .github/copilot-instructions.md file and:
@@ -463,6 +408,48 @@ This approach works well because:
 - Human can review and refine the generated output
 - No manual analysis required
 
+### Quick Start: Roll Out Instructions Across All Repos
+
+For organizations wanting to bootstrap Copilot Instructions Files across multiple repositories, use the GitHub MCP server combined with an agent to automate the rollout:
+
+**💬 Try this prompt:**
+
+```
+Using the GitHub MCP tools, help me roll out Copilot Instructions Files across my organization:
+
+1. First, use mcp_github_list_issues to check if there's already a tracking issue for "copilot instructions" in our main repo
+
+2. If not, use mcp_github_search_repositories to find all repos in my org: owner:MY-ORG-NAME
+
+3. For each repository that doesn't have a .github/copilot-instructions.md file:
+   - Use mcp_github_create_issue to create a tracking issue with:
+     - Title: "Add Copilot Instructions File"
+     - Body: Include a template for the instructions file and link to our standards doc
+     - Labels: ["enhancement", "copilot"]
+
+4. Optionally, assign the issues to the appropriate code owners
+```
+
+**Alternative: Create a PR directly for each repo:**
+
+```
+For each repository in owner:MY-ORG-NAME that lacks a .github/copilot-instructions.md:
+
+1. Use mcp_github_get_file_contents to check if the file exists
+2. If missing, use mcp_github_create_branch to create "add-copilot-instructions"
+3. Use mcp_github_create_or_update_file to add a starter instructions file
+4. Use mcp_github_create_pull_request with:
+   - Title: "Add Copilot Instructions File"
+   - Body: Explain what the file does and link to documentation
+   - Base: main
+```
+
+This MCP-powered approach enables:
+- **Bulk operations** across dozens or hundreds of repos
+- **Tracking visibility** via issues in each repository
+- **Consistent templates** applied organization-wide
+- **Code owner involvement** through assignments and PR reviews
+
 ---
 
 ## File-Based Instructions
@@ -495,7 +482,7 @@ File-based instructions use the `.instructions.md` extension with YAML frontmatt
 
 **File:** `.github/instructions/api-routes.instructions.md`
 
-````markdown
+```markdown
 ---
 name: 'API Route Guidelines'
 description: 'Conventions for REST API endpoints'
@@ -519,7 +506,7 @@ interface ApiResponse<T> {
   error?: { code: string; message: string; };
 }
 ```
-````
+```
 
 ### Creating File-Based Instructions
 
@@ -530,11 +517,9 @@ interface ApiResponse<T> {
 
 Alternatively, ask the agent directly:
 
-**💬 Try this prompt:**
-
 ```
-Create a file-based instruction at .github/instructions/react-components.instructions.md 
-that applies to src/components/**/* and includes our React component conventions. 
+Create a file-based instruction at .github/instructions/react-components.instructions.md
+that applies to src/components/**/* and includes our React component conventions.
 Analyze existing components for patterns to document.
 ```
 
@@ -597,15 +582,13 @@ Use our existing components in `src/components/` as reference for style.
 
 ### Execution Modes
 
-The `agent` field in the frontmatter determines how Copilot executes the prompt:
+The `mode` field in the frontmatter determines how Copilot executes the prompt:
 
-| Mode | What It Does | Recommendation |
-|------|--------------|----------------|
-| `agent` | Takes autonomous action across files | **Recommended** — Most flexible, can create files, edit multiple files, run commands |
-| `ask` | Responds conversationally | **Okay** — Good for questions, explanations, brainstorming |
-| `edit` | Modifies the current file/selection only | **Not recommended** — Too constrained for most workflows |
-
-**Why prefer `agent` mode?** It gives Copilot the flexibility to do what's needed—create new files, modify existing ones, run terminal commands, and iterate. The `edit` mode restricts Copilot to only modifying the currently selected code, which rarely matches real-world tasks.
+| Mode | What It Does | Best For |
+|------|--------------|----------|
+| `ask` | Responds conversationally | Questions, explanations, brainstorming |
+| `edit` | Modifies the current file/selection | Refactoring, bug fixes, enhancements |
+| `agent` | Takes autonomous action across files | Multi-file changes, scaffolding, complex tasks |
 
 ### Essential Prompt Files Every Repo Needs
 
@@ -766,8 +749,6 @@ This section covers the process of creating well-structured prompt files using V
 
 Rather than manually writing prompt files, use Copilot to generate them:
 
-**💬 Try this prompt:**
-
 ```
 Create a prompt file at .github/prompts/new-api-route.prompt.md that:
 - Generates REST API routes with validation
@@ -804,9 +785,18 @@ tools: ['editFiles', 'createFile']      # Optional: restrict tools
 | **Typing directly into .prompt.md files** | Syntax errors, inconsistent formatting | Use gear icon or ask agent to generate |
 | **Vague instructions** | "Make me a component" produces inconsistent results | Be specific about requirements, structure, patterns |
 | **Not using variables** | Prompt can only do one specific thing | Use `{{variableName}}` for reusable parts |
-| **Using `edit` mode** | Too constrained, can only modify selected code | Use `agent` mode for flexibility |
+| **Ignoring mode selection** | Wrong mode causes unexpected behavior | Match mode to task (ask/edit/agent) |
 | **No model specification** | Inconsistent results across sessions | Specify model for reproducibility |
 | **No reference to instructions** | Prompt ignores team conventions | Reference copilot-instructions.md explicitly |
+
+### Mode Reference
+
+| Mode | Copilot Can... | Best For |
+|------|----------------|----------|
+| `ask` | Talk back, explain, suggest | Design discussions, Q&A, brainstorming |
+| `edit` | Modify selected code only | Refactoring, fixing, enhancing a specific section |
+| `agent` | Create files, edit multiple files, run commands | Scaffolding, multi-file changes, complex tasks |
+| Custom agent | Use that agent's persona and tools | Specialized workflows with defined behavior |
 
 ### Implement Variables
 
@@ -857,14 +847,8 @@ This approach keeps prompts synchronized with team standards automatically.
 
 Use the agent directly to generate new prompt files:
 
-**💬 Try this prompt:**
-
 ```
-First, fetch the latest prompt file documentation from:
-- https://code.visualstudio.com/docs/copilot/copilot-customization
-- https://docs.github.com/en/copilot/customizing-copilot/adding-repository-custom-instructions-for-github-copilot
-
-Then create a new prompt file at `.github/prompts/{{promptName}}.prompt.md`.
+Create a new prompt file at `.github/prompts/{{promptName}}.prompt.md`.
 
 ## Prompt Requirements
 
@@ -900,10 +884,8 @@ This meta-prompt creates new prompt files that follow best practices.
 
 To improve an existing prompt file, ask the agent directly:
 
-**💬 Try this prompt:**
-
 ```
-Analyze and improve the prompt file at: .github/prompts/new-component.prompt.md:
+Analyze and improve the prompt file at .github/prompts/new-component.prompt.md:
 
 ## Check for:
 1. **Clarity** - Is the instruction unambiguous?
@@ -957,30 +939,6 @@ Skills represent discrete capabilities that Copilot can invoke when contextually
 **Loading:** Description match → on-demand
 **Best For:** Reusable capabilities across tools
 
-### How Skills Load vs. Other Primitives
-
-Understanding when each primitive loads is key to using them effectively:
-
-| Primitive | When It Loads | What Triggers It |
-|-----------|---------------|------------------|
-| **Always-on Instructions** | Every session start | Automatic—just exists in `.github/copilot-instructions.md` |
-| **File-based Instructions** | When working in matching files | `applyTo` glob pattern matches current file |
-| **Skills** | When description matches user intent | Copilot analyzes the request and matches to skill descriptions |
-
-**The key difference:** Instructions are loaded based on *where you are* (file patterns). Skills are loaded based on *what you're trying to do* (intent matching).
-
-**Example scenario:**
-
-```
-User: "How do I run the integration tests for the auth module?"
-```
-
-- **Instructions** already loaded: General coding standards from `copilot-instructions.md`
-- **File-based instructions** NOT loaded: User isn't editing a specific file yet
-- **Skill activated**: "Run integration tests" skill matches the intent, loads its specialized knowledge
-
-This means skills are ideal for workflow knowledge—things that aren't tied to specific files but require understanding your team's processes.
-
 ### Agent Skills (Preview)
 
 VS Code Insiders includes **Agent Skills** (Preview) — an open standard for teaching Copilot specialized capabilities through folders containing instructions, scripts, and resources. Unlike custom instructions that primarily define coding guidelines, skills focus on specialized workflows and capabilities.
@@ -993,25 +951,6 @@ VS Code Insiders includes **Agent Skills** (Preview) — an open standard for te
 For full documentation, examples, and the skill specification, visit [agentskills.io/home](https://agentskills.io/home).
 
 Agent Skills is currently available in VS Code Insiders. As this feature matures, skills will become a primary mechanism for extending Copilot capabilities.
-
-### What Skills Can Teach
-
-Skills excel at encoding procedural knowledge—the "how to do things" that go beyond coding conventions:
-
-| Skill Type | Examples |
-|------------|----------|
-| **CI/CD Workflows** | How to run tests, deploy to staging, trigger builds |
-| **Testing Patterns** | How to write integration tests for your API, mock patterns, fixture setup |
-| **Local Development** | How to start the dev server, seed the database, reset local state |
-| **Code Generation** | How to scaffold new modules following your patterns |
-| **Debugging** | How to capture logs, analyze stack traces, reproduce issues |
-| **Release Process** | How to bump versions, generate changelogs, tag releases |
-
-**Example skill descriptions:**
-- "Run the test suite for a specific module"
-- "Set up local development environment from scratch"
-- "Create a new API endpoint following our patterns"
-- "Debug a failing CI build"
 
 ### Skills vs. MCP Servers: When to Use Which
 
@@ -1071,12 +1010,13 @@ In practice, many workflows combine both:
 1. **Skill** handles local operations (git commit, file changes, running tests)
 2. **MCP Server** handles external operations (create PR, update ticket, notify team)
 
-**💬 Example workflow:**
+Example workflow:
+```
+Developer: "Implement this feature and create a PR"
 
-> **User:** "Implement this feature and create a PR"
->
-> **Skill:** Creates branch, makes changes, commits locally
-> **MCP Server:** Pushes to GitHub, creates PR, links to Jira ticket
+Skill: Creates branch, makes changes, commits locally
+MCP Server: Pushes to GitHub, creates PR, links to Jira ticket
+```
 
 This pattern keeps local operations fast and portable while properly securing external integrations.
 
@@ -1299,7 +1239,9 @@ You are a meticulous code reviewer focused on code quality and team standards.
 - Use **prompts** for specific tasks ("do this thing")
 - Use **custom agents** for behavioral changes ("be this way")
 
-### Creating Custom Agents
+---
+
+## Building Custom Agents
 
 The recommended approach for creating custom agents is through VS Code's built-in interface combined with agent-assisted iteration.
 
@@ -1316,8 +1258,6 @@ The recommended approach for creating custom agents is through VS Code's built-i
 ### Agent-Driven Iteration (Best Practice)
 
 Rather than manually editing agent files, use Copilot to generate and refine them:
-
-**💬 Try this prompt:**
 
 ```
 Create a custom agent for security code review. It should:
@@ -1371,7 +1311,7 @@ description: 'What this mode does (shows in picker)'
 [Guardrails and limitations]
 ```
 
-### Define Specific Personas
+### Step 3: Define Specific Personas
 
 Specificity in persona definition produces consistency in outputs.
 
@@ -1388,7 +1328,7 @@ technical debt. You're kind but direct—you won't sugarcoat issues
 but you always explain your reasoning.
 ```
 
-### Define Response Patterns
+### Step 4: Define Response Patterns
 
 Specify how the agent should structure its responses:
 
@@ -1406,7 +1346,7 @@ Always provide code examples, not just descriptions.
 Never say "it depends" without then explaining what it depends ON.
 ```
 
-### Add Guardrails
+### Step 5: Add Guardrails
 
 Guardrails prevent the persona from producing off-target responses:
 
@@ -1424,14 +1364,10 @@ Guardrails prevent the persona from producing off-target responses:
 
 The following prompt generates new custom agent configurations through the agent:
 
-**💬 Try this prompt:**
+**Invoke via chat:**
 
 ```
-First, fetch the latest custom agent documentation from:
-- https://code.visualstudio.com/docs/copilot/copilot-customization
-- https://docs.github.com/en/copilot/customizing-copilot/extending-copilot-chat-in-vs-code
-
-Then create a new custom agent at `.github/agents/{{modeName}}.agent.md`.
+Create a new custom agent at `.github/agents/{{modeName}}.agent.md`.
 
 ## Persona Details
 **Role:** {{roleDescription}}
@@ -1450,22 +1386,22 @@ Then create a new custom agent at `.github/agents/{{modeName}}.agent.md`.
    - Key expertise areas
    - Personality traits
 
-3. **Methodology Section**  
+2. **Methodology Section**  
    - How this persona approaches problems
    - What questions they always ask
    - Their decision-making framework
 
-4. **Response Format Section**
+3. **Response Format Section**
    - Structure of typical responses
    - When to use examples vs. explanations
    - Preferred formatting (bullets, numbered, headers)
 
-5. **Guardrails Section**
+4. **Guardrails Section**
    - What this persona never does
    - When to defer to other experts
    - Limitations to acknowledge
 
-6. **Signature Behaviors**
+5. **Signature Behaviors**
    - Unique phrases or approaches
    - Consistent patterns users can expect
    - Quality markers in responses
@@ -1539,31 +1475,6 @@ MCP (Model Context Protocol) provides external gateway capabilities for Copilot.
 **Loading:** Session start
 **Best For:** External gateways
 
-### MCP Capabilities: Tools, Resources, and Prompts
-
-MCP servers can expose three types of capabilities to Copilot:
-
-| Capability | What It Does | How to Use |
-|------------|--------------|------------|
-| **Tools** | Functions Copilot can call (query DB, create issue, fetch URL) | Auto-invoked in agent mode, or reference with `#toolName` |
-| **Resources** | Direct access to data (files, database tables, API responses) | Chat → Add Context → MCP Resources |
-| **Prompts** | Preconfigured prompts for common tasks | Type `/mcp.serverName.promptName` in chat |
-
-**Using MCP Tools in Chat:**
-
-1. Open the Chat view and enter agent mode
-2. Click the **Tools** button to see available MCP tools (grouped by server)
-3. Tools are auto-invoked based on your request, or explicitly reference with `#`
-4. Review and approve tool invocations when prompted
-
-**Using MCP Resources:**
-
-Resources let you add external data directly to your chat context. For example, a database MCP server might expose tables as resources you can reference.
-
-**Using MCP Prompts:**
-
-Some MCP servers provide ready-made prompts. Invoke them with slash commands formatted as `/mcp.serverName.promptName`.
-
 ### Instructions vs. MCP Capabilities
 
 These two primitives are complementary:
@@ -1573,72 +1484,11 @@ These two primitives are complementary:
 
 A configuration might include an instruction stating "always use our inventory API" alongside an MCP server that enables Copilot to actually call that API.
 
-### MCP vs. Skills: Understanding the Overlap
-
-MCP and Skills both extend what Copilot can *do*, which creates some conceptual overlap:
-
-| Aspect | Skills | MCP |
-|--------|--------|-----|
-| **Purpose** | Teach Copilot *how* to do something | Give Copilot *access* to external systems |
-| **Scope** | Repository-specific workflows | Cross-cutting integrations |
-| **Example** | "Run tests with coverage and format the report" | "Query the production database" |
-| **Invocation** | Copilot matches intent to skill description | Tools appear in Copilot's available actions |
-
-**When they overlap:** Both can enable capabilities like "fetch data from an API." A Skill might describe the workflow and preferred patterns, while MCP provides the actual HTTP fetch capability.
-
-**When they work together:** Skills often *orchestrate* MCP tools. For example:
-- A "Deploy Preview" skill might use MCP's GitHub tools to create a branch, then MCP's Vercel tools to trigger deployment
-- A "Database Migration" skill describes the safe migration process while MCP provides the actual database access
-
-**Rule of thumb:**
-- Use **Skills** when you need to encode *workflow knowledge* (steps, patterns, guardrails)
-- Use **MCP** when you need to *connect to external systems* (APIs, databases, services)
-- Use **both** when complex workflows require external integrations
-
-> **See also:** The [Skills section](#skills-vs-mcp-servers-when-to-use-which) provides a detailed decision guide with practical examples for choosing between Skills and MCP.
-
 ### Configuring MCP Servers
 
-MCP servers can be configured in two ways: VS Code settings (user-level) or a repository-level configuration file.
+MCP servers can be configured in VS Code settings or project configuration:
 
-**Option 1: Repository Configuration (.vscode/mcp.json)**
-
-For team-shared MCP configurations that live in the repo:
-
-```json
-{
-  "servers": {
-    "github": {
-      "command": "npx",
-      "args": ["@modelcontextprotocol/server-github"],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${env:GITHUB_TOKEN}"
-      }
-    },
-    "database": {
-      "command": "npx", 
-      "args": ["@your-org/db-mcp-server"],
-      "env": {
-        "DATABASE_URL": "${env:DATABASE_URL}"
-      }
-    },
-    "fetch": {
-      "command": "npx",
-      "args": ["@modelcontextprotocol/server-fetch"]
-    }
-  }
-}
-```
-
-This approach is preferred for team projects because:
-- Configuration is version-controlled and reviewed in PRs
-- New team members get MCP capabilities automatically
-- Consistent tooling across the team
-
-**Option 2: VS Code Settings (.vscode/settings.json)**
-
-For user-specific or legacy configurations:
-
+**VS Code Settings (.vscode/settings.json):**
 ```json
 {
   "github.copilot.chat.mcpServers": {
@@ -1660,50 +1510,15 @@ For user-specific or legacy configurations:
 }
 ```
 
-> **Note:** Environment variables like `${env:GITHUB_TOKEN}` reference values from your local environment or `.env` file. Never commit actual secrets to the repository.
+### Available MCP Servers
 
-### Input Variables for Sensitive Data
-
-Avoid hardcoding secrets in your configuration. Use input variables that prompt for values on first use:
-
-```json
-{
-  "servers": {
-    "database": {
-      "command": "npx",
-      "args": ["@your-org/db-mcp-server"],
-      "env": {
-        "DATABASE_URL": "${input:database-url}"
-      }
-    }
-  },
-  "inputs": [
-    {
-      "type": "promptString",
-      "id": "database-url",
-      "description": "Database connection string",
-      "password": true
-    }
-  ]
-}
-```
-
-VS Code securely stores these values after the first prompt.
-
-### Discovering MCP Servers
-
-This guide focuses on **how to configure and use** MCP servers in your repository, not on which servers to choose.
-
-For discovering MCP servers:
-- **[GitHub MCP Server Registry](https://github.com/mcp)** – Browse and install servers directly from VS Code's Extensions view (`@mcp` search)
-- **[Official MCP Server Repository](https://github.com/modelcontextprotocol/servers)** – Reference implementations and community servers
-- **[VS Code MCP Documentation](https://code.visualstudio.com/docs/copilot/chat/mcp-servers)** – Complete setup guide and configuration reference
-
-> **Note:** MCP security considerations, server trust models, and evaluation criteria are covered in the official documentation linked above. This guide assumes servers have already been vetted for your use case.
-
-### Tool Sets: Grouping Related Tools
-
-As you add MCP servers, the tool list can grow large. Group related tools into **tool sets** for easier management. See the [VS Code tool sets documentation](https://code.visualstudio.com/docs/copilot/chat/chat-tools#_group-tools-with-tool-sets) for configuration details.
+| Server | What It Does |
+|--------|--------------|
+| `@modelcontextprotocol/server-github` | GitHub API access (issues, PRs, repos) |
+| `@modelcontextprotocol/server-postgres` | PostgreSQL queries |
+| `@modelcontextprotocol/server-filesystem` | File system operations |
+| `@modelcontextprotocol/server-fetch` | HTTP requests |
+| `@modelcontextprotocol/server-puppeteer` | Browser automation |
 
 ### Example Use Cases
 
@@ -1712,7 +1527,238 @@ As you add MCP servers, the tool list can grow large. Group related tools into *
 - **"Test this API endpoint"** → Fetch MCP
 - **"Take a screenshot of the login page"** → Puppeteer MCP
 
+### Instructions vs. MCP Comparison
+
+This is an important distinction:
+
+| | Custom Instructions | Skills (MCP) |
+|-|---------------------|--------------|
+| **What** | Text context for AI | External tool access |
+| **How** | Just knowledge | Actual capabilities |
+| **Example** | "We use PostgreSQL" | Can query PostgreSQL |
+| **Updates** | Manual | Real-time |
+
 **Instructions provide knowledge. MCP provides capabilities.**
+
+---
+
+## How to Build Custom MCP Servers
+
+This section covers the process of creating custom MCP servers for specialized integrations.
+
+### MCP Architecture
+
+An MCP server is a program that:
+1. Declares available tools (functions Copilot can call)
+2. Handles requests from Copilot to use those tools
+3. Returns results that Copilot incorporates into responses
+
+### Basic MCP Server Implementation
+
+The following TypeScript example demonstrates a minimal MCP server:
+
+**File:** `my-mcp-server/index.ts`
+
+```typescript
+import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+
+const server = new Server(
+  { name: "my-custom-server", version: "1.0.0" },
+  { capabilities: { tools: {} } }
+);
+
+// Define your tools
+server.setRequestHandler("tools/list", async () => ({
+  tools: [
+    {
+      name: "get_team_members",
+      description: "Get list of team members from our internal API",
+      inputSchema: {
+        type: "object",
+        properties: {
+          team: { type: "string", description: "Team name" }
+        },
+        required: ["team"]
+      }
+    }
+  ]
+}));
+
+// Handle tool calls
+server.setRequestHandler("tools/call", async (request) => {
+  if (request.params.name === "get_team_members") {
+    const team = request.params.arguments.team;
+    // Your actual logic here - API call, database query, whatever
+    const members = await fetchTeamMembers(team);
+    return { content: [{ type: "text", text: JSON.stringify(members) }] };
+  }
+  throw new Error(`Unknown tool: ${request.params.name}`);
+});
+
+// Start the server
+const transport = new StdioServerTransport();
+server.connect(transport);
+```
+
+### Step 2: Package Configuration
+
+**File:** `my-mcp-server/package.json`
+
+```json
+{
+  "name": "@your-org/team-mcp-server",
+  "version": "1.0.0",
+  "type": "module",
+  "bin": {
+    "team-mcp-server": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
+```
+
+### Step 3: VS Code Registration
+
+Add to `.vscode/settings.json`:
+
+```json
+{
+  "github.copilot.chat.mcpServers": {
+    "team": {
+      "command": "npx",
+      "args": ["@your-org/team-mcp-server"],
+      "env": {
+        "API_KEY": "${env:INTERNAL_API_KEY}"
+      }
+    }
+  }
+}
+```
+
+### Step 4: Usage
+
+Once configured, Copilot Chat can handle queries like:
+- "Who's on the platform team?"
+- "Get me the team members for frontend"
+
+Copilot invokes the MCP server to retrieve live data.
+
+### Practical MCP Examples
+
+**Example 1: Design System Token Fetcher**
+
+```typescript
+// Tool that fetches your design tokens so Copilot knows your exact colors
+{
+  name: "get_design_tokens",
+  description: "Fetch design tokens from Figma/design system",
+  inputSchema: {
+    type: "object",
+    properties: {
+      category: { 
+        type: "string", 
+        enum: ["colors", "spacing", "typography"] 
+      }
+    }
+  }
+}
+```
+
+This tool enables queries like "what's our primary blue color?" to return actual hex values from the design system.
+
+**Example 2: CI/CD Status Checker**
+
+```typescript
+{
+  name: "get_pipeline_status",
+  description: "Check CI/CD pipeline status for a branch",
+  inputSchema: {
+    type: "object",
+    properties: {
+      branch: { type: "string" },
+      pipeline: { type: "string", enum: ["build", "test", "deploy"] }
+    }
+  }
+}
+```
+
+This enables queries like "Is main green?" to return actual pipeline status.
+
+**Example 3: Feature Flag Manager**
+
+```typescript
+{
+  name: "get_feature_flags",
+  description: "Get current feature flag states",
+  inputSchema: {
+    type: "object",
+    properties: {
+      environment: { type: "string", enum: ["dev", "staging", "prod"] }
+    }
+  }
+}
+```
+
+This enables queries like "What feature flags are enabled in production?" to return real configuration data.
+
+### MCP Server Designer\n\nUse the agent directly to design MCP server configurations:\n\n```\nHelp me design an MCP server for the following use case:\n\n**What I want Copilot to be able to do:** {{capability}}\n**External system it needs to connect to:** {{externalSystem}}\n**Authentication method:** {{authMethod}}\n\n## Please provide:\n\n1. **Tool Definitions**
+   - Name, description, and input schema for each tool
+   - What parameters users might want to pass
+   - What the response format should be
+
+2. **Implementation Outline**
+   - Key functions needed
+   - Error handling approach
+   - Rate limiting considerations
+
+3. **Security Considerations**
+   - What secrets are needed
+   - How to handle authentication
+   - What permissions should be required
+
+4. **VS Code Configuration**
+   - The settings.json snippet to register it
+   - Environment variables needed
+
+5. **Example Queries**
+   - What questions users can now ask Copilot
+   - Expected responses
+```
+
+### When to Build an MCP Server
+
+**Good candidates for MCP servers:**
+- Internal APIs used daily by the team
+- Databases with reference data
+- Monitoring and observability systems
+- Design systems and component libraries
+- Documentation systems
+- Project management tools beyond GitHub
+
+**Skip MCP servers for:**
+- One-off queries (paste data directly)
+- Rarely accessed systems
+- Highly sensitive data (evaluate carefully)
+
+### MCP Anti-Patterns to Avoid
+
+| Anti-Pattern | Why It's Problematic | Better Approach |
+|--------------|---------------------|------------------|
+| **Building MCP for rarely-used data** | Maintenance cost exceeds value | Paste data directly into chat |
+| **Exposing sensitive data** | Security and compliance risks | Evaluate data sensitivity carefully |
+| **No error handling** | Failures produce confusing results | Return clear error messages |
+| **Too many tools in one server** | Hard to maintain, confusing tool discovery | Split into focused servers |
+| **No rate limiting** | Can trigger API limits or outages | Implement request throttling |
+| **Hardcoded credentials** | Security risk, deployment difficulties | Use environment variables |
 
 ---
 
@@ -1737,15 +1783,6 @@ The following guidelines help determine which primitive to use for a given requi
 
 **Summary:** Reusable task automation.
 
-### Use Skills When...
-- Workflow knowledge needs to be captured ("how we do things")
-- The capability leverages locally-installed tools
-- No external authentication is required
-- Portability across different AI agents matters
-- Procedures aren't tied to specific files
-
-**Summary:** Reusable capabilities and procedural knowledge.
-
 ### Use Custom Agents When...
 - Copilot should adopt a specific expert persona
 - Different contexts require different behaviors
@@ -1769,13 +1806,11 @@ Is it a general rule for all code?
 ├── YES → Always-On Instructions
 └── NO → Is it a repeatable task?
     ├── YES → Prompt File
-    └── NO → Is it workflow/process knowledge?
-        ├── YES → Skill
-        └── NO → Do you need a specific AI behavior?
-            ├── YES → Custom Agent
-            └── NO → Do you need external data/actions?
-                ├── YES → MCP
-                └── NO → Direct conversation
+    └── NO → Do you need a specific AI behavior?
+        ├── YES → Custom Agent
+        └── NO → Do you need external data/actions?
+            ├── YES → MCP
+            └── NO → Direct conversation
 ```
 
 ---
@@ -1858,7 +1893,7 @@ Prompts should be specific enough to produce consistent results while remaining 
 ### Example 1: A React Component Library
 
 **Instructions (.github/copilot-instructions.md):**
-````markdown
+```markdown
 # Component Library Guidelines
 
 ## Design System
@@ -1892,7 +1927,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 )
 Button.displayName = "Button"
 ```
-````
+```
 
 **Component Generator Prompt (.github/prompts/new-primitive.prompt.md):**
 ```markdown
@@ -1915,7 +1950,7 @@ Follow the patterns in our existing Button and Dialog components.
 ### Example 2: A Full-Stack SaaS Application
 
 **Instructions (.github/copilot-instructions.md):**
-````markdown
+```markdown
 # Platform Development Guidelines
 
 ## Architecture
@@ -1951,7 +1986,7 @@ src/
 - All queries must include `organizationId` filter
 - Use `getServerSession()` for auth context
 - Never expose data across orgs
-````
+```
 
 **API Generator Prompt (.github/prompts/new-server-action.prompt.md):**
 ```markdown
@@ -1979,7 +2014,7 @@ Create a new server action `{{actionName}}` in `src/server/actions/{{domain}}.ts
 ### Example 3: A Python Data Pipeline
 
 **Instructions (.github/copilot-instructions.md):**
-````markdown
+```markdown
 # Data Pipeline Standards
 
 ## Python Version
@@ -2014,7 +2049,7 @@ def process_data(df: pd.DataFrame) -> pd.DataFrame:
 - Fixtures for all test data
 - Parametrized tests for edge cases
 - Integration tests for full pipeline runs
-````
+```
 
 ---
 
@@ -2040,6 +2075,9 @@ Expand as friction points are identified.
 
 Copilot learns more effectively from examples than abstract rules:
 
+```markdown
+## Code Style
+
 ```typescript
 // ✅ Preferred
 const result = items.filter(isValid).map(transform);
@@ -2051,6 +2089,7 @@ for (let i = 0; i < items.length; i++) {
     result.push(transform(items[i]));
   }
 }
+```
 ```
 
 ### 4. Explain Rationale
@@ -2095,12 +2134,8 @@ Codebases evolve; customizations should as well:
 ### Official Documentation
 
 - [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
-- [VS Code Copilot Customization](https://code.visualstudio.com/docs/copilot/copilot-customization) – Instructions, prompts, and agents
-- [VS Code MCP Servers](https://code.visualstudio.com/docs/copilot/chat/mcp-servers) – MCP setup and configuration
-- [VS Code Chat Tools](https://code.visualstudio.com/docs/copilot/chat/chat-tools) – Tool sets and tool management
-- [Model Context Protocol](https://modelcontextprotocol.io/) – MCP specification and server development
-- [Agent Skills Specification](https://agentskills.io/home) – Skills standard and examples
-- [Awesome Copilot Repository](https://github.com/github/awesome-copilot) – Community examples, prompts, and resources
+- [Awesome Copilot Repository](https://github.com/github/awesome-copilot) - Community examples, prompts, and resources
+- [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) - Building custom integrations
 
 ### Community Resources
 
