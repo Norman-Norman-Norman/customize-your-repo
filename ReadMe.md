@@ -60,14 +60,14 @@ This guide provides a comprehensive walkthrough of every customization primitive
 
 GitHub Copilot provides six distinct customization primitives. Each serves a specific purpose and loads at different points in the interaction lifecycle. Understanding when each primitive activates is essential for effective configuration.
 
-| Primitive | Loading | Best For |
-|-----------|---------|----------|
-| **Always-on Instructions** | Every session | Codebase guardrails |
-| **File-based Instructions** | Pattern match / description match | Area-specific rules |
-| **Prompts (Slash Commands)** | User invokes | One-shot workflows |
-| **Skills** | Description match → on-demand | Reusable capabilities |
-| **Custom Agents** | Top-level OR as subagent | Constrained workflows |
-| **MCP** | Session start | External gateways |
+| Primitive | Location | Loading | Best For |
+|-----------|----------|---------|----------|
+| [**Always-on Instructions**](#always-on-instructions) | `.github/copilot-instructions.md` | Every session | Codebase guardrails |
+| [**File-based Instructions**](#file-based-instructions) | `.github/instructions/*.instructions.md` | Pattern match / description match | Area-specific rules |
+| [**Prompts (Slash Commands)**](#prompt-files-slash-commands) | `.github/prompts/*.prompt.md` | User invokes | One-shot workflows |
+| [**Skills**](#skills) | `.github/skills/` | Description match → on-demand | Reusable capabilities |
+| [**Custom Agents**](#custom-agents) | `.github/agents/*.agent.md` | Top-level OR as subagent | Constrained workflows |
+| [**MCP**](#mcp-model-context-protocol) | `.vscode/mcp.json` | Session start | External gateways |
 
 This table represents the complete customization surface area. Each primitive addresses a distinct need:
 
@@ -202,44 +202,6 @@ useEffect(() => {
 }, []);
 ```
 
-### Error Handling
-- Use custom error classes that extend `AppError`
-- Always log errors to our monitoring service
-- Never expose stack traces to users
-
-### Testing Requirements
-- Unit tests for all business logic
-- Integration tests for API routes
-- E2E tests for critical user flows
-- Minimum 80% coverage for new code
-
-## API Design
-- RESTful endpoints under `/api/v1/`
-- Always return consistent response shape:
-```typescript
-interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: {
-    code: string;
-    message: string;
-  };
-}
-```
-
-## Database Conventions
-- Use UUID for primary keys
-- Include `createdAt` and `updatedAt` on all tables
-- Soft delete with `deletedAt` column
-- Use database transactions for multi-table operations
-
-## Performance Guidelines
-- Lazy load routes and heavy components
-- Use React.memo() sparingly and only with profiler data
-- Image optimization via next/image is mandatory
-- No unoptimized images in production
-```
-
 ---
 
 ## Creating an Instructions File
@@ -259,20 +221,18 @@ The recommended approach for creating instructions files is through VS Code's bu
 
 Rather than manually writing instructions, let the agent analyze the repository and generate appropriate instructions:
 
-```
-Analyze this repository and create a .github/copilot-instructions.md file that:
-
-1. Documents the tech stack and architecture
-2. Identifies coding conventions from existing code
-3. Notes patterns that should be followed
-4. Lists patterns that should be avoided
-5. Includes testing requirements
-6. Adds rationale for each guideline
-
-Examine the package.json, existing source files, and any documentation
-to ensure accuracy. Format as a human-readable markdown file I can
-review and refine.
-```
+> **💬 Try this prompt:**
+>
+> *Analyze this repository and create a .github/copilot-instructions.md file that:*
+>
+> *1. Documents the tech stack and architecture*
+> *2. Identifies coding conventions from existing code*
+> *3. Notes patterns that should be followed*
+> *4. Lists patterns that should be avoided*
+> *5. Includes testing requirements*
+> *6. Adds rationale for each guideline*
+>
+> *Examine the package.json, existing source files, and any documentation to ensure accuracy. Format as a human-readable markdown file I can review and refine.*
 
 This approach ensures:
 - Instructions reflect actual codebase patterns
@@ -361,17 +321,17 @@ When Copilot understands intent, it can apply rules more intelligently.
 
 After initial generation, refine the instructions file through conversation:
 
-```
-Review the .github/copilot-instructions.md file and:
-
-1. Check for any contradictions between rules
-2. Add examples for the most important conventions
-3. Include rationale where it's missing
-4. Remove any rules that are standard/obvious
-5. Ensure the tech stack section is accurate
-
-Make the changes and explain what you updated.
-```
+> **💬 Try this prompt:**
+>
+> *Review the .github/copilot-instructions.md file and:*
+>
+> *1. Check for any contradictions between rules*
+> *2. Add examples for the most important conventions*
+> *3. Include rationale where it's missing*
+> *4. Remove any rules that are standard/obvious*
+> *5. Ensure the tech stack section is accurate*
+>
+> *Make the changes and explain what you updated.*
 
 This creates a feedback loop where the agent refines its own guidelines based on human review.
 
@@ -393,29 +353,27 @@ If instructions are not being applied, verify:
 
 For a quick start, ask the agent to analyze your codebase and generate a complete instructions file:
 
-**💬 Try this prompt:**
-
-```
-Analyze this codebase and generate a comprehensive .github/copilot-instructions.md file.
-
-## Your Analysis Should Cover:
-1. **Detect the tech stack** - Look at package.json, requirements.txt, go.mod, etc.
-2. **Identify patterns** - What coding patterns are consistently used?
-3. **Find conventions** - Naming, file structure, import organization
-4. **Spot testing patterns** - How are tests structured and named?
-5. **Check for config files** - ESLint, Prettier, tsconfig settings that imply preferences
-
-## Output Format:
-Generate a complete `.github/copilot-instructions.md` file with:
-- Project overview (inferred from README or package description)
-- Tech stack (from dependencies)
-- Code style rules (from linter configs + observed patterns)
-- Good vs Bad examples (from actual code in the repo)
-- Testing requirements (from test files structure)
-- Architecture notes (from folder structure)
-
-Make the instructions specific to THIS codebase, not generic best practices.
-```
+> **💬 Try this prompt:**
+>
+> *Analyze this codebase and generate a comprehensive .github/copilot-instructions.md file.*
+>
+> *Your Analysis Should Cover:*
+> *1. Detect the tech stack - Look at package.json, requirements.txt, go.mod, etc.*
+> *2. Identify patterns - What coding patterns are consistently used?*
+> *3. Find conventions - Naming, file structure, import organization*
+> *4. Spot testing patterns - How are tests structured and named?*
+> *5. Check for config files - ESLint, Prettier, tsconfig settings that imply preferences*
+>
+> *Output Format:*
+> *Generate a complete `.github/copilot-instructions.md` file with:*
+> *- Project overview (inferred from README or package description)*
+> *- Tech stack (from dependencies)*
+> *- Code style rules (from linter configs + observed patterns)*
+> *- Good vs Bad examples (from actual code in the repo)*
+> *- Testing requirements (from test files structure)*
+> *- Architecture notes (from folder structure)*
+>
+> *Make the instructions specific to THIS codebase, not generic best practices.*
 
 This approach works well because:
 - Agent can explore the full codebase dynamically
@@ -427,37 +385,33 @@ This approach works well because:
 
 For organizations wanting to bootstrap Copilot Instructions Files across multiple repositories, use the GitHub MCP server combined with an agent to automate the rollout:
 
-**💬 Try this prompt:**
+> **💬 Try this prompt:**
+>
+> *Help me roll out Copilot Instructions Files across my organization:*
+>
+> *1. First, check if there's already a tracking issue for "copilot instructions" in our main repo*
+>
+> *2. Search for all repositories in my org (owner:MY-ORG-NAME)*
+>
+> *3. For each repository that doesn't have a .github/copilot-instructions.md file:*
+>    *- Create a tracking issue with:*
+>      *- Title: "Add Copilot Instructions File"*
+>      *- Body: Include a template for the instructions file and link to our standards doc*
+>      *- Labels: ["enhancement", "copilot"]*
+>
+> *4. Optionally, assign the issues to the appropriate code owners*
 
-```
-Help me roll out Copilot Instructions Files across my organization:
-
-1. First, check if there's already a tracking issue for "copilot instructions" in our main repo
-
-2. Search for all repositories in my org (owner:MY-ORG-NAME)
-
-3. For each repository that doesn't have a .github/copilot-instructions.md file:
-   - Create a tracking issue with:
-     - Title: "Add Copilot Instructions File"
-     - Body: Include a template for the instructions file and link to our standards doc
-     - Labels: ["enhancement", "copilot"]
-
-4. Optionally, assign the issues to the appropriate code owners
-```
-
-**Alternative: Create a PR directly for each repo:**
-
-```
-For each repository in my org (owner:MY-ORG-NAME) that lacks a .github/copilot-instructions.md:
-
-1. Check if the file already exists
-2. If missing, create a new branch called "add-copilot-instructions"
-3. Add a starter instructions file based on our template
-4. Create a pull request with:
-   - Title: "Add Copilot Instructions File"
-   - Body: Explain what the file does and link to documentation
-   - Base: main
-```
+> **💬 Alternative: Create a PR directly for each repo:**
+>
+> *For each repository in my org (owner:MY-ORG-NAME) that lacks a .github/copilot-instructions.md:*
+>
+> *1. Check if the file already exists*
+> *2. If missing, create a new branch called "add-copilot-instructions"*
+> *3. Add a starter instructions file based on our template*
+> *4. Create a pull request with:*
+>    *- Title: "Add Copilot Instructions File"*
+>    *- Body: Explain what the file does and link to documentation*
+>    *- Base: main*
 
 This MCP-powered approach enables:
 - **Bulk operations** across dozens or hundreds of repos
@@ -532,11 +486,9 @@ interface ApiResponse<T> {
 
 Alternatively, ask the agent directly:
 
-```
-Create a file-based instruction at .github/instructions/react-components.instructions.md
-that applies to src/components/**/* and includes our React component conventions.
-Analyze existing components for patterns to document.
-```
+> **💬 Try this prompt:**
+>
+> *Create a file-based instruction at .github/instructions/react-components.instructions.md that applies to src/components/\*\*/\* and includes our React component conventions. Analyze existing components for patterns to document.*
 
 ### Anti-Patterns to Avoid
 
@@ -764,14 +716,14 @@ This section covers the process of creating well-structured prompt files using V
 
 Rather than manually writing prompt files, use Copilot to generate them:
 
-```
-Create a prompt file at .github/prompts/new-api-route.prompt.md that:
-- Generates REST API routes with validation
-- Uses agent mode with Claude Sonnet 4
-- Includes variables for resource name and HTTP methods
-- References our copilot-instructions.md for patterns
-- Outputs route file, Zod schemas, and tests
-```
+> **💬 Try this prompt:**
+>
+> *Create a prompt file at .github/prompts/new-api-route.prompt.md that:*
+> *- Generates REST API routes with validation*
+> *- Uses agent mode with Claude Sonnet 4*
+> *- Includes variables for resource name and HTTP methods*
+> *- References our copilot-instructions.md for patterns*
+> *- Outputs route file, Zod schemas, and tests*
 
 This approach ensures:
 - Correct YAML frontmatter syntax
@@ -862,36 +814,34 @@ This approach keeps prompts synchronized with team standards automatically.
 
 Use the agent directly to generate new prompt files:
 
-```
-Create a new prompt file at `.github/prompts/{{promptName}}.prompt.md`.
-
-## Prompt Requirements
-
-**Purpose:** {{purposeDescription}}
-**Mode:** {{mode:ask|edit|agent}}
-**Model:** Claude Sonnet 4 (or specify)
-
-## Prompt Structure Guidelines:
-
-1. Start with a clear, specific instruction
-2. Include context about what files/patterns to reference
-3. Specify the expected output format
-4. Add relevant constraints from our copilot-instructions.md
-5. Include quality checks or validation steps
-
-## The prompt should:
-- Be specific enough to get consistent results
-- Be general enough to be reusable
-- Include `{{variables}}` for customizable parts
-- Reference existing codebase patterns when relevant
-- Include success criteria so Copilot knows when it's "done"
-
-## Format the output as:
-- YAML frontmatter with agent, description, and model
-- Clear markdown sections for instructions
-- Code examples where helpful
-- Numbered steps for complex tasks
-```
+> **💬 Try this prompt:**
+>
+> *Create a new prompt file at `.github/prompts/{{promptName}}.prompt.md`.*
+>
+> *Prompt Requirements:*
+> *- Purpose: {{purposeDescription}}*
+> *- Mode: {{mode:ask|edit|agent}}*
+> *- Model: Claude Sonnet 4 (or specify)*
+>
+> *Prompt Structure Guidelines:*
+> *1. Start with a clear, specific instruction*
+> *2. Include context about what files/patterns to reference*
+> *3. Specify the expected output format*
+> *4. Add relevant constraints from our copilot-instructions.md*
+> *5. Include quality checks or validation steps*
+>
+> *The prompt should:*
+> *- Be specific enough to get consistent results*
+> *- Be general enough to be reusable*
+> *- Include `{{variables}}` for customizable parts*
+> *- Reference existing codebase patterns when relevant*
+> *- Include success criteria so Copilot knows when it's "done"*
+>
+> *Format the output as:*
+> *- YAML frontmatter with agent, description, and model*
+> *- Clear markdown sections for instructions*
+> *- Code examples where helpful*
+> *- Numbered steps for complex tasks*
 
 This meta-prompt creates new prompt files that follow best practices.
 
@@ -899,26 +849,26 @@ This meta-prompt creates new prompt files that follow best practices.
 
 To improve an existing prompt file, ask the agent directly:
 
-```
-Analyze and improve the prompt file at .github/prompts/new-component.prompt.md:
-
-## Check for:
-1. **Clarity** - Is the instruction unambiguous?
-2. **Completeness** - Does it include all necessary context?
-3. **Variables** - Are there opportunities for useful variables?
-4. **Mode/Model** - Are they appropriate for the task?
-5. **Examples** - Would examples improve output quality?
-6. **Constraints** - Are there missing guardrails?
-
-## Apply these improvements:
-- Make instructions more specific
-- Add structure where it helps
-- Include success criteria
-- Reference codebase patterns where relevant
-- Add helpful examples
-
-Explain each change you make.
-```
+> **💬 Try this prompt:**
+>
+> *Analyze and improve the prompt file at .github/prompts/new-component.prompt.md:*
+>
+> *Check for:*
+> *1. Clarity - Is the instruction unambiguous?*
+> *2. Completeness - Does it include all necessary context?*
+> *3. Variables - Are there opportunities for useful variables?*
+> *4. Mode/Model - Are they appropriate for the task?*
+> *5. Examples - Would examples improve output quality?*
+> *6. Constraints - Are there missing guardrails?*
+>
+> *Apply these improvements:*
+> *- Make instructions more specific*
+> *- Add structure where it helps*
+> *- Include success criteria*
+> *- Reference codebase patterns where relevant*
+> *- Add helpful examples*
+>
+> *Explain each change you make.*
 
 ### Prompt Quality Comparison
 
@@ -1274,15 +1224,15 @@ The recommended approach for creating custom agents is through VS Code's built-i
 
 Rather than manually editing agent files, use Copilot to generate and refine them:
 
-```
-Create a custom agent for security code review. It should:
-- Focus on OWASP Top 10 vulnerabilities
-- Use Claude Sonnet 4 for its reasoning capabilities
-- Have access to search, readFile, and usages tools
-- Include handoffs to an implementation agent after review
-
-Store the result in .github/agents/security-reviewer.agent.md
-```
+> **💬 Try this prompt:**
+>
+> *Create a custom agent for security code review. It should:*
+> *- Focus on OWASP Top 10 vulnerabilities*
+> *- Use Claude Sonnet 4 for its reasoning capabilities*
+> *- Have access to search, readFile, and usages tools*
+> *- Include handoffs to an implementation agent after review*
+>
+> *Store the result in .github/agents/security-reviewer.agent.md*
 
 This approach ensures:
 - Proper YAML frontmatter syntax
@@ -1379,50 +1329,48 @@ Guardrails prevent the persona from producing off-target responses:
 
 The following prompt generates new custom agent configurations through the agent:
 
-**Invoke via chat:**
-
-```
-Create a new custom agent at `.github/agents/{{modeName}}.agent.md`.
-
-## Persona Details
-**Role:** {{roleDescription}}
-**Expertise area:** {{expertiseArea}}
-**Personality:** {{personalityTraits}}
-**Preferred model:** Claude Sonnet 4 (or specify another)
-
-## Generate an agent that includes:
-
-1. **YAML Frontmatter**
-   - name, description, tools, model
-   - handoffs to related agents if applicable
-
-2. **Identity Section**
-   - Specific background and experience
-   - Key expertise areas
-   - Personality traits
-
-2. **Methodology Section**  
-   - How this persona approaches problems
-   - What questions they always ask
-   - Their decision-making framework
-
-3. **Response Format Section**
-   - Structure of typical responses
-   - When to use examples vs. explanations
-   - Preferred formatting (bullets, numbered, headers)
-
-4. **Guardrails Section**
-   - What this persona never does
-   - When to defer to other experts
-   - Limitations to acknowledge
-
-5. **Signature Behaviors**
-   - Unique phrases or approaches
-   - Consistent patterns users can expect
-   - Quality markers in responses
-
-Make the persona feel distinct and memorable.
-```
+> **💬 Try this prompt:**
+>
+> *Create a new custom agent at `.github/agents/{{modeName}}.agent.md`.*
+>
+> *Persona Details:*
+> *- Role: {{roleDescription}}*
+> *- Expertise area: {{expertiseArea}}*
+> *- Personality: {{personalityTraits}}*
+> *- Preferred model: Claude Sonnet 4 (or specify another)*
+>
+> *Generate an agent that includes:*
+>
+> *1. YAML Frontmatter*
+>    *- name, description, tools, model*
+>    *- handoffs to related agents if applicable*
+>
+> *2. Identity Section*
+>    *- Specific background and experience*
+>    *- Key expertise areas*
+>    *- Personality traits*
+>
+> *3. Methodology Section*
+>    *- How this persona approaches problems*
+>    *- What questions they always ask*
+>    *- Their decision-making framework*
+>
+> *4. Response Format Section*
+>    *- Structure of typical responses*
+>    *- When to use examples vs. explanations*
+>    *- Preferred formatting (bullets, numbered, headers)*
+>
+> *5. Guardrails Section*
+>    *- What this persona never does*
+>    *- When to defer to other experts*
+>    *- Limitations to acknowledge*
+>
+> *6. Signature Behaviors*
+>    *- Unique phrases or approaches*
+>    *- Consistent patterns users can expect*
+>    *- Quality markers in responses*
+>
+> *Make the persona feel distinct and memorable.*
 
 ### Additional Agent Examples
 
