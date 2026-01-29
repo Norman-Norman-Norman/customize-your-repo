@@ -1,6 +1,6 @@
-﻿# Part VI: Reference
+# Part III: Reference
 
-[ Back to Guide](../ReadMe.md) | [ Part V: Implementation Guide](part-5-implementation-guide.md)
+[← Back to Guide](../ReadMe.md) | [← Part II: The Six Primitives](part-2-primitives.md)
 
 ---
 
@@ -150,7 +150,7 @@ applyTo: 'src/components/**/*.tsx'
 ---
 agent: 'agent'
 description: 'Brief description of what this prompt does'
-model: 'Opus 4.5'
+model: 'Claude Sonnet 4'
 ---
 
 [Clear instruction of what to do]
@@ -206,7 +206,7 @@ Use this skill when:
 name: 'Agent Name'
 description: 'What this agent specializes in'
 tools: ['search', 'readFile']
-model: 'Opus 4.5'
+model: 'Claude Sonnet 4'
 ---
 
 You are [specific persona description].
@@ -315,13 +315,28 @@ You are [specific persona description].
 
 ---
 
+## Cross-Reference: Primitives by Use Case
+
+| Use Case | Primary Primitive | Supporting Primitives |
+|----------|-------------------|----------------------|
+| Enforce coding standards | [Always-On Instructions](part-2-1-always-on-instructions.md) | File-Based Instructions for exceptions |
+| Generate components | [Prompts](part-2-3-prompts.md) | Instructions for conventions |
+| Code review | [Custom Agents](part-2-5-custom-agents.md) | Instructions for standards |
+| External API access | [MCP](part-2-6-mcp.md) | Skills for conventions |
+| Domain expertise | [Skills](part-2-4-skills.md) | Instructions for context |
+| File-type specific rules | [File-Based Instructions](part-2-2-file-based-instructions.md) | Always-On for global rules |
+
+---
+
 ## Resources
 
 ### Official Documentation
 
 - [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
-- [Awesome Copilot Repository](https://github.com/github/awesome-copilot) - Community examples, prompts, and resources
-- [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) - Building custom integrations
+- [VS Code Copilot Extension](https://code.visualstudio.com/docs/copilot)
+- [Awesome Copilot Repository](https://github.com/github/awesome-copilot) — Community examples, prompts, and resources
+- [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) — Building custom integrations
+- [Agent Skills Specification](https://agentskills.io) — Portable skill format
 
 ### Community Resources
 
@@ -334,27 +349,25 @@ The [Awesome Copilot](https://github.com/github/awesome-copilot) repository prov
 
 ### Implementation Roadmap
 
-1. **Immediate:** Create `.github/copilot-instructions.md` with five key coding conventions
-2. **Week 1:** Add 2-3 prompt files for frequently repeated tasks
-3. **Month 1:** Implement custom agents for specialized workflows
-4. **Quarter 1:** Evaluate MCP servers for external integrations
+| Timeline | Action | Outcome |
+|----------|--------|---------|
+| Day 1 | Create `copilot-instructions.md` with 5 key rules | Immediate convention enforcement |
+| Week 1 | Add 2-3 prompt files for repeated tasks | Consistent task automation |
+| Month 1 | Implement custom agents for specialized workflows | Role-based AI assistance |
+| Quarter 1 | Evaluate MCP servers and Skills | External integrations, portable capabilities |
 
 ---
 
 ## Summary
 
-| Objective | Solution |
-|-----------|----------|
-| Set permanent coding rules | Instructions file |
-| Create a reusable task | Prompt file |
-| Define AI persona/behavior | Custom Agent |
-| Connect to external data/tools | MCP integration |
-
-Organizations that customize GitHub Copilot for their specific workflows and codebases report significantly higher productivity gains compared to default configurations.
-
-The investment in writing comprehensive instructions eliminates repetitive code review feedback. Each prompt created becomes a workflow available to the entire team. Custom agents accelerate specialized work. MCP integrations bring real-world data directly into development conversations.
-
-GitHub Copilot provides substantial value in its default configuration. When customized for a specific repository—with knowledge of patterns, preferences, architectural decisions, and organizational conventions—it transforms from a general-purpose tool into a context-aware development partner.
+| Objective | Solution | Learn More |
+|-----------|----------|------------|
+| Set permanent coding rules | Instructions file | [Always-On Instructions](part-2-1-always-on-instructions.md) |
+| Rules for specific file types | File-based instructions | [File-Based Instructions](part-2-2-file-based-instructions.md) |
+| Create a reusable task | Prompt file | [Prompts](part-2-3-prompts.md) |
+| Specialized capability | Skill | [Skills](part-2-4-skills.md) |
+| Define AI persona/behavior | Custom Agent | [Custom Agents](part-2-5-custom-agents.md) |
+| Connect to external data/tools | MCP integration | [MCP](part-2-6-mcp.md) |
 
 ---
 
@@ -362,4 +375,4 @@ GitHub Copilot provides substantial value in its default configuration. When cus
 
 ---
 
-[ Part V: Implementation Guide](part-5-implementation-guide.md) | [Back to Guide ](../ReadMe.md)
+[← Part II: The Six Primitives](part-2-primitives.md) | [Back to Guide →](../ReadMe.md)

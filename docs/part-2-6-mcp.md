@@ -68,33 +68,16 @@ MCP servers can be configured in VS Code settings or project configuration:
 ```json
 {
   "github.copilot.chat.mcpServers": {
-    "database": {
+    "my-mcp-server": {
       "command": "npx",
-      "args": ["@your-org/db-mcp-server"],
+      "args": ["-y", "@example/mcp-server"],
       "env": {
-        "DATABASE_URL": "${env:DATABASE_URL}"
-      }
-    },
-    "github": {
-      "command": "npx",
-      "args": ["@modelcontextprotocol/server-github"],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${env:GITHUB_TOKEN}"
+        "API_KEY": "${env:API_KEY}"
       }
     }
   }
 }
 ```
-
-### Available MCP Servers
-
-| Server | What It Does |
-|--------|--------------|
-| `@modelcontextprotocol/server-github` | GitHub API access (issues, PRs, repos) |
-| `@modelcontextprotocol/server-postgres` | PostgreSQL queries |
-| `@modelcontextprotocol/server-filesystem` | File system operations |
-| `@modelcontextprotocol/server-fetch` | HTTP requests |
-| `@modelcontextprotocol/server-puppeteer` | Browser automation |
 
 ### Example Use Cases
 
@@ -118,4 +101,4 @@ This is an important distinction:
 
 ---
 
-[← Custom Agents](part-2-5-custom-agents.md) | [Next: Part III - Putting It All Together →](part-3-putting-it-together.md)
+[← Custom Agents](part-2-5-custom-agents.md) | [Next: Part III - Reference →](part-3-reference.md)

@@ -53,13 +53,11 @@ But even with the best model and cleanest codebase, **repository configuration**
 
 ---
 
-This guide is structured in two parts:
+**About This Guide**
 
-**Part 1: Tuning Copilot for Your Current Codebase**
-This guide focuses on the customization primitives that help Copilot understand your existing codebaseyour conventions, patterns, and preferences. These tools work with your code as it exists today.
+This guide focuses on the customization primitives that help Copilot understand your existing codebase — your conventions, patterns, and preferences. These tools work with your code as it exists today.
 
-**Part 2: Refactoring for Better AI Collaboration** *(Coming Soon)*
-The companion guide will cover how to refactor and restructure code so AI agents have an easier time understanding and modifying it. Better code organization benefits both human developers and AI assistants.
+**Coming Soon:** A companion guide covering how to refactor and restructure code so AI agents have an easier time understanding and modifying it.
 
 When properly configured, Copilot can:
 
@@ -111,13 +109,15 @@ The investment is front-loaded: a few hours of configuration produces ongoing re
 
 ### The 80/20 Rule
 
-Most teams will get 80% of the value from 20% of the configuration:
+Most teams get 80% of the value from 20% of the configuration:
 
-1. **Always-on instructions file** (hour 1) — Stop what you're doing. Create this file *today*. Define your tech stack, conventions, and the anti-patterns that waste everyone's time in code review. This single file eliminates 50% of Copilot frustrations immediately.
-2. **3-5 prompt files** (day 1) — Before the week ends, create prompts for the tasks you repeat constantly: component scaffolding, test generation, PR descriptions. Every prompt you write saves 10 minutes of explaining the same thing forever.
-3. **1-2 custom agents** (week 1) — Build a code reviewer agent that knows your standards and an architect agent for design discussions. These pay for themselves in the first PR they review.
+1. **Always-on instructions file** — Define your tech stack, conventions, and the anti-patterns that waste everyone's time in code review. This single file eliminates 50% of Copilot frustrations.
+2. **3-5 prompt files** — Create prompts for the tasks you repeat constantly: component scaffolding, test generation, PR descriptions.
+3. **1-2 custom agents** — Build a code reviewer agent that knows your standards and an architect agent for design discussions.
 
 Skills, MCP, and advanced configurations provide additional value for specific use cases, but the foundation above transforms most workflows immediately.
+
+See the [Quick Start](../ReadMe.md#quick-start-the-adoption-path) for the step-by-step path.
 
 ---
 
@@ -239,6 +239,218 @@ The debug view shows:
 - Token usage breakdown
 
 This is invaluable for understanding why Copilot is or isn't following certain rules.
+
+---
+
+## Iteration and Fine-Tuning
+
+Customization is never "done." Codebases evolve, patterns change, and you learn what works.
+
+### The Feedback Loop
+
+```
+Use Copilot → Notice friction → Update customization → Repeat
+```
+
+**Weekly:** Note where Copilot gets things wrong. Batch updates.
+
+**Monthly:** Review prompt usage. Which are used? Which are ignored? Remove or improve underused prompts.
+
+**Quarterly:** Audit the full configuration:
+- Are instructions still accurate?
+- Do deprecated patterns need removal?
+- What new conventions should be added?
+- Is the team actually using the customizations?
+
+### Signs You Need to Iterate
+
+| Signal | Action |
+|--------|--------|
+| Same PR feedback repeatedly | Add rule to instructions |
+| Prompt produces inconsistent results | Add constraints or examples |
+| Nobody uses a prompt | Remove it or improve discoverability |
+| Instructions file is huge | Split into file-based instructions |
+| New library/pattern adopted | Update tech stack section |
+
+### Team Iteration (For Team Rollouts)
+
+1. **Designate an owner** — Someone responsible for maintaining customizations
+2. **Create a feedback channel** — Slack channel, GitHub Discussions, or regular sync
+3. **Review PRs to .github/** — Treat customizations as code
+4. **Share wins** — When a prompt saves time, tell the team
+
+---
+
+## Measuring Success
+
+GitHub Copilot assists across the entire software development lifecycle — from planning and coding to testing, deployment, and maintenance. Measuring its impact requires looking at both immediate indicators and ultimate outcomes.
+
+### The Measurement Hierarchy
+
+```
+┌───────────────────────────────────┐
+│     Ultimate Outcomes           │  ← Revenue, features shipped, customer satisfaction
+├───────────────────────────────────┤
+│     Product Metrics             │  ← Velocity, quality, deployment frequency
+├───────────────────────────────────┤
+│     Flow Metrics (Leading)      │  ← Cycle time, lead time, throughput
+├───────────────────────────────────┤
+│     Adoption Metrics            │  ← Usage, engagement, prompt invocations
+└───────────────────────────────────┘
+```
+
+### Leading Indicators: Flow Metrics
+
+These metrics show early impact and predict downstream improvements:
+
+| Metric | What It Measures | How to Track |
+|--------|------------------|---------------|
+| **Cycle Time** | Time from work started to PR merged | GitHub Insights, LinearB, Jellyfish |
+| **Lead Time** | Time from issue created to deployed | Jira/GitHub + deployment tracking |
+| **Throughput** | PRs merged per developer per week | GitHub API |
+| **PR Review Time** | Time from PR opened to first review | GitHub Insights |
+| **Rework Rate** | % of PRs requiring changes after review | PR comment/commit analysis |
+
+**What to look for:**
+- Cycle time decreasing (faster delivery)
+- Throughput increasing (more work completed)
+- Rework rate decreasing (higher first-time quality)
+
+### Product Metrics
+
+These connect developer productivity to business outcomes:
+
+| Metric | What It Measures | Target Impact |
+|--------|------------------|---------------|
+| **Deployment Frequency** | How often you ship | Increase |
+| **Change Failure Rate** | % of deployments causing incidents | Decrease |
+| **Mean Time to Recovery** | Time to fix production issues | Decrease |
+| **Velocity** | Story points/features per sprint | Increase |
+
+### Ultimate Outcomes
+
+The real measure of success is business impact:
+
+- **Features shipped** — Are you delivering more value?
+- **Time to market** — Are you shipping faster?
+- **Developer satisfaction** — Is the team happier?
+- **Onboarding time** — Do new devs ramp up faster?
+
+### SDLC Coverage
+
+Copilot customization can improve every phase:
+
+| SDLC Phase | Copilot Helps With | Measure |
+|------------|-------------------|----------|
+| **Planning** | Issue creation, story writing | Time to create well-formed tickets |
+| **Design** | Architecture discussions, API design | Design review cycles |
+| **Coding** | Code generation, refactoring | Lines/features per day |
+| **Testing** | Test generation, coverage | Test coverage %, time to write tests |
+| **Review** | PR reviews, security checks | Review turnaround, issues caught |
+| **Deploy** | Release notes, deployment scripts | Deployment frequency |
+| **Maintain** | Bug diagnosis, documentation | MTTR, onboarding time |
+
+### Practical Measurement Approach
+
+**Solo developers:**
+- Track subjective productivity ("Am I shipping faster?")
+- Monitor PR merge time
+- Note tasks that used to take hours but now take minutes
+
+**Teams:**
+- Baseline metrics before customization
+- Track cycle time and throughput weekly
+- Survey developer satisfaction quarterly
+- Compare rework rates before/after
+
+**Organizations:**
+- Aggregate flow metrics across teams
+- Track deployment frequency and change failure rate
+- Measure onboarding time for new developers
+- Calculate ROI based on time savings
+
+---
+
+## Best Practices
+
+### 1. Version Control All Customizations
+
+Treat `.github/` as code:
+- Review changes in pull requests
+- Link to architectural decisions (ADRs)
+- Update when patterns evolve
+
+### 2. Start Small and Iterate
+
+Begin with the three most common mistakes. Expand as friction points emerge.
+
+### 3. Provide Examples in Your Instructions
+
+Copilot learns better from examples than abstract rules. Show preferred vs. avoided patterns with ✅/❌ markers.
+
+### 4. Explain Rationale
+
+Context improves compliance. When you specify a rule, explain why — Copilot uses this context to make better decisions.
+
+### 5. Keep Instructions Focused
+
+If your file exceeds 2000 words:
+- Move specialized rules to file-based instructions
+- Create skills for domain-specific knowledge
+- Link to external documentation
+
+### 6. Test Prompts Before Sharing
+
+1. Run the prompt 3-5 times with varying inputs
+2. Verify output consistency
+3. Have someone else test without guidance
+
+### 7. Review Quarterly
+
+- Remove deprecated patterns
+- Add new conventions
+- Incorporate team feedback
+- Prune unused prompts
+
+---
+
+## Frequently Asked Questions
+
+### How long does adoption take?
+
+| Scope | Timeline |
+|-------|----------|
+| Solo dev, basic setup | 1-2 hours |
+| Solo dev, comprehensive | 1-2 weeks |
+| Small team (3-5) | 2-4 weeks |
+| Large team (10+) | 1-2 months |
+| Organization-wide | 1-2 quarters |
+
+### Should we customize incrementally or all at once?
+
+**Incrementally.** Start with instructions, add prompts as needed, then agents and skills. You'll learn what your team actually needs.
+
+### What if different team members want different conventions?
+
+Use file-based instructions for areas of difference. The always-on file covers shared conventions; file-based instructions handle variations.
+
+### How do we handle disagreements about rules?
+
+Treat `.github/` changes like code — PRs, reviews, and discussion. If a rule is controversial, try it for a sprint and evaluate.
+
+### Can we use this with other AI assistants?
+
+Skills are portable via the agentskills.io spec. Instructions and prompts are Copilot-specific but often transferable with minor adjustments.
+
+### What's the ROI calculation?
+
+Simplified: `(Time saved per developer × Developer count × Hourly rate) - Setup time`
+
+Most teams report 20-40% reduction in boilerplate tasks after customization.
+
+### Do instructions slow down Copilot?
+
+No measurable impact. Instructions load once per session and add minimal tokens compared to conversation history.
 
 ---
 
