@@ -431,7 +431,7 @@ If instructions are not being applied, verify:
 
 ### Bootstrap: Auto-Generate Instructions via Agent
 
-Instead of using a prompt file, ask the agent directly to generate instructions:
+For a quick start, ask the agent to analyze your codebase and generate a complete instructions file:
 
 **💬 Try this prompt:**
 
@@ -457,11 +457,11 @@ Generate a complete `.github/copilot-instructions.md` file with:
 Make the instructions specific to THIS codebase, not generic best practices.
 ```
 
-This approach is preferred because:
-- No separate prompt file to maintain
+This approach works well because:
 - Agent can explore the full codebase dynamically
 - Results are specific to each repository
 - Human can review and refine the generated output
+- No manual analysis required
 
 ---
 
