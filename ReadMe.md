@@ -53,25 +53,26 @@ This guide provides a comprehensive walkthrough of every customization primitive
 11. [Frequently Asked Questions](#frequently-asked-questions)
 12. [Real-World Examples](#real-world-examples)
 13. [Best Practices](#best-practices)
-14. [Advanced Tips](#advanced-tips)
-15. [Resources](#resources)
+14. [Resources](#resources)
 
 ---
 
 ## The Customization Primitives
 
-GitHub Copilot provides six distinct customization primitives. Each serves a specific purpose and loads at different points in the interaction lifecycle. Understanding when each primitive activates is essential for effective configuration.
+As GitHub Copilot evolves rapidly with agentic capabilities, the customization surface has expanded to six distinct primitives. Some of these overlap in functionality—and that's okay. The goal isn't to use every primitive; it's to choose the right ones for your specific outcomes.
 
-| Primitive | Loading | Best For |
-|-----------|---------|----------|
-| **Always-on Instructions** | Every session | Codebase guardrails |
-| **File-based Instructions** | Pattern match / description match | Area-specific rules |
-| **Prompts (Slash Commands)** | User invokes | One-shot workflows |
-| **Skills** | Description match → on-demand | Reusable capabilities |
-| **Custom Agents** | Top-level OR as subagent | Constrained workflows |
-| **MCP** | Session start | External gateways |
+This guide covers each primitive's strengths and ideal use cases. By the end, you'll be able to make informed decisions about which tools best fit your team's workflows.
 
-This table represents the complete customization surface area. Each primitive addresses a distinct need:
+| Primitive | Location | Naming Convention | Loading | Best For |
+|-----------|----------|-------------------|---------|----------|
+| [**Always-on Instructions**](#always-on-instructions) | `.github/` | `copilot-instructions.md` | Every session | Codebase guardrails |
+| [**File-based Instructions**](#file-based-instructions) | `.github/instructions/` | `*.instructions.md` | Pattern match / description match | Area-specific rules |
+| [**Prompts (Slash Commands)**](#prompt-files-slash-commands) | `.github/prompts/` | `*.prompt.md` | User invokes | One-shot workflows |
+| [**Skills**](#skills) | `.github/skills/` | Folder with `skill.md` | Description match → on-demand | Reusable capabilities |
+| [**Custom Agents**](#custom-agents) | `.github/agents/` | `*.agent.md` | Top-level OR as subagent | Constrained workflows |
+| [**MCP**](#mcp-model-context-protocol) | `.vscode/settings.json` | `mcpServers` config | Session start | External gateways |
+
+Each primitive addresses a distinct need:
 
 - **Always-on Instructions** – Global rules that apply to every Copilot interaction in the repository
 - **File-based Instructions** – Targeted rules that activate based on file patterns or context
@@ -261,7 +262,7 @@ The recommended approach for creating instructions files is through VS Code's bu
 
 Rather than manually writing instructions, let the agent analyze the repository and generate appropriate instructions:
 
-**💬 Example prompt:**
+**💬 Try this prompt:**
 
 ```
 Analyze this repository and create a .github/copilot-instructions.md file that:
@@ -305,8 +306,6 @@ On GitHub.com, the Copilot coding agent can generate instructions for you:
 4. Review the generated PR with the instructions file
 
 This is particularly effective because the agent validates build commands and tests them before documenting.
-
-### Gathering Team Knowledge
 
 ### Gathering Team Knowledge
 
@@ -367,7 +366,7 @@ When Copilot understands intent, it can apply rules more intelligently.
 
 After initial generation, refine the instructions file through conversation:
 
-**💬 Example prompt:**
+**💬 Try this prompt:**
 
 ```
 Review the .github/copilot-instructions.md file and:
@@ -401,7 +400,7 @@ If instructions are not being applied, verify:
 
 Instead of using a prompt file, ask the agent directly to generate instructions:
 
-**💬 Example prompt:**
+**💬 Try this prompt:**
 
 ```
 Analyze this codebase and generate a comprehensive .github/copilot-instructions.md file.
@@ -498,9 +497,13 @@ interface ApiResponse<T> {
 
 Alternatively, ask the agent directly:
 
-**💬 Example prompt:**
+**💬 Try this prompt:**
 
-> Create a file-based instruction at .github/instructions/react-components.instructions.md that applies to src/components/**/* and includes our React component conventions. Analyze existing components for patterns to document.
+```
+Create a file-based instruction at .github/instructions/react-components.instructions.md 
+that applies to src/components/**/* and includes our React component conventions. 
+Analyze existing components for patterns to document.
+```
 
 ### Anti-Patterns to Avoid
 
@@ -728,14 +731,16 @@ This section covers the process of creating well-structured prompt files using V
 
 Rather than manually writing prompt files, use Copilot to generate them:
 
-**💬 Example prompt:**
+**💬 Try this prompt:**
 
-> Create a prompt file at .github/prompts/new-api-route.prompt.md that:
-> - Generates REST API routes with validation
-> - Uses agent mode with Claude Sonnet 4
-> - Includes variables for resource name and HTTP methods
-> - References our copilot-instructions.md for patterns
-> - Outputs route file, Zod schemas, and tests
+```
+Create a prompt file at .github/prompts/new-api-route.prompt.md that:
+- Generates REST API routes with validation
+- Uses agent mode with Claude Sonnet 4
+- Includes variables for resource name and HTTP methods
+- References our copilot-instructions.md for patterns
+- Outputs route file, Zod schemas, and tests
+```
 
 This approach ensures:
 - Correct YAML frontmatter syntax
@@ -826,6 +831,8 @@ This approach keeps prompts synchronized with team standards automatically.
 
 Use the agent directly to generate new prompt files:
 
+**💬 Try this prompt:**
+
 ```
 Create a new prompt file at `.github/prompts/{{promptName}}.prompt.md`.
 
@@ -863,10 +870,10 @@ This meta-prompt creates new prompt files that follow best practices.
 
 To improve an existing prompt file, ask the agent directly:
 
-**💬 Example prompt:**
+**💬 Try this prompt:**
 
 ```
-Analyze and improve the prompt file at .github/prompts/new-component.prompt.md:
+Analyze and improve the prompt file at: .github/prompts/new-component.prompt.md:
 
 ## Check for:
 1. **Clarity** - Is the instruction unambiguous?
@@ -1239,15 +1246,17 @@ The recommended approach for creating custom agents is through VS Code's built-i
 
 Rather than manually editing agent files, use Copilot to generate and refine them:
 
-**💬 Example prompt:**
+**💬 Try this prompt:**
 
-> Create a custom agent for security code review. It should:
-> - Focus on OWASP Top 10 vulnerabilities
-> - Use Claude Sonnet 4 for its reasoning capabilities
-> - Have access to search, readFile, and usages tools
-> - Include handoffs to an implementation agent after review
->
-> Store the result in .github/agents/security-reviewer.agent.md
+```
+Create a custom agent for security code review. It should:
+- Focus on OWASP Top 10 vulnerabilities
+- Use Claude Sonnet 4 for its reasoning capabilities
+- Have access to search, readFile, and usages tools
+- Include handoffs to an implementation agent after review
+
+Store the result in .github/agents/security-reviewer.agent.md
+```
 
 This approach ensures:
 - Proper YAML frontmatter syntax
@@ -1291,7 +1300,7 @@ description: 'What this mode does (shows in picker)'
 [Guardrails and limitations]
 ```
 
-### Step 3: Define Specific Personas
+### Define Specific Personas
 
 Specificity in persona definition produces consistency in outputs.
 
@@ -1308,7 +1317,7 @@ technical debt. You're kind but direct—you won't sugarcoat issues
 but you always explain your reasoning.
 ```
 
-### Step 4: Define Response Patterns
+### Define Response Patterns
 
 Specify how the agent should structure its responses:
 
@@ -1326,7 +1335,7 @@ Always provide code examples, not just descriptions.
 Never say "it depends" without then explaining what it depends ON.
 ```
 
-### Step 5: Add Guardrails
+### Add Guardrails
 
 Guardrails prevent the persona from producing off-target responses:
 
@@ -1344,7 +1353,7 @@ Guardrails prevent the persona from producing off-target responses:
 
 The following prompt generates new custom agent configurations through the agent:
 
-**💬 Example prompt:**
+**💬 Try this prompt:**
 
 ```
 Create a new custom agent at `.github/agents/{{modeName}}.agent.md`.
@@ -1581,7 +1590,7 @@ const transport = new StdioServerTransport();
 server.connect(transport);
 ```
 
-### Step 2: Package Configuration
+### Package Configuration
 
 **File:** `my-mcp-server/package.json`
 
@@ -1606,7 +1615,7 @@ server.connect(transport);
 }
 ```
 
-### Step 3: VS Code Registration
+### VS Code Registration
 
 Add to `.vscode/settings.json`:
 
@@ -1624,7 +1633,7 @@ Add to `.vscode/settings.json`:
 }
 ```
 
-### Step 4: Usage
+### Usage
 
 Once configured, Copilot Chat can handle queries like:
 - "Who's on the platform team?"
@@ -1694,7 +1703,7 @@ This enables queries like "What feature flags are enabled in production?" to ret
 
 Use the agent directly to design MCP server configurations:
 
-**💬 Example prompt:**
+**💬 Try this prompt:**
 
 ```
 Help me design an MCP server for the following use case:
@@ -2070,9 +2079,6 @@ Expand as friction points are identified.
 
 Copilot learns more effectively from examples than abstract rules:
 
-```markdown
-## Code Style
-
 ```typescript
 // ✅ Preferred
 const result = items.filter(isValid).map(transform);
@@ -2084,7 +2090,6 @@ for (let i = 0; i < items.length; i++) {
     result.push(transform(items[i]));
   }
 }
-```
 ```
 
 ### 4. Explain Rationale
