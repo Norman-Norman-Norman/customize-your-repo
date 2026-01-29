@@ -1586,15 +1586,14 @@ MCP servers can be configured in VS Code settings or project configuration:
 }
 ```
 
-### Available MCP Servers
+### Discovering MCP Servers
 
-| Server | What It Does |
-|--------|--------------|
-| `@modelcontextprotocol/server-github` | GitHub API access (issues, PRs, repos) |
-| `@modelcontextprotocol/server-postgres` | PostgreSQL queries |
-| `@modelcontextprotocol/server-filesystem` | File system operations |
-| `@modelcontextprotocol/server-fetch` | HTTP requests |
-| `@modelcontextprotocol/server-puppeteer` | Browser automation |
+This guide focuses on **how to configure and use** MCP servers in your repository, not on which servers to choose.
+
+For a curated list of available MCP servers and discovery tools, see:
+- **[code.visualstudio.com/docs/copilot/chat/mcp-servers](https://code.visualstudio.com/docs/copilot/chat/mcp-servers)** – Official VS Code MCP documentation with server recommendations
+
+> **Note:** MCP security considerations, server trust models, and evaluation criteria are covered in the official documentation linked above. This guide assumes servers have already been vetted for your use case.
 
 ### Example Use Cases
 
