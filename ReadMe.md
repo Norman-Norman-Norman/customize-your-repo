@@ -6,9 +6,28 @@
 
 ## Introduction
 
-GitHub Copilot is a powerful AI coding assistant, but out of the box, it operates without knowledge of team conventions, architectural decisions, or codebase-specific patterns. When Copilot suggests `var` in a TypeScript-strict codebase or recommends class components to a functional-only React team, it reveals a fundamental gap: **Copilot doesn't know what it doesn't know.**
+GitHub Copilot probably isn't hallucinating. It's making a best effort based on its context—just like you would if someone dropped you into a million-line codebase and asked you to make changes after an hour of reading code.
 
-This gap represents both a challenge and an opportunity. GitHub Copilot provides a robust customization framework that allows development teams to encode their tribal knowledge, coding standards, and workflows directly into the AI assistant. When properly configured, Copilot can:
+**The right mental model: Copilot is a new developer on your team.**
+
+Think about what makes code easy for a new team member to work with:
+- Easy to read, well-formed code
+- Small, modular functions with clear responsibilities
+- Good naming conventions (not everything called `i`, `temp`, or `data`)
+- Comprehensive tests that document expected behavior
+- Clear architectural patterns
+
+These same qualities make code easier for Copilot to understand and extend correctly. Code that's maintainable for humans is maintainable for AI. Code that confuses junior developers will confuse Copilot too.
+
+This guide is structured in two parts:
+
+**Part 1: Tuning Copilot for Your Current Codebase**
+This guide focuses on the customization primitives that help Copilot understand your existing codebase—your conventions, patterns, and preferences. These tools work with your code as it exists today.
+
+**Part 2: Refactoring for Better AI Collaboration** *(Coming Soon)*
+The companion guide will cover how to refactor and restructure code so AI agents have an easier time understanding and modifying it. Better code organization benefits both human developers and AI assistants.
+
+When properly configured, Copilot can:
 
 - Respect team coding conventions automatically
 - Follow architectural patterns without prompting
@@ -29,13 +48,11 @@ This guide provides a comprehensive walkthrough of every customization primitive
 6. [Skills](#skills)
 7. [Custom Agents](#custom-agents)
 8. [MCP (Model Context Protocol)](#mcp-model-context-protocol)
-9. [How to Build Custom MCP Servers](#how-to-build-custom-mcp-servers)
-10. [The Decision Matrix](#the-decision-matrix)
-11. [Frequently Asked Questions](#frequently-asked-questions)
-12. [Real-World Examples](#real-world-examples)
-13. [Best Practices](#best-practices)
-14. [Advanced Tips](#advanced-tips)
-15. [Resources](#resources)
+9. [The Decision Matrix](#the-decision-matrix)
+10. [Frequently Asked Questions](#frequently-asked-questions)
+11. [Real-World Examples](#real-world-examples)
+12. [Best Practices](#best-practices)
+13. [Resources](#resources)
 
 ---
 
@@ -287,8 +304,6 @@ This is particularly effective because the agent validates build commands and te
 
 ### Gathering Team Knowledge
 
-### Gathering Team Knowledge
-
 Effective instructions files encode team knowledge. Use these questions to surface the most valuable rules:
 
 1. **"What does Copilot frequently get wrong?"** → These become explicit rules
@@ -415,14 +430,14 @@ For organizations wanting to bootstrap Copilot Instructions Files across multipl
 **💬 Try this prompt:**
 
 ```
-Using the GitHub MCP tools, help me roll out Copilot Instructions Files across my organization:
+Help me roll out Copilot Instructions Files across my organization:
 
-1. First, use mcp_github_list_issues to check if there's already a tracking issue for "copilot instructions" in our main repo
+1. First, check if there's already a tracking issue for "copilot instructions" in our main repo
 
-2. If not, use mcp_github_search_repositories to find all repos in my org: owner:MY-ORG-NAME
+2. Search for all repositories in my org (owner:MY-ORG-NAME)
 
 3. For each repository that doesn't have a .github/copilot-instructions.md file:
-   - Use mcp_github_create_issue to create a tracking issue with:
+   - Create a tracking issue with:
      - Title: "Add Copilot Instructions File"
      - Body: Include a template for the instructions file and link to our standards doc
      - Labels: ["enhancement", "copilot"]
@@ -433,12 +448,12 @@ Using the GitHub MCP tools, help me roll out Copilot Instructions Files across m
 **Alternative: Create a PR directly for each repo:**
 
 ```
-For each repository in owner:MY-ORG-NAME that lacks a .github/copilot-instructions.md:
+For each repository in my org (owner:MY-ORG-NAME) that lacks a .github/copilot-instructions.md:
 
-1. Use mcp_github_get_file_contents to check if the file exists
-2. If missing, use mcp_github_create_branch to create "add-copilot-instructions"
-3. Use mcp_github_create_or_update_file to add a starter instructions file
-4. Use mcp_github_create_pull_request with:
+1. Check if the file already exists
+2. If missing, create a new branch called "add-copilot-instructions"
+3. Add a starter instructions file based on our template
+4. Create a pull request with:
    - Title: "Add Copilot Instructions File"
    - Body: Explain what the file does and link to documentation
    - Base: main
@@ -582,7 +597,7 @@ Use our existing components in `src/components/` as reference for style.
 
 ### Execution Modes
 
-The `mode` field in the frontmatter determines how Copilot executes the prompt:
+The `agent` field in the frontmatter determines how Copilot executes the prompt:
 
 | Mode | What It Does | Best For |
 |------|--------------|----------|
@@ -1531,234 +1546,14 @@ MCP servers can be configured in VS Code settings or project configuration:
 
 This is an important distinction:
 
-| | Custom Instructions | Skills (MCP) |
-|-|---------------------|--------------|
+| | Custom Instructions | MCP |
+|-|---------------------|-----|
 | **What** | Text context for AI | External tool access |
 | **How** | Just knowledge | Actual capabilities |
 | **Example** | "We use PostgreSQL" | Can query PostgreSQL |
 | **Updates** | Manual | Real-time |
 
 **Instructions provide knowledge. MCP provides capabilities.**
-
----
-
-## How to Build Custom MCP Servers
-
-This section covers the process of creating custom MCP servers for specialized integrations.
-
-### MCP Architecture
-
-An MCP server is a program that:
-1. Declares available tools (functions Copilot can call)
-2. Handles requests from Copilot to use those tools
-3. Returns results that Copilot incorporates into responses
-
-### Basic MCP Server Implementation
-
-The following TypeScript example demonstrates a minimal MCP server:
-
-**File:** `my-mcp-server/index.ts`
-
-```typescript
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-
-const server = new Server(
-  { name: "my-custom-server", version: "1.0.0" },
-  { capabilities: { tools: {} } }
-);
-
-// Define your tools
-server.setRequestHandler("tools/list", async () => ({
-  tools: [
-    {
-      name: "get_team_members",
-      description: "Get list of team members from our internal API",
-      inputSchema: {
-        type: "object",
-        properties: {
-          team: { type: "string", description: "Team name" }
-        },
-        required: ["team"]
-      }
-    }
-  ]
-}));
-
-// Handle tool calls
-server.setRequestHandler("tools/call", async (request) => {
-  if (request.params.name === "get_team_members") {
-    const team = request.params.arguments.team;
-    // Your actual logic here - API call, database query, whatever
-    const members = await fetchTeamMembers(team);
-    return { content: [{ type: "text", text: JSON.stringify(members) }] };
-  }
-  throw new Error(`Unknown tool: ${request.params.name}`);
-});
-
-// Start the server
-const transport = new StdioServerTransport();
-server.connect(transport);
-```
-
-### Step 2: Package Configuration
-
-**File:** `my-mcp-server/package.json`
-
-```json
-{
-  "name": "@your-org/team-mcp-server",
-  "version": "1.0.0",
-  "type": "module",
-  "bin": {
-    "team-mcp-server": "./dist/index.js"
-  },
-  "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js"
-  },
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0"
-  },
-  "devDependencies": {
-    "typescript": "^5.0.0"
-  }
-}
-```
-
-### Step 3: VS Code Registration
-
-Add to `.vscode/settings.json`:
-
-```json
-{
-  "github.copilot.chat.mcpServers": {
-    "team": {
-      "command": "npx",
-      "args": ["@your-org/team-mcp-server"],
-      "env": {
-        "API_KEY": "${env:INTERNAL_API_KEY}"
-      }
-    }
-  }
-}
-```
-
-### Step 4: Usage
-
-Once configured, Copilot Chat can handle queries like:
-- "Who's on the platform team?"
-- "Get me the team members for frontend"
-
-Copilot invokes the MCP server to retrieve live data.
-
-### Practical MCP Examples
-
-**Example 1: Design System Token Fetcher**
-
-```typescript
-// Tool that fetches your design tokens so Copilot knows your exact colors
-{
-  name: "get_design_tokens",
-  description: "Fetch design tokens from Figma/design system",
-  inputSchema: {
-    type: "object",
-    properties: {
-      category: { 
-        type: "string", 
-        enum: ["colors", "spacing", "typography"] 
-      }
-    }
-  }
-}
-```
-
-This tool enables queries like "what's our primary blue color?" to return actual hex values from the design system.
-
-**Example 2: CI/CD Status Checker**
-
-```typescript
-{
-  name: "get_pipeline_status",
-  description: "Check CI/CD pipeline status for a branch",
-  inputSchema: {
-    type: "object",
-    properties: {
-      branch: { type: "string" },
-      pipeline: { type: "string", enum: ["build", "test", "deploy"] }
-    }
-  }
-}
-```
-
-This enables queries like "Is main green?" to return actual pipeline status.
-
-**Example 3: Feature Flag Manager**
-
-```typescript
-{
-  name: "get_feature_flags",
-  description: "Get current feature flag states",
-  inputSchema: {
-    type: "object",
-    properties: {
-      environment: { type: "string", enum: ["dev", "staging", "prod"] }
-    }
-  }
-}
-```
-
-This enables queries like "What feature flags are enabled in production?" to return real configuration data.
-
-### MCP Server Designer\n\nUse the agent directly to design MCP server configurations:\n\n```\nHelp me design an MCP server for the following use case:\n\n**What I want Copilot to be able to do:** {{capability}}\n**External system it needs to connect to:** {{externalSystem}}\n**Authentication method:** {{authMethod}}\n\n## Please provide:\n\n1. **Tool Definitions**
-   - Name, description, and input schema for each tool
-   - What parameters users might want to pass
-   - What the response format should be
-
-2. **Implementation Outline**
-   - Key functions needed
-   - Error handling approach
-   - Rate limiting considerations
-
-3. **Security Considerations**
-   - What secrets are needed
-   - How to handle authentication
-   - What permissions should be required
-
-4. **VS Code Configuration**
-   - The settings.json snippet to register it
-   - Environment variables needed
-
-5. **Example Queries**
-   - What questions users can now ask Copilot
-   - Expected responses
-```
-
-### When to Build an MCP Server
-
-**Good candidates for MCP servers:**
-- Internal APIs used daily by the team
-- Databases with reference data
-- Monitoring and observability systems
-- Design systems and component libraries
-- Documentation systems
-- Project management tools beyond GitHub
-
-**Skip MCP servers for:**
-- One-off queries (paste data directly)
-- Rarely accessed systems
-- Highly sensitive data (evaluate carefully)
-
-### MCP Anti-Patterns to Avoid
-
-| Anti-Pattern | Why It's Problematic | Better Approach |
-|--------------|---------------------|------------------|
-| **Building MCP for rarely-used data** | Maintenance cost exceeds value | Paste data directly into chat |
-| **Exposing sensitive data** | Security and compliance risks | Evaluate data sensitivity carefully |
-| **No error handling** | Failures produce confusing results | Return clear error messages |
-| **Too many tools in one server** | Hard to maintain, confusing tool discovery | Split into focused servers |
-| **No rate limiting** | Can trigger API limits or outages | Implement request throttling |
-| **Hardcoded credentials** | Security risk, deployment difficulties | Use environment variables |
 
 ---
 
