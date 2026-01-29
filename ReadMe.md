@@ -584,13 +584,15 @@ Use our existing components in `src/components/` as reference for style.
 
 ### Execution Modes
 
-The `mode` field in the frontmatter determines how Copilot executes the prompt:
+The `agent` field in the frontmatter determines how Copilot executes the prompt:
 
-| Mode | What It Does | Best For |
-|------|--------------|----------|
-| `ask` | Responds conversationally | Questions, explanations, brainstorming |
-| `edit` | Modifies the current file/selection | Refactoring, bug fixes, enhancements |
-| `agent` | Takes autonomous action across files | Multi-file changes, scaffolding, complex tasks |
+| Mode | What It Does | Recommendation |
+|------|--------------|----------------|
+| `agent` | Takes autonomous action across files | **Recommended** — Most flexible, can create files, edit multiple files, run commands |
+| `ask` | Responds conversationally | **Okay** — Good for questions, explanations, brainstorming |
+| `edit` | Modifies the current file/selection only | **Not recommended** — Too constrained for most workflows |
+
+**Why prefer `agent` mode?** It gives Copilot the flexibility to do what's needed—create new files, modify existing ones, run terminal commands, and iterate. The `edit` mode restricts Copilot to only modifying the currently selected code, which rarely matches real-world tasks.
 
 ### Essential Prompt Files Every Repo Needs
 
@@ -789,18 +791,18 @@ tools: ['editFiles', 'createFile']      # Optional: restrict tools
 | **Typing directly into .prompt.md files** | Syntax errors, inconsistent formatting | Use gear icon or ask agent to generate |
 | **Vague instructions** | "Make me a component" produces inconsistent results | Be specific about requirements, structure, patterns |
 | **Not using variables** | Prompt can only do one specific thing | Use `{{variableName}}` for reusable parts |
-| **Ignoring mode selection** | Wrong mode causes unexpected behavior | Match mode to task (ask/edit/agent) |
+| **Using `edit` mode** | Too constrained, can only modify selected code | Use `agent` mode for flexibility |
 | **No model specification** | Inconsistent results across sessions | Specify model for reproducibility |
 | **No reference to instructions** | Prompt ignores team conventions | Reference copilot-instructions.md explicitly |
 
 ### Mode Reference
 
-| Mode | Copilot Can... | Best For |
-|------|----------------|----------|
-| `ask` | Talk back, explain, suggest | Design discussions, Q&A, brainstorming |
-| `edit` | Modify selected code only | Refactoring, fixing, enhancing a specific section |
-| `agent` | Create files, edit multiple files, run commands | Scaffolding, multi-file changes, complex tasks |
-| Custom agent | Use that agent's persona and tools | Specialized workflows with defined behavior |
+| Mode | Copilot Can... | Recommendation |
+|------|----------------|----------------|
+| `agent` | Create files, edit multiple files, run commands | ✅ **Recommended** for most tasks |
+| `ask` | Talk back, explain, suggest | ✅ Good for design discussions, Q&A |
+| `edit` | Modify selected code only | ⚠️ Too constrained for most workflows |
+| Custom agent | Use that agent's persona and tools | ✅ Great for specialized workflows |
 
 ### Implement Variables
 
