@@ -1,4 +1,4 @@
-# Part I: Foundations
+﻿# Part I: Foundations
 
 [← Back to Guide](../ReadMe.md)
 
@@ -129,12 +129,12 @@ GitHub Copilot provides six distinct customization primitives. Each serves a spe
 
 | Primitive | Location | Loading | Best For |
 |-----------|----------|---------|----------|
-| [**Always-on Instructions**](part-2-primitives.md#always-on-instructions) | `.github/copilot-instructions.md` | Every session | Codebase guardrails |
-| [**File-based Instructions**](part-2-primitives.md#file-based-instructions) | `.github/instructions/*.instructions.md` | Pattern match | Area-specific rules |
-| [**Prompts (Slash Commands)**](part-2-primitives.md#prompt-files-slash-commands) | `.github/prompts/*.prompt.md` | User invokes | One-shot workflows |
-| [**Skills**](part-2-primitives.md#skills) | `.github/skills/*/SKILL.md` | Description match | Reusable capabilities |
-| [**Custom Agents**](part-2-primitives.md#custom-agents) | `.github/agents/*.agent.md` | Top-level/subagent | Constrained workflows |
-| [**MCP**](part-2-primitives.md#mcp-model-context-protocol) | `.vscode/mcp.json` | Session start | External gateways |
+| [**Always-on Instructions**](part-2-1-always-on-instructions.md) | `.github/copilot-instructions.md` | Every session | Codebase guardrails |
+| [**File-based Instructions**](part-2-2-file-based-instructions.md) | `.github/instructions/*.instructions.md` | Pattern match | Area-specific rules |
+| [**Prompts (Slash Commands)**](part-2-3-prompts.md) | `.github/prompts/*.prompt.md` | User invokes | One-shot workflows |
+| [**Skills**](part-2-4-skills.md) | `.github/skills/*/SKILL.md` | Description match | Reusable capabilities |
+| [**Custom Agents**](part-2-5-custom-agents.md) | `.github/agents/*.agent.md` | Top-level/subagent | Constrained workflows |
+| [**MCP**](part-2-6-mcp.md) | `.vscode/mcp.json` | Session start | External gateways |
 
 ### How They Work Together
 
@@ -164,12 +164,12 @@ Each layer adds specificity. Always-on instructions provide the foundation; file
 
 | Primitive | Best For | Not Ideal For |
 |-----------|----------|---------------|
-| [**Always-on Instructions**](part-2-primitives.md#always-on-instructions) | Universal rules, tech stack, conventions | Specialized capabilities, external integrations |
-| [**File-based Instructions**](part-2-primitives.md#file-based-instructions) | Language-specific rules, area conventions | Global rules, task automation |
-| [**Prompts**](part-2-primitives.md#prompt-files-slash-commands) | Repeatable tasks, team workflows | Persistent behavior changes |
-| [**Skills**](part-2-primitives.md#skills) | Specialized capabilities, cross-tool knowledge | Simple rules, always-needed context |
-| [**Custom Agents**](part-2-primitives.md#custom-agents) | Personas, constrained workflows, specialized roles | One-off tasks |
-| [**MCP**](part-2-primitives.md#mcp-model-context-protocol) | External APIs, live data, tool integration | Knowledge, conventions, patterns |
+| [**Always-on Instructions**](part-2-1-always-on-instructions.md) | Universal rules, tech stack, conventions | Specialized capabilities, external integrations |
+| [**File-based Instructions**](part-2-2-file-based-instructions.md) | Language-specific rules, area conventions | Global rules, task automation |
+| [**Prompts**](part-2-3-prompts.md) | Repeatable tasks, team workflows | Persistent behavior changes |
+| [**Skills**](part-2-4-skills.md) | Specialized capabilities, cross-tool knowledge | Simple rules, always-needed context |
+| [**Custom Agents**](part-2-5-custom-agents.md) | Personas, constrained workflows, specialized roles | One-off tasks |
+| [**MCP**](part-2-6-mcp.md) | External APIs, live data, tool integration | Knowledge, conventions, patterns |
 
 ---
 
@@ -179,14 +179,14 @@ Each layer adds specificity. Always-on instructions provide the foundation; file
 
 Understanding when each primitive enters Copilot's context is essential for effective configuration:
 
-| Primitive | When It Loads | Context Persistence |
-|-----------|---------------|---------------------|
-| Always-on Instructions | Session start, every request | Entire session |
-| File-based Instructions | When working on matching files | While pattern matches |
-| Prompts | When explicitly invoked (`/promptname`) | Single request |
-| Skills | When description matches user intent | Single request |
-| Custom Agents | When activated by user | Until switched |
-| MCP | Session start (tools available) | Entire session |
+| Primitive | Location | Format | When It Loads | Context Persistence |
+|-----------|----------|--------|---------------|---------------------|
+| Always-on Instructions | `.github/copilot-instructions.md` | Markdown | Session start, every request | Entire session |
+| File-based Instructions | `.github/instructions/*.instructions.md` | Markdown + YAML frontmatter | When working on matching files | While pattern matches |
+| Prompts | `.github/prompts/*.prompt.md` | Markdown + YAML frontmatter | When explicitly invoked (`/promptname`) | Single request |
+| Skills | `.github/skills/*/SKILL.md` | Markdown + YAML frontmatter | When description matches user intent | Single request |
+| Custom Agents | `.github/agents/*.agent.md` | Markdown + YAML frontmatter | When activated by user | Until switched |
+| MCP | `.vscode/mcp.json` | JSON | Session start (tools available) | Entire session |
 
 ### Context Window Considerations
 
@@ -239,100 +239,6 @@ The debug view shows:
 - Token usage breakdown
 
 This is invaluable for understanding why Copilot is or isn't following certain rules.
-
----
-
-## Complete Setup Checklist
-
-### Prerequisites
-
-Before configuring repository customizations:
-
-- [ ] GitHub Copilot license (individual, business, or enterprise)
-- [ ] VS Code with GitHub Copilot extension (v1.0+)
-- [ ] Repository with write access
-- [ ] VS Code workspace trust enabled for the repository
-
-### Repository Setup (Step-by-Step)
-
-**Day 1: Create Foundation**
-
-```bash
-# Create the customization directories
-mkdir -p .github/instructions
-mkdir -p .github/prompts
-mkdir -p .github/skills
-mkdir -p .github/agents
-mkdir -p .vscode
-
-# Create starter files
-touch .github/copilot-instructions.md
-touch .vscode/mcp.json
-```
-
-**File Structure After Setup:**
-
-```
-your-repo/
-├── .github/
-│   ├── copilot-instructions.md      # Step 1: Create this first
-│   ├── instructions/                 # Step 2: Add file-specific rules
-│   │   └── .gitkeep
-│   ├── prompts/                      # Step 3: Add reusable workflows
-│   │   └── .gitkeep
-│   ├── skills/                       # Step 4: Add specialized capabilities
-│   │   └── .gitkeep
-│   └── agents/                       # Step 5: Add personas
-│       └── .gitkeep
-├── .vscode/
-│   ├── mcp.json                      # Step 6: Configure integrations
-│   └── settings.json                 # VS Code settings
-└── [your code...]
-```
-
-### VS Code Configuration
-
-Add these settings to `.vscode/settings.json` for optimal Copilot usage:
-
-```json
-{
-  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-  "chat.promptFiles": true,
-  "chat.customAgents.enabled": true
-}
-```
-
-### Team Onboarding
-
-When rolling out to a team:
-
-1. **Document the customizations** — Add a section to README.md explaining what's configured
-2. **Provide prompt examples** — Show team members how to invoke custom prompts
-3. **Create a feedback channel** — Collect suggestions for new prompts and instruction improvements
-4. **Review quarterly** — Instructions drift as codebases evolve
-
-### Verification Steps
-
-After setup, verify everything works:
-
-1. **Instructions loading:**
-   - Open Copilot Chat
-   - Ask: "What coding standards should I follow?"
-   - Response should reference content from instructions file
-
-2. **Prompts available:**
-   - Type `/` in chat
-   - Custom prompts should appear in list
-
-3. **Debug view working:**
-   - Run "Developer: Show Chat Debug View"
-   - Send a message
-   - Verify you can see loaded context
-
-If any verification fails, check:
-- File names match exactly (case-sensitive)
-- Files are in correct directories
-- VS Code window was reloaded after creating files
 
 ---
 

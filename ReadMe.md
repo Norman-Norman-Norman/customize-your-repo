@@ -13,12 +13,12 @@
 4. Complete Setup Checklist
 
 ### [Part II: The Six Primitives](docs/part-2-primitives.md)
-5. Always-On Instructions
-6. File-Based Instructions
-7. Prompt Files (Slash Commands)
-8. Skills
-9. Custom Agents
-10. MCP (Model Context Protocol)
+5. [Always-On Instructions](docs/part-2-1-always-on-instructions.md)
+6. [File-Based Instructions](docs/part-2-2-file-based-instructions.md)
+7. [Prompt Files (Slash Commands)](docs/part-2-3-prompts.md)
+8. [Skills](docs/part-2-4-skills.md)
+9. [Custom Agents](docs/part-2-5-custom-agents.md)
+10. [MCP (Model Context Protocol)](docs/part-2-6-mcp.md)
 
 ### [Part III: Putting It All Together](docs/part-3-putting-it-together.md)
 11. The Decision Matrix
@@ -63,12 +63,12 @@ New to Copilot customization? Start here:
 
 | Primitive | Location | Best For |
 |-----------|----------|----------|
-| **Always-on Instructions** | `.github/copilot-instructions.md` | Codebase guardrails, tech stack |
-| **File-based Instructions** | `.github/instructions/*.instructions.md` | Area-specific rules |
-| **Prompts (Slash Commands)** | `.github/prompts/*.prompt.md` | Reusable task templates |
-| **Skills** | `.github/skills/*/SKILL.md` | Specialized capabilities |
-| **Custom Agents** | `.github/agents/*.agent.md` | AI personas and workflows |
-| **MCP** | `.vscode/mcp.json` | External tool integrations |
+| [**Always-on Instructions**](docs/part-2-1-always-on-instructions.md) | `.github/copilot-instructions.md` | Codebase guardrails, tech stack |
+| [**File-based Instructions**](docs/part-2-2-file-based-instructions.md) | `.github/instructions/*.instructions.md` | Area-specific rules |
+| [**Prompts (Slash Commands)**](docs/part-2-3-prompts.md) | `.github/prompts/*.prompt.md` | Reusable task templates |
+| [**Skills**](docs/part-2-4-skills.md) | `.github/skills/*/SKILL.md` | Specialized capabilities |
+| [**Custom Agents**](docs/part-2-5-custom-agents.md) | `.github/agents/*.agent.md` | AI personas and workflows |
+| [**MCP**](docs/part-2-6-mcp.md) | `.vscode/mcp.json` | External tool integrations |
 
 ---
 

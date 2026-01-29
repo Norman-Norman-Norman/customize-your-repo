@@ -1,6 +1,6 @@
 ﻿# Part IV: Workflow Recipes
 
-[ Back to Guide](../ReadMe.md) | [ Part III](part-3-putting-it-together.md)
+[ Back to Guide](../ReadMe.md) | [ Part III: Putting It All Together](part-3-putting-it-together.md)
 
 ---
 
@@ -77,7 +77,7 @@ description: Create and manage GitHub issues with team templates. Use when user 
 ---
 agent: 'agent'
 description: 'Create a GitHub issue with proper template'
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 Create a GitHub issue for this repository:
@@ -138,7 +138,7 @@ Then [expected result]
 ---
 agent: 'agent'
 description: 'Create a Jira ticket with all required fields'
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 Create a Jira {{issueType}} ticket:
@@ -181,7 +181,7 @@ description: Create and manage Azure DevOps work items. Use when user mentions A
 - **Bug** — Defect requiring fix
 
 ## Hierarchy
-Epic → Feature → User Story → Task
+Epic  Feature  User Story  Task
 
 ## Required Fields by Type
 ### User Story
@@ -270,7 +270,7 @@ Use labels for: component, type, effort (XS, S, M, L, XL)
 ---
 agent: 'agent'
 description: 'Create a well-documented PR from current changes'
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 Create a pull request for the current branch:
@@ -320,7 +320,7 @@ Create a pull request for the current branch:
 name: 'Code Reviewer'
 description: 'Reviews code for quality, security, and best practices'
 tools: ['search', 'readFile', 'usages', 'getChangedFiles']
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 You are a senior engineer performing thorough code review.
@@ -368,7 +368,7 @@ Use these prefixes:
 name: 'Security Reviewer'
 description: 'Reviews code with focus on security vulnerabilities'
 tools: ['search', 'readFile', 'usages', 'getChangedFiles']
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 You are a security engineer reviewing code for vulnerabilities.
@@ -458,7 +458,7 @@ After deployment, provide:
 ---
 agent: 'agent'
 description: 'Production deployment checklist and execution'
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 Production deployment for: {{releaseVersion}}
@@ -511,7 +511,7 @@ If critical issues detected:
 ---
 agent: 'agent'
 description: 'Generate release notes from merged PRs'
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 Generate release notes for version {{version}}:
@@ -581,11 +581,11 @@ You are an experienced SRE coordinating an emergency rollback.
 - Is there a quick fix possible?
 
 ## Rollback Decision Tree
-- Data corruption risk? → Rollback immediately
-- >5% error rate? → Rollback
-- Security vulnerability? → Rollback
-- Performance degradation >50%? → Rollback
-- Cosmetic issue? → Consider hotfix
+- Data corruption risk?  Rollback immediately
+- >5% error rate?  Rollback
+- Security vulnerability?  Rollback
+- Performance degradation >50%?  Rollback
+- Cosmetic issue?  Consider hotfix
 
 ## Communication Templates
 **Initial:** "🚨 Initiating rollback of [version]. Issue: [brief]. ETA: [time]"
@@ -634,16 +634,16 @@ Generate changelog entries from {{previousVersion}} to {{currentVersion}}:
 ```
 
 ## Commit Type Mapping
-- feat: → Added
-- fix: → Fixed
-- docs: → Documentation (don't include in main changelog)
-- style: → (skip)
-- refactor: → Changed
-- perf: → Changed (performance)
-- test: → (skip)
-- build: → (skip unless significant)
-- ci: → (skip)
-- BREAKING CHANGE: → note in relevant section
+- feat:  Added
+- fix:  Fixed
+- docs:  Documentation (don't include in main changelog)
+- style:  (skip)
+- refactor:  Changed
+- perf:  Changed (performance)
+- test:  (skip)
+- build:  (skip unless significant)
+- ci:  (skip)
+- BREAKING CHANGE:  note in relevant section
 ```
 
 ---
@@ -657,7 +657,7 @@ Generate changelog entries from {{previousVersion}} to {{currentVersion}}:
 ---
 agent: 'agent'
 description: 'Generate unit tests for selected code'
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 Generate unit tests for the selected code.
@@ -708,7 +708,7 @@ describe('FunctionName', () => {
 ---
 agent: 'agent'
 description: 'Create E2E test for user flow'
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 Create E2E test for: {{userFlow}}
@@ -878,7 +878,7 @@ Analyze test coverage for: {{targetPath}}
 ---
 agent: 'agent'
 description: 'Generate OpenAPI/Swagger documentation'
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 Generate API documentation for: {{apiPath}}
@@ -926,7 +926,7 @@ paths:
 ---
 agent: 'agent'
 description: 'Create an Architecture Decision Record'
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 Create ADR for: {{decisionTitle}}
@@ -1113,7 +1113,7 @@ kubectl logs -l app={{serviceName}} -f
 ---
 agent: 'agent'
 description: 'Generate database migration'
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 Create migration for: {{migrationDescription}}
@@ -1345,7 +1345,7 @@ SELECT * FROM users WHERE email = ?;
 ---
 agent: 'agent'
 description: 'Generate GitHub Actions workflow'
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 Create a GitHub Actions workflow for: {{workflowType}}
@@ -1396,7 +1396,7 @@ jobs:
 ---
 agent: 'agent'
 description: 'Analyze and fix CI build failures'
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 Analyze the build failure:
@@ -1659,7 +1659,7 @@ Compose status update for: {{project}}
 name: 'Scrum Master'
 description: 'Assists with sprint planning and ceremonies'
 tools: ['search', 'readFile', 'fetch']
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 You are an experienced Scrum Master facilitating sprint planning.
@@ -1813,7 +1813,7 @@ graph TD
 ---
 agent: 'agent'
 description: 'Document and prioritize technical debt'
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 Document technical debt in: {{codeArea}}
@@ -1851,9 +1851,5 @@ Document technical debt in: {{codeArea}}
 ```
 
 ---
-
 
-
----
-
-[ Part III: Putting It All Together](part-3-putting-it-together.md) | [Part V: Implementation Guide ](part-5-implementation-guide.md)
+[ Part III: Putting It All Together](part-3-putting-it-together.md) | [Next: Part V - Implementation Guide ](part-5-implementation-guide.md)

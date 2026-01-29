@@ -1,6 +1,6 @@
 ﻿# Part VI: Reference
 
-[ Back to Guide](../ReadMe.md) | [ Part V](part-5-implementation-guide.md)
+[ Back to Guide](../ReadMe.md) | [ Part V: Implementation Guide](part-5-implementation-guide.md)
 
 ---
 
@@ -150,7 +150,7 @@ applyTo: 'src/components/**/*.tsx'
 ---
 agent: 'agent'
 description: 'Brief description of what this prompt does'
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 [Clear instruction of what to do]
@@ -206,7 +206,7 @@ Use this skill when:
 name: 'Agent Name'
 description: 'What this agent specializes in'
 tools: ['search', 'readFile']
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 You are [specific persona description].
@@ -359,8 +359,6 @@ GitHub Copilot provides substantial value in its default configuration. When cus
 ---
 
 *For additional examples and community contributions, visit [Awesome Copilot](https://github.com/github/awesome-copilot).*
-
-
 
 ---
 

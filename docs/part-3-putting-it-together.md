@@ -1,6 +1,6 @@
 ﻿# Part III: Putting It All Together
 
-[ Back to Guide](../ReadMe.md) | [ Part II](part-2-primitives.md)
+[ Back to Guide](../ReadMe.md) | [ Part II: The Six Primitives](part-2-primitives.md)
 
 ---
 
@@ -45,14 +45,14 @@ The following guidelines help determine which primitive to use for a given requi
 
 ```
 Is it a general rule for all code?
-├── YES → Always-On Instructions
-└── NO → Is it a repeatable task?
-    ├── YES → Prompt File
-    └── NO → Do you need a specific AI behavior?
-        ├── YES → Custom Agent
-        └── NO → Do you need external data/actions?
-            ├── YES → MCP
-            └── NO → Direct conversation
+├── YES  Always-On Instructions
+└── NO  Is it a repeatable task?
+    ├── YES  Prompt File
+    └── NO  Do you need a specific AI behavior?
+        ├── YES  Custom Agent
+        └── NO  Do you need external data/actions?
+            ├── YES  MCP
+            └── NO  Direct conversation
 ```
 
 ---
@@ -65,19 +65,19 @@ When Copilot processes a request, it combines context from multiple primitives. 
 
 ```
 ┌─────────────────────────────────────────┐
-│           User's Message                │  ← Your question/request
+│           User's Message                │   Your question/request
 ├─────────────────────────────────────────┤
-│     Custom Agent (if activated)         │  ← Overrides behavior
+│     Custom Agent (if activated)         │   Overrides behavior
 ├─────────────────────────────────────────┤
-│    Prompt Template (if invoked)         │  ← Task-specific instructions
+│    Prompt Template (if invoked)         │   Task-specific instructions
 ├─────────────────────────────────────────┤
-│   Skills (loaded by description match)  │  ← Specialized capabilities
+│   Skills (loaded by description match)  │   Specialized capabilities
 ├─────────────────────────────────────────┤
-│  File-Based Instructions (if matched)   │  ← Area-specific rules
+│  File-Based Instructions (if matched)   │   Area-specific rules
 ├─────────────────────────────────────────┤
-│       Always-On Instructions            │  ← Foundation rules
+│       Always-On Instructions            │   Foundation rules
 ├─────────────────────────────────────────┤
-│    MCP Tools (available throughout)     │  ← External capabilities
+│    MCP Tools (available throughout)     │   External capabilities
 └─────────────────────────────────────────┘
 ```
 
@@ -257,7 +257,7 @@ Button.displayName = "Button"
 ---
 agent: 'agent'
 description: 'Create a new Radix-based component'
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 Create a new component `{{componentName}}` that extends Radix UI's `{{radixPrimitive}}`:
@@ -316,7 +316,7 @@ src/
 ---
 agent: 'agent'
 description: 'Create a new server action with proper auth and validation'
-model: 'Claude Sonnet 4'
+model: 'Opus 4.5'
 ---
 
 Create a new server action `{{actionName}}` in `src/server/actions/{{domain}}.ts`:
@@ -375,9 +375,5 @@ def process_data(df: pd.DataFrame) -> pd.DataFrame:
 ```
 
 ---
-
 
-
----
-
-[ Part II: The Six Primitives](part-2-primitives.md) | [Part IV: Workflow Recipes ](part-4-workflow-recipes.md)
+[ Part II: The Six Primitives](part-2-primitives.md) | [Next: Part IV - Workflow Recipes ](part-4-workflow-recipes.md)

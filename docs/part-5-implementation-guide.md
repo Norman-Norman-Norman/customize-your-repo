@@ -1,6 +1,6 @@
 ﻿# Part V: Implementation Guide
 
-[ Back to Guide](../ReadMe.md) | [ Part IV](part-4-workflow-recipes.md)
+[ Back to Guide](../ReadMe.md) | [ Part IV: Workflow Recipes](part-4-workflow-recipes.md)
 
 ---
 
@@ -353,9 +353,5 @@ When conflicts occur, be more specific in the higher-priority primitive.
 5. Remove prose — Copilot needs rules, not essays
 
 ---
-
 
-
----
-
-[ Part IV: Workflow Recipes](part-4-workflow-recipes.md) | [Part VI: Reference ](part-6-reference.md)
+[ Part IV: Workflow Recipes](part-4-workflow-recipes.md) | [Next: Part VI - Reference ](part-6-reference.md)
