@@ -39,13 +39,15 @@ Copilot's output quality depends on three factors:
 
 | Pillar | Impact | What You Control |
 |--------|--------|------------------|
-| **Model Selection** | The underlying reasoning capability | Choose the right model for the task (Claude Sonnet 4 for complex reasoning, GPT-4o for speed) |
+| **Model Selection** | Raw reasoning power and behavior | Choose frontier models for complex work; accept that different models work differently |
 | **Codebase Quality** | How well Copilot can understand your code | Write clean, well-documented, modular code |
-| **Repository Configuration** | The context and rules Copilot operates with | **This guide**  the six customization primitives |
+| **Repository Configuration** | The context and rules Copilot operates with | **This guide** — the six customization primitives |
 
-Your **model selection** matters  different models excel at different tasks. Claude Sonnet 4 handles complex multi-step reasoning exceptionally well. GPT-4o provides faster responses for simpler tasks. Choosing the right model for your workflow amplifies everything else.
+Your **model selection** matters more than most people realize. A frontier model with extended thinking will dramatically outperform a model from two years ago—it's not even close. Claude Sonnet 4 with thinking enabled will reason through multi-file refactors, catch edge cases, and produce code that actually works on the first try. Older or faster models may produce syntax-correct code that misses the point entirely.
 
-Your **codebase quality** matters  a well-structured codebase with clear naming, small functions, and comprehensive tests gives Copilot better context to work with. Messy, tangled code confuses AI just as much as it confuses human developers.
+Different models also *behave* differently, and that's okay. Some are more verbose. Some ask more clarifying questions. Some jump straight to implementation. Learn your model's personality and work with it, not against it. The best model for your workflow might not be the newest or the fastest—it's the one whose behavior matches how you like to work.
+
+Your **codebase quality** matters — a well-structured codebase with clear naming, small functions, and comprehensive tests gives Copilot better context to work with. Messy, tangled code confuses AI just as much as it confuses human developers.
 
 But even with the best model and cleanest codebase, **repository configuration** is what transforms Copilot from a generic assistant into a team-aware partner. This guide is the complete reference for setting up your repository for the best possible outcomes with GitHub Copilot.
 
@@ -111,9 +113,9 @@ The investment is front-loaded: a few hours of configuration produces ongoing re
 
 Most teams will get 80% of the value from 20% of the configuration:
 
-1. **Always-on instructions file** (day 1) — Define tech stack, conventions, anti-patterns
-2. **3-5 prompt files** (week 1) — Automate common tasks: component scaffolding, test generation, documentation
-3. **1-2 custom agents** (month 1) — Code reviewer, architect for design discussions
+1. **Always-on instructions file** (hour 1) — Stop what you're doing. Create this file *today*. Define your tech stack, conventions, and the anti-patterns that waste everyone's time in code review. This single file eliminates 50% of Copilot frustrations immediately.
+2. **3-5 prompt files** (day 1) — Before the week ends, create prompts for the tasks you repeat constantly: component scaffolding, test generation, PR descriptions. Every prompt you write saves 10 minutes of explaining the same thing forever.
+3. **1-2 custom agents** (week 1) — Build a code reviewer agent that knows your standards and an architect agent for design discussions. These pay for themselves in the first PR they review.
 
 Skills, MCP, and advanced configurations provide additional value for specific use cases, but the foundation above transforms most workflows immediately.
 
@@ -162,12 +164,12 @@ Each layer adds specificity. Always-on instructions provide the foundation; file
 
 | Primitive | Best For | Not Ideal For |
 |-----------|----------|---------------|
-| **Always-on Instructions** | Universal rules, tech stack, conventions | Specialized capabilities, external integrations |
-| **File-based Instructions** | Language-specific rules, area conventions | Global rules, task automation |
-| **Prompts** | Repeatable tasks, team workflows | Persistent behavior changes |
-| **Skills** | Specialized capabilities, cross-tool knowledge | Simple rules, always-needed context |
-| **Custom Agents** | Personas, constrained workflows, specialized roles | One-off tasks |
-| **MCP** | External APIs, live data, tool integration | Knowledge, conventions, patterns |
+| [**Always-on Instructions**](part-2-primitives.md#always-on-instructions) | Universal rules, tech stack, conventions | Specialized capabilities, external integrations |
+| [**File-based Instructions**](part-2-primitives.md#file-based-instructions) | Language-specific rules, area conventions | Global rules, task automation |
+| [**Prompts**](part-2-primitives.md#prompt-files-slash-commands) | Repeatable tasks, team workflows | Persistent behavior changes |
+| [**Skills**](part-2-primitives.md#skills) | Specialized capabilities, cross-tool knowledge | Simple rules, always-needed context |
+| [**Custom Agents**](part-2-primitives.md#custom-agents) | Personas, constrained workflows, specialized roles | One-off tasks |
+| [**MCP**](part-2-primitives.md#mcp-model-context-protocol) | External APIs, live data, tool integration | Knowledge, conventions, patterns |
 
 ---
 
