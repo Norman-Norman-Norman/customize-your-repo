@@ -962,6 +962,49 @@ For full documentation, examples, and the skill specification, visit [agentskill
 
 Agent Skills is currently available in VS Code Insiders. As this feature matures, skills will become a primary mechanism for extending Copilot capabilities.
 
+### What Skills Can Teach
+
+Skills excel at encoding procedural knowledge—the "how to do things" that go beyond coding conventions:
+
+| Skill Type | Examples |
+|------------|----------|
+| **CI/CD Workflows** | How to run tests, deploy to staging, trigger builds |
+| **Testing Patterns** | How to write integration tests for your API, mock patterns, fixture setup |
+| **Local Development** | How to start the dev server, seed the database, reset local state |
+| **Code Generation** | How to scaffold new modules following your patterns |
+| **Debugging** | How to capture logs, analyze stack traces, reproduce issues |
+| **Release Process** | How to bump versions, generate changelogs, tag releases |
+
+**Example skill descriptions:**
+- "Run the test suite for a specific module"
+- "Set up local development environment from scratch"
+- "Create a new API endpoint following our patterns"
+- "Debug a failing CI build"
+
+### How Skills Load vs. Instructions
+
+Understanding when each primitive loads is key to using them effectively:
+
+| Primitive | When It Loads | What Triggers It |
+|-----------|---------------|------------------|
+| **Always-on Instructions** | Every session start | Automatic—just exists in `.github/copilot-instructions.md` |
+| **File-based Instructions** | When working in matching files | `applyTo` glob pattern matches current file |
+| **Skills** | When description matches user intent | Copilot analyzes the request and matches to skill descriptions |
+
+**The key difference:** Instructions are loaded based on *where you are* (file patterns). Skills are loaded based on *what you're trying to do* (intent matching).
+
+**Example scenario:**
+
+```
+User: "How do I run the integration tests for the auth module?"
+```
+
+- **Instructions** already loaded: General coding standards from `copilot-instructions.md`
+- **File-based instructions** NOT loaded: User isn't editing a specific file yet
+- **Skill activated**: "Run integration tests" skill matches the intent, loads its specialized knowledge
+
+This means skills are ideal for workflow knowledge—things that aren't tied to specific files but require understanding your team's processes.
+
 ### Skills vs. MCP Servers: When to Use Which
 
 This distinction is still emerging, but a clear pattern is developing. The key question: **Does the capability require crossing a security boundary?**
