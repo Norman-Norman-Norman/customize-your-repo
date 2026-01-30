@@ -18,7 +18,7 @@ It wasn't obvious. It was in a file you hadn't opened yet because it .depricated
 
 **That's Copilot's reality—*every single time you send a prompt.***
 
-It's not hallucinating. It's doing exactly what you'd do: making the best possible guess from incomplete context. The suggestions you reject? Those are reasonable choices for a codebase Copilot hasn't been taught to understand. The "wrong" answers? They're only wrong because Copilot doesn't know your team decided to do things differently.
+It's not hallucinating. It's doing exactly what you'd do: making the best possible suggestions from incomplete context. The suggestions you reject? Those are reasonable choices for a codebase Copilot hasn't been taught to understand. The "wrong" answers? They're only wrong because Copilot doesn't know your team decided to do things differently.
 
 This guide fixes that.
 
@@ -121,68 +121,6 @@ Most teams get 80% of the value from 20% of the configuration:
 Skills, MCP, and advanced configurations provide additional value for specific use cases, but the foundation above transforms most workflows immediately.
 
 See the [Quick Start](../ReadMe.md#quick-start-the-adoption-path) for the step-by-step path.
-
----
-
-## The Six Primitives
-
-GitHub Copilot provides six customization primitives. Each loads at different points and serves a distinct purpose:
-
-| Primitive | Location | When It Loads | Best For |
-|-----------|----------|---------------|----------|
-| [**Always-on Instructions**](part-2-1-always-on-instructions.md) | `.github/copilot-instructions.md` | Every request | Tech stack, coding conventions |
-| [**File-based Instructions**](part-2-2-file-based-instructions.md) | `.github/instructions/*.instructions.md` | When file pattern matches | Area-specific rules |
-| [**Prompts**](part-2-3-prompts.md) | `.github/prompts/*.prompt.md` | When user invokes `/name` | Repeatable tasks |
-| [**Skills**](part-2-4-skills.md) | `.github/skills/*/SKILL.md` | When description matches intent | Specialized capabilities |
-| [**Custom Agents**](part-2-5-custom-agents.md) | `.github/agents/*.md` | When user activates | Personas, constrained workflows |
-| [**MCP**](part-2-6-mcp.md) | `.vscode/mcp.json` | Session start | External APIs, live data |
-
-### How They Layer Together
-
-```
-User's Message
-     ↓
-+-----------------------------------------+
-|     Custom Agent (if activated)         |  ← Modifies entire session
-+-----------------------------------------|
-|    Prompt Template (if invoked)         |  ← Single task
-+-----------------------------------------|
-|   Skills (loaded by description match)  |  ← On-demand knowledge
-+-----------------------------------------|
-|  File-Based Instructions (if matched)   |  ← Context for this file
-+-----------------------------------------|
-|       Always-On Instructions            |  ← Foundation layer
-+-----------------------------------------|
-|    MCP Tools (available throughout)     |  ← External capabilities
-+-----------------------------------------+
-     ↓
-Response
-```
-
-Each layer adds specificity. The foundation (always-on instructions) applies everywhere; other primitives activate based on context.
-
-### Context Window Guidelines
-
-Every primitive consumes tokens. Keep them focused:
-
-| Primitive | Recommended Size |
-|-----------|------------------|
-| Always-on instructions | 500-2000 words |
-| File-based instructions | 200-500 words each |
-| Skills | 500-3000 words |
-| Custom agents | 200-1000 words |
-
-If Copilot seems to "forget" rules, your instructions may be too long. Move specialized content to file-based instructions or skills.
-
-### Debugging What's Loaded
-
-To see exactly what context is active:
-
-1. Open Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
-2. Run **"Chat: Diagnostics"** (from the Configure menu)
-3. This shows loaded instructions, skills, and configuration status
-
-For deeper debugging, use **"Developer: Log Chat Input History"** or **"Developer: Inspect Chat Model"** commands.
 
 ---
 

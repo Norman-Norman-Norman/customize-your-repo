@@ -17,6 +17,59 @@ GitHub Copilot provides six customization primitives. Each serves a specific pur
 
 ---
 
+## How Primitives Layer Together
+
+```
+User's Message
+     ↓
++-----------------------------------------+
+|     Custom Agent (if activated)         |  ← Modifies entire session
++-----------------------------------------|
+|    Prompt Template (if invoked)         |  ← Single task
++-----------------------------------------|
+|   Skills (loaded by description match)  |  ← On-demand knowledge
++-----------------------------------------|
+|  File-Based Instructions (if matched)   |  ← Context for this file
++-----------------------------------------|
+|       Always-On Instructions            |  ← Foundation layer
++-----------------------------------------|
+|    MCP Tools (available throughout)     |  ← External capabilities
++-----------------------------------------+
+     ↓
+Response
+```
+
+Each layer adds specificity. The foundation (always-on instructions) applies everywhere; other primitives activate based on context.
+
+---
+
+## Context Window Guidelines
+
+Every primitive consumes tokens. Keep them focused:
+
+| Primitive | Recommended Size |
+|-----------|------------------|
+| Always-on instructions | 500-2000 words |
+| File-based instructions | 200-500 words each |
+| Skills | 500-3000 words |
+| Custom agents | 200-1000 words |
+
+If Copilot seems to "forget" rules, your instructions may be too long. Move specialized content to file-based instructions or skills.
+
+---
+
+## Debugging What's Loaded
+
+To see exactly what context is active:
+
+1. Open Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
+2. Run **"Chat: Diagnostics"** (from the Configure menu)
+3. This shows loaded instructions, skills, and configuration status
+
+For deeper debugging, use **"Developer: Log Chat Input History"** or **"Developer: Inspect Chat Model"** commands.
+
+---
+
 ## 1. [Always-on Instructions](part-2-1-always-on-instructions.md)
 
 The foundation layer. Define your tech stack, coding conventions, security requirements, and anti-patterns. These rules apply to every Copilot interaction in your repository.
