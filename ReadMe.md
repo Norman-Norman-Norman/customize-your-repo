@@ -1,75 +1,83 @@
-﻿# Customizing GitHub Copilot for Your Repository
+﻿# The Definitive Guide to Customizing GitHub Copilot
 
-**Stop fighting Copilot. Start configuring it.**
+GitHub Copilot is more than autocomplete. When properly configured, it becomes a context-aware development partner that understands your architecture, follows your conventions, and produces code that passes review on the first try.
 
-Every rejected suggestion, every "why did it use Redux?", every PR comment about wrong patterns—these aren't Copilot failures. They're context failures. Copilot doesn't know your team chose React Query. It doesn't know your API wrapper convention. It doesn't know `moment.js` is banned.
-
-This guide fixes that. Six configuration primitives, one afternoon of setup, and Copilot becomes a team member who actually knows your codebase.
+This guide is the complete reference for GitHub Copilot's six customization primitives—the configuration files and patterns that transform Copilot from a generic AI assistant into a team member who knows your codebase.
 
 ---
 
-## 5-Minute Quick Start
+## Who This Guide Is For
 
-Create `.github/copilot-instructions.md` with your essentials:
+This guide is written for developers and engineering leads who want to maximize the value of GitHub Copilot across their projects and teams. Whether you're a solo developer looking to reduce repetitive prompting, or a team lead standardizing AI-assisted workflows across an organization, you'll find actionable guidance here.
 
-```markdown
-# Project Context
+**Time investment:** Plan for 1-2 hours to read through the foundations and primitive documentation. The return on that investment compounds with every Copilot interaction thereafter.
 
-React 18 + TypeScript + React Query for data fetching.
-Vitest for testing. Tailwind for styling.
+---
 
-## Rules
+## What You'll Learn
 
-- Use React Query for all API calls, never raw fetch or Redux
-- All API responses use our `ApiResponse<T>` wrapper from `@/lib/api`
-- Prefer named exports over default exports
-- Use `date-fns` for dates, never `moment.js`
-```
+By the end of this guide, you will understand:
 
-That's it. Copilot now follows your conventions in every chat and suggestion.
-
-**Next steps:**
-1. Add rules when you catch Copilot making the same mistake twice
-2. Create a [prompt file](docs/part-2-3-prompts.md) for your most repeated task
-3. Read [Part I: Foundations](docs/part-1-foundations.md) for the full mental model
+- **Why customization matters** — The difference between fighting Copilot and working with it
+- **The six primitives** — What each configuration type does, when it activates, and when to use it
+- **How primitives layer** — The mental model for how instructions, prompts, skills, agents, and MCP combine
+- **Practical patterns** — Ready-to-use templates and real-world examples
+- **Iteration strategies** — How to refine your configuration based on feedback
+- **Measurement approaches** — How to track whether customization is working
 
 ---
 
 ## The Six Primitives
 
+GitHub Copilot provides six customization primitives. Each serves a distinct purpose and loads at different points in your workflow:
+
 | Primitive | Location | Purpose |
 |-----------|----------|---------|
-| [Always-on Instructions](docs/part-2-1-always-on-instructions.md) | `.github/copilot-instructions.md` | Global rules for every request |
-| [File-based Instructions](docs/part-2-2-file-based-instructions.md) | `.github/instructions/*.instructions.md` | Rules that activate for specific files |
-| [Prompts](docs/part-2-3-prompts.md) | `.github/prompts/*.prompt.md` | Reusable slash commands (`/my-prompt`) |
-| [Skills](docs/part-2-4-skills.md) | `.github/skills/*/SKILL.md` | Procedural knowledge Copilot can invoke |
-| [Custom Agents](docs/part-2-5-custom-agents.md) | `.github/agents/*.md` | Specialized AI personas (`@reviewer`) |
-| [MCP](docs/part-2-6-mcp.md) | `.vscode/mcp.json` | Connect external tools and APIs |
+| [**Always-on Instructions**](docs/part-2-1-always-on-instructions.md) | `.github/copilot-instructions.md` | Global rules applied to every Copilot request |
+| [**File-based Instructions**](docs/part-2-2-file-based-instructions.md) | `.github/instructions/*.instructions.md` | Rules that activate when working with specific file patterns |
+| [**Prompts**](docs/part-2-3-prompts.md) | `.github/prompts/*.prompt.md` | Reusable task templates invoked as slash commands |
+| [**Skills**](docs/part-2-4-skills.md) | `.github/skills/*/SKILL.md` | Procedural knowledge Copilot can discover and apply |
+| [**Custom Agents**](docs/part-2-5-custom-agents.md) | `.github/agents/*.md` | Specialized AI personas with defined behaviors |
+| [**MCP (Model Context Protocol)**](docs/part-2-6-mcp.md) | `.vscode/mcp.json` | Connections to external tools, APIs, and data sources |
+
+Understanding when and how to use each primitive is the core of this guide.
 
 ---
 
 ## Guide Structure
 
 ### [Part I: Foundations](docs/part-1-foundations.md)
-The mental model—why customization matters, how primitives layer, iteration strategies, measuring success.
+
+Start here. This section establishes the mental model for thinking about Copilot customization: why it matters, how the primitives layer together, strategies for iteration, and approaches for measuring success. The foundations section provides the conceptual framework that makes the rest of the guide actionable.
 
 ### [Part II: The Six Primitives](docs/part-2-primitives.md)
-Deep dives into each primitive with syntax, examples, and best practices:
-- [2.1 Always-on Instructions](docs/part-2-1-always-on-instructions.md)
-- [2.2 File-based Instructions](docs/part-2-2-file-based-instructions.md)
-- [2.3 Prompts](docs/part-2-3-prompts.md)
-- [2.4 Skills](docs/part-2-4-skills.md)
-- [2.5 Custom Agents](docs/part-2-5-custom-agents.md)
-- [2.6 MCP](docs/part-2-6-mcp.md)
+
+The heart of the guide. Each primitive receives comprehensive coverage including syntax, configuration options, practical examples, common patterns, and guidance on when to use it versus alternatives.
+
+- [2.1 Always-on Instructions](docs/part-2-1-always-on-instructions.md) — Your codebase's global rules
+- [2.2 File-based Instructions](docs/part-2-2-file-based-instructions.md) — Context-specific guidance
+- [2.3 Prompts](docs/part-2-3-prompts.md) — Reusable slash commands
+- [2.4 Skills](docs/part-2-4-skills.md) — Discoverable procedural knowledge
+- [2.5 Custom Agents](docs/part-2-5-custom-agents.md) — Specialized AI personas
+- [2.6 MCP](docs/part-2-6-mcp.md) — External tool integration
 
 ### [Part III: Reference](docs/part-3-reference.md)
-Quick reference tables, starter templates, and a sample prompt library.
+
+Quick reference tables, starter templates, and a curated prompt library for common development tasks.
+
+---
+
+## Getting Started
+
+Begin with [Part I: Foundations](docs/part-1-foundations.md) to understand the mental model, then work through the primitives in order. Each section builds on the previous, and the examples become more sophisticated as you progress.
+
+For teams adopting Copilot customization, consider reading through the guide individually first, then convening to discuss which primitives and patterns fit your specific workflows.
 
 ---
 
 ## Resources
 
-- [GitHub Copilot Docs](https://docs.github.com/en/copilot)
+- [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
 - [VS Code Copilot Extension](https://code.visualstudio.com/docs/copilot)
 - [Model Context Protocol](https://modelcontextprotocol.io/)
-- [VS Code Source](https://github.com/microsoft/vscode) — the authoritative reference when docs are unclear
+- [VS Code Source Code](https://github.com/microsoft/vscode) — The authoritative reference when documentation is unclear
