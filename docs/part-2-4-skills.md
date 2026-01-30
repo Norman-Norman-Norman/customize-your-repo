@@ -228,7 +228,7 @@ This skill works with the GitHub MCP server. Ensure it's configured in `.vscode/
 
 ### Bug Report Template
 
-See [templates/bug-report.md](templates/bug-report.md):
+`templates/bug-report.md`:
 
 ```markdown
 ## Bug Description
@@ -256,7 +256,7 @@ See [templates/bug-report.md](templates/bug-report.md):
 
 ### Feature Request Template
 
-See [templates/feature-request.md](templates/feature-request.md):
+`templates/feature-request.md`:
 
 ```markdown
 ## Feature Description
