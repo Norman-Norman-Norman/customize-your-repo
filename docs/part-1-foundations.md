@@ -24,7 +24,18 @@ This guide fixes that.
 
 **The right mental model: Copilot is a new developer on your team.**
 
-Think about what makes code easy for a new team member to work with:
+But here's the twist: this new developer is already an excellent coder. Frontier models like Claude Opus 4.5 know language idioms, common patterns, and industry best practices. They've seen more code than any human ever will. You don't need to teach them how to write a for-loop or when to use async/await.
+
+Now imagine handing this brilliant new hire a 10,000-line document of coding rules. Every edge case. Every preference. Tabs vs. spaces. Whether to use `index` or `i` in loops. Exactly how many blank lines between functions. They'd be paralyzed—second-guessing every keystroke, drowning in rules instead of shipping code.
+
+**The goal isn't to control every decision. It's to share what makes your codebase *different*:**
+- "We use React Query, not Redux"
+- "All API responses use our `ApiResponse<T>` wrapper"
+- "Don't use moment.js—use date-fns"
+
+Leave out the obvious stuff. Skip the rules your linter already enforces. Trust the model on general coding practices. Focus your instructions on decisions that are genuinely non-obvious—the things that would waste time in PR review if they got it wrong.
+
+Think about what makes code easy for *any* new team member to work with:
 - Easy to read, well-formed code
 - Small, modular functions with clear responsibilities
 - Good naming conventions (not everything called `i`, `temp`, or `data`)
@@ -110,32 +121,6 @@ Most teams get 80% of the value from 20% of the configuration:
 Skills, MCP, and advanced configurations provide additional value for specific use cases, but the foundation above transforms most workflows immediately.
 
 See the [Quick Start](../ReadMe.md#quick-start-the-adoption-path) for the step-by-step path.
-
-### Be Pragmatic: Less Is More
-
-Imagine a new developer joining your team and you hand them a 10,000-line document of coding rules. Every edge case. Every preference. Tabs vs. spaces. Whether to use `index` or `i` in loops. Exactly how many blank lines between functions.
-
-They'd never get anything right. They'd be paralyzed by rules, second-guessing every keystroke.
-
-**The same applies to Copilot.**
-
-Frontier models like Claude Opus 4.5 are already excellent coders. They know language idioms, common patterns, and industry best practices. You don't need to teach them how to write a for-loop or when to use async/await. They've seen more code than any human ever will.
-
-**What to include:**
-- Decisions that are genuinely non-obvious ("We use React Query, not Redux")
-- Patterns unique to your codebase ("All API responses use our `ApiResponse<T>` wrapper")
-- Mistakes that would waste time in PR review ("Never use `any` — use `unknown` and narrow")
-- Deprecated libraries or patterns ("Don't use moment.js — use date-fns")
-
-**What to leave out:**
-- Basic language conventions the model already knows
-- Pedantic preferences that don't affect code quality (tabs vs. spaces)
-- Rules that your linter/formatter already enforces
-- Things that are obvious from reading existing code
-
-**The test:** Before adding a rule, ask yourself: "If a skilled developer looked at our codebase for 10 minutes, would they figure this out?" If yes, you probably don't need to spell it out.
-
-Trust the model. Guide it on what makes your codebase *different*, not on how to write code in general.
 
 ---
 
