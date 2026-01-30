@@ -20,7 +20,7 @@ Users invoke prompts by typing `/` in Copilot Chat and selecting from available 
 ---
 agent: 'agent'
 description: 'What this prompt does'
-model: 'Claude Sonnet 4'
+model: 'Claude Opus 4.5'
 tools: ['editFiles', 'createFile', 'terminalCommand']
 ---
 

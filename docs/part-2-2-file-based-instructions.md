@@ -1,6 +1,6 @@
-﻿# File-Based Instructions
+# File-Based Instructions
 
-[← Always-On Instructions](part-2-1-always-on-instructions.md) | [Part II Overview](part-2-primitives.md)
+[? Always-On Instructions](part-2-1-always-on-instructions.md) | [Part II Overview](part-2-primitives.md)
 
 ---
 
@@ -58,13 +58,13 @@ interface ApiResponse<T> {
 
 ## Error Handling
 ```typescript
-// ✅ Good: Standardized error response
+// ? Good: Standardized error response
 return NextResponse.json({ 
   success: false, 
   error: { code: 'NOT_FOUND', message: 'Resource not found' }
 }, { status: 404 });
 
-// ❌ Bad: Inconsistent error format
+// ? Bad: Inconsistent error format
 return NextResponse.json({ error: 'Not found' }, { status: 404 });
 ```
 ``````
@@ -79,7 +79,7 @@ return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
 Alternatively, ask the agent directly:
 
-> **💬 Try this prompt:**
+> **?? Try this prompt:**
 >
 > *Create a file-based instruction at .github/instructions/react-components.instructions.md that applies to src/components/\*\*/\* and includes our React component conventions. Analyze existing components for patterns to document.*
 
@@ -96,14 +96,14 @@ File-based instructions complement always-on instructions by providing contextua
 
 ### File-Based Instructions vs. Skills
 
-File-based instructions and skills have overlapping use cases. Both can provide context-specific knowledge to Copilot — file-based instructions activate by file pattern, skills activate by description matching.
+File-based instructions and skills have overlapping use cases. Both can provide context-specific knowledge to Copilot � file-based instructions activate by file pattern, skills activate by description matching.
 
 **Quick guidance:**
 - **File-based instructions**: Best for rules tied to specific file locations that won't be reused elsewhere
 - **Skills**: Best for reusable knowledge that applies across multiple contexts, or when you need supporting files (templates, scripts)
 
-There's no definitively "right" choice — this space is still evolving. For a detailed exploration of when to use each, see [Skills vs. File-Based Instructions: Overlapping Territory](part-2-4-skills.md#skills-vs-file-based-instructions-overlapping-territory).
+There's no definitively "right" choice � this space is still evolving. For a detailed exploration of when to use each, see [Skills vs. File-Based Instructions: Overlapping Territory](part-2-4-skills.md#skills-vs-file-based-instructions-overlapping-territory).
 
 ---
 
-[← Always-On Instructions](part-2-1-always-on-instructions.md) | [Next: Prompt Files →](part-2-3-prompts.md)
+[? Always-On Instructions](part-2-1-always-on-instructions.md) | [Next: Prompt Files ?](part-2-3-prompts.md)

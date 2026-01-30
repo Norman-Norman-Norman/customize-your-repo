@@ -1,6 +1,6 @@
-﻿# Skills
+# Skills
 
-[← Prompt Files](part-2-3-prompts.md) | [Part II Overview](part-2-primitives.md)
+[? Prompt Files](part-2-3-prompts.md) | [Part II Overview](part-2-primitives.md)
 
 ---
 
@@ -32,33 +32,33 @@ Every skill lives in its own folder with a `SKILL.md` file:
 
 ```
 .github/
-└── skills/
-    ├── image-manipulation/
-    │   └── SKILL.md
-    ├── github-issues/
-    │   ├── SKILL.md
-    │   └── templates/
-    │       ├── bug-report.md
-    │       └── feature-request.md
-    └── web-testing/
-        ├── SKILL.md
-        └── scripts/
-            └── playwright-setup.sh
++-- skills/
+    +-- image-manipulation/
+    �   +-- SKILL.md
+    +-- github-issues/
+    �   +-- SKILL.md
+    �   +-- templates/
+    �       +-- bug-report.md
+    �       +-- feature-request.md
+    +-- web-testing/
+        +-- SKILL.md
+        +-- scripts/
+            +-- playwright-setup.sh
 ```
 
 **Minimum structure:**
 ```
 skill-name/
-└── SKILL.md          # Required: instructions + metadata
++-- SKILL.md          # Required: instructions + metadata
 ```
 
 **Complex skill with resources:**
 ```
 skill-name/
-├── SKILL.md          # Required: main instructions
-├── scripts/          # Optional: executable code (Python, Bash, JS)
-├── references/       # Optional: additional documentation
-└── assets/           # Optional: templates, images, data files
++-- SKILL.md          # Required: main instructions
++-- scripts/          # Optional: executable code (Python, Bash, JS)
++-- references/       # Optional: additional documentation
++-- assets/           # Optional: templates, images, data files
 ```
 
 ### SKILL.md Format
@@ -157,12 +157,12 @@ magick input.jpg -quality 85 output.webp
 
 Skill names must follow strict rules:
 
-✅ **Valid:**
+? **Valid:**
 - `image-manipulation`
 - `github-issues`
 - `web-testing`
 
-❌ **Invalid:**
+? **Invalid:**
 - `Image-Manipulation` (uppercase not allowed)
 - `-image` (cannot start with hyphen)
 - `image-` (cannot end with hyphen)
@@ -175,10 +175,10 @@ A skill that uses templates and integrates with the GitHub MCP:
 **Directory structure:**
 ```
 github-issues/
-├── SKILL.md
-└── templates/
-    ├── bug-report.md
-    └── feature-request.md
++-- SKILL.md
++-- templates/
+    +-- bug-report.md
+    +-- feature-request.md
 ```
 
 **SKILL.md:**
@@ -277,7 +277,7 @@ See [templates/feature-request.md](templates/feature-request.md):
 
 This is where skills get interesting: **skills can create skills.**
 
-The agentskills.io specification defines a portable format for packaging agent capabilities. But writing SKILL.md files by hand — with correct frontmatter, proper name validation, good descriptions, organized sections — is tedious. The solution? A skill that knows how to create skills.
+The agentskills.io specification defines a portable format for packaging agent capabilities. But writing SKILL.md files by hand � with correct frontmatter, proper name validation, good descriptions, organized sections � is tedious. The solution? A skill that knows how to create skills.
 
 #### Why This Matters
 
@@ -309,8 +309,8 @@ Add a skill-creator skill to your repository:
 
 ```
 .github/skills/
-└── create-agent-skill/
-    └── SKILL.md
++-- create-agent-skill/
+    +-- SKILL.md
 ```
 
 The SKILL.md should include:
@@ -326,7 +326,7 @@ A [reference implementation](https://github.com/anthropics/skills) is available 
 
 With the skill-creator in your repo, bootstrapping new skills becomes conversational:
 
-> 💬 Try this prompt:
+> ?? Try this prompt:
 >
 > `Create a skill for linting SQL queries`
 
@@ -372,7 +372,7 @@ Check for common issues:
 
 For more control, provide context in your prompt:
 
-> 💬 Try this prompt:
+> ?? Try this prompt:
 >
 > `Create a skill for Kubernetes deployments. It should cover kubectl commands, common YAML patterns, and debugging pods. Include a scripts/ directory for helper scripts.`
 
@@ -380,10 +380,10 @@ The skill-creator uses your requirements to generate a more comprehensive skill:
 
 ```
 kubernetes-deployments/
-├── SKILL.md
-└── scripts/
-    ├── check-pod-status.sh
-    └── rollback-deployment.sh
++-- SKILL.md
++-- scripts/
+    +-- check-pod-status.sh
+    +-- rollback-deployment.sh
 ```
 
 #### The Recursive Pattern
@@ -413,7 +413,7 @@ Each skill is:
 - Discoverable via description matching
 - Maintainable by the whole team
 
-This is how you scale AI capabilities across an organization — not by writing longer instruction files, but by building composable skills that activate when needed.
+This is how you scale AI capabilities across an organization � not by writing longer instruction files, but by building composable skills that activate when needed.
 
 ### Why Skills Instead of Always-On Instructions?
 
@@ -435,7 +435,7 @@ Moving ImageMagick to a skill means:
 - **Always-on instructions**: Rules that apply to most/all coding tasks (style, testing patterns, architecture)
 - **Skills**: Specialized capabilities used occasionally (image processing, specific integrations, complex workflows)
 
-If you find yourself thinking "this is useful, but it doesn't need to be in context all the time" — that's a skill.
+If you find yourself thinking "this is useful, but it doesn't need to be in context all the time" � that's a skill.
 
 ### Skills vs. File-Based Instructions: Overlapping Territory
 
@@ -443,7 +443,7 @@ Here's the honest truth: **skills and file-based instructions have significant o
 
 Both primitives emerged from real needs as the AI coding assistant space evolved. File-based instructions use glob patterns (`applyTo: 'src/api/**/*'`) to load context when working on matching files. Skills use description matching to load context when the user's intent matches. Sometimes the same knowledge could reasonably live in either place.
 
-**There is no definitively "right" answer.** As of January 2026, this is still an emerging space. The boundaries between primitives are fuzzy, and that's by design — it gives teams flexibility to organize knowledge in ways that match their workflows.
+**There is no definitively "right" answer.** As of January 2026, this is still an emerging space. The boundaries between primitives are fuzzy, and that's by design � it gives teams flexibility to organize knowledge in ways that match their workflows.
 
 #### When They Overlap
 
@@ -483,7 +483,7 @@ Some patterns that teams have found useful:
 - Use skills for "how to do Y" (workflows, multi-step processes, domain knowledge)
 - Start with file-based instructions (simpler), graduate to skills when you need portability or supporting files
 
-If you're unsure, start somewhere. You can always refactor later — these are just markdown files in version control. The cost of experimenting is low, and you'll learn what works for your specific codebase and team.
+If you're unsure, start somewhere. You can always refactor later � these are just markdown files in version control. The cost of experimenting is low, and you'll learn what works for your specific codebase and team.
 
 **The goal isn't to pick the "correct" primitive. The goal is to get useful context to the AI when it needs it.** If your current approach does that, it's working.
 
@@ -493,16 +493,16 @@ When you have new knowledge to encode, ask yourself these questions:
 
 ```
 Is this needed on EVERY request?
-├── Yes → Always-on instructions (.github/copilot-instructions.md)
-│         BUT check if your instructions file is getting overloaded.
-│         If it's huge, consider moving specialized content elsewhere.
-│
-└── No → Is this reusable across multiple contexts/files?
-         ├── Yes → Skill (.github/skills/)
-         │         Skills shine when the same knowledge applies
-         │         in multiple places throughout the repo.
-         │
-         └── No → File-based instruction (.github/instructions/)
++-- Yes ? Always-on instructions (.github/copilot-instructions.md)
+�         BUT check if your instructions file is getting overloaded.
+�         If it's huge, consider moving specialized content elsewhere.
+�
++-- No ? Is this reusable across multiple contexts/files?
+         +-- Yes ? Skill (.github/skills/)
+         �         Skills shine when the same knowledge applies
+         �         in multiple places throughout the repo.
+         �
+         +-- No ? File-based instruction (.github/instructions/)
                   Good for single-purpose rules tied to specific
                   file patterns that won't be needed elsewhere.
 ```
@@ -513,15 +513,15 @@ Is this needed on EVERY request?
 - Self-contained directories (can include templates, scripts, examples)
 - Easy to share across repos or with the community
 
-Use always-on instructions for the core stuff that truly applies everywhere — your tech stack, universal coding conventions, security requirements. Use file-based instructions when you have rules that are genuinely file-pattern-specific and won't be reused.
+Use always-on instructions for the core stuff that truly applies everywhere � your tech stack, universal coding conventions, security requirements. Use file-based instructions when you have rules that are genuinely file-pattern-specific and won't be reused.
 
-> **📝 Editor's Note:** We're still learning what works best. The primitives overlap because this space is evolving rapidly. GitHub and the community are actively experimenting with these patterns. What we recommend today may shift as we learn more. The best approach is to try things, see what helps your team, and share what you learn.
+> **?? Editor's Note:** We're still learning what works best. The primitives overlap because this space is evolving rapidly. GitHub and the community are actively experimenting with these patterns. What we recommend today may shift as we learn more. The best approach is to try things, see what helps your team, and share what you learn.
 
 ### How Skills Load: Description Matching
 
 Unlike file-based instructions (which use `applyTo` patterns), skills load **on-demand via description matching**. Here's what happens under the hood:
 
-1. **Every system prompt includes a list of available skills** — just their names and descriptions
+1. **Every system prompt includes a list of available skills** � just their names and descriptions
 2. **The agent decides which skills are relevant** based on matching the user's request to skill descriptions
 3. **Only then is the full skill content loaded** into context
 
@@ -537,7 +537,7 @@ description: 'Use this skill when the user needs to resize, convert, or optimize
 - Be explicit about **when** to load the skill (triggers)
 - Be explicit about **what value** it provides (capabilities)
 - Include key action words users might say ("resize", "convert", "optimize")
-- Keep it scannable — the agent reads many descriptions to make a decision
+- Keep it scannable � the agent reads many descriptions to make a decision
 
 **Ineffective description:**
 ```markdown
@@ -594,10 +594,10 @@ When you see a skill wasn't activated, check whether its description clearly mat
 
 ### Skills vs. MCP Servers: When to Use Which
 
-Skills and MCP servers are complementary, not competing. **You can and should use them together.** The question isn't "which one?" — it's "what does each contribute?"
+Skills and MCP servers are complementary, not competing. **You can and should use them together.** The question isn't "which one?" � it's "what does each contribute?"
 
-- **MCP servers** provide *access* — authentication, API connections, external tool integration
-- **Skills** provide *knowledge* — templates, conventions, workflows, domain expertise
+- **MCP servers** provide *access* � authentication, API connections, external tool integration
+- **Skills** provide *knowledge* � templates, conventions, workflows, domain expertise
 
 Many of the best setups combine both: an MCP server handles the "how to connect" while a skill handles the "how we do things here."
 
@@ -633,7 +633,7 @@ When deciding between them, ask: **Does the capability require crossing a securi
 
 #### Practical Examples
 
-**Git Operations → Skill**
+**Git Operations ? Skill**
 
 Git is almost universally installed on developer machines. A skill can invoke git commands directly without needing external authentication.
 
@@ -698,7 +698,7 @@ Resolve conflicts: Edit files, then `git add` and `git rebase --continue`
 
 ---
 
-**Jira → Skill + MCP Server**
+**Jira ? Skill + MCP Server**
 
 This is an ideal hybrid case. The **MCP Server** handles authentication and Jira API access. The **Skill** provides team-specific templates, workflows, and conventions.
 
@@ -706,12 +706,12 @@ This is an ideal hybrid case. The **MCP Server** handles authentication and Jira
 
 ```
 jira-workflow/
-├── SKILL.md              # Main skill instructions and metadata
-└── templates/
-    ├── bug.md            # Bug report template
-    ├── story.md          # User story template
-    ├── epic.md           # Epic template
-    └── task.md           # Task template
++-- SKILL.md              # Main skill instructions and metadata
++-- templates/
+    +-- bug.md            # Bug report template
+    +-- story.md          # User story template
+    +-- epic.md           # Epic template
+    +-- task.md           # Task template
 ```
 
 **SKILL.md:**
@@ -841,11 +841,11 @@ Use mcp_jira_create_issue with:
 - customFields: { "story_points": 5 }
 ```
 
-**Why both?** The MCP server handles Jira authentication and API calls. The skill ensures every ticket follows team conventions — consistent formatting, required fields, proper story point values. The skill is your process; the MCP is your connection.
+**Why both?** The MCP server handles Jira authentication and API calls. The skill ensures every ticket follows team conventions � consistent formatting, required fields, proper story point values. The skill is your process; the MCP is your connection.
 
 ---
 
-**File System Operations → Skill**
+**File System Operations ? Skill**
 
 The file system is local and doesn't require authentication. A skill provides enhanced operations that work across different AI agents.
 
@@ -907,4 +907,4 @@ For more on building skills, visit [agentskills.io/home](https://agentskills.io/
 
 ---
 
-[← Prompt Files](part-2-3-prompts.md) | [Next: Custom Agents →](part-2-5-custom-agents.md)
+[? Prompt Files](part-2-3-prompts.md) | [Next: Custom Agents ?](part-2-5-custom-agents.md)

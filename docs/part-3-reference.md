@@ -150,7 +150,7 @@ applyTo: 'src/components/**/*.tsx'
 ---
 agent: 'agent'
 description: 'Brief description of what this prompt does'
-model: 'Claude Sonnet 4'
+model: 'Claude Opus 4.5'
 ---
 
 [Clear instruction of what to do]
@@ -206,7 +206,7 @@ Use this skill when:
 name: 'Agent Name'
 description: 'What this agent specializes in'
 tools: ['search', 'readFile']
-model: 'Claude Sonnet 4'
+model: 'Claude Opus 4.5'
 ---
 
 You are [specific persona description].
@@ -274,7 +274,7 @@ You are [specific persona description].
 > 💬 **Create a new prompt file:**
 >
 > Create a prompt file at `.github/prompts/{{name}}.prompt.md` that:
-> - Uses agent mode with Claude Sonnet 4
+> - Uses agent mode with Claude Opus 4.5
 > - Includes variables for: {{variables}}
 > - References our copilot-instructions.md
 > - Has clear success criteria

@@ -1,6 +1,6 @@
-﻿# Prompt Files (Slash Commands)
+# Prompt Files (Slash Commands)
 
-[← File-Based Instructions](part-2-2-file-based-instructions.md) | [Part II Overview](part-2-primitives.md)
+[? File-Based Instructions](part-2-2-file-based-instructions.md) | [Part II Overview](part-2-primitives.md)
 
 ---
 
@@ -21,7 +21,7 @@ Prompt files use the `.prompt.md` extension and support these frontmatter fields
 | `name` | Display name shown when typing `/` in chat |
 | `description` | Brief description of what the prompt does |
 | `agent` | Execution mode: `ask`, `edit`, `agent`, or a custom agent name |
-| `model` | AI model to use (e.g., `Claude Sonnet 4`, `GPT-4o`) |
+| `model` | AI model to use (e.g., `Claude Opus 4.5`, `GPT-4o`) |
 | `tools` | Specific tools available for this prompt |
 | `argument-hint` | Hint text for user interaction |
 
@@ -52,8 +52,8 @@ The `agent` field in the frontmatter determines how Copilot executes the prompt:
 
 | Mode | What It Does | Best For |
 |------|--------------|----------|
-| `ask` | Read-only — responds conversationally, no file changes | Questions, explanations, brainstorming, code review |
-| `agent` | Takes autonomous action — creates/edits files, runs commands | Multi-file changes, scaffolding, bug fixes, any task that modifies code |
+| `ask` | Read-only � responds conversationally, no file changes | Questions, explanations, brainstorming, code review |
+| `agent` | Takes autonomous action � creates/edits files, runs commands | Multi-file changes, scaffolding, bug fixes, any task that modifies code |
 
 **Note:** An `edit` mode exists but is not recommended. Use `agent` for any task that requires modifying files.
 
@@ -218,9 +218,9 @@ Create a GitHub issue based on the following:
    - For features: Include "Problem Statement", "Proposed Solution", and "Alternatives Considered"
 
 2. Apply appropriate labels based on issue type:
-   - bug → `bug`, `needs-triage`
-   - feature → `enhancement`, `needs-discussion`
-   - documentation → `documentation`
+   - bug ? `bug`, `needs-triage`
+   - feature ? `enhancement`, `needs-discussion`
+   - documentation ? `documentation`
 
 3. Use the GitHub MCP server to create the issue in this repository
 
@@ -290,16 +290,16 @@ Create a new Agent Skill for: **{{skillPurpose}}**
 
 Before creating anything, fetch the latest specifications from authoritative sources:
 
-1. **Agent Skills Specification** — Fetch from agentskills.io:
-   - https://agentskills.io/spec — Core specification
-   - https://agentskills.io/home — Overview and examples
+1. **Agent Skills Specification** � Fetch from agentskills.io:
+   - https://agentskills.io/spec � Core specification
+   - https://agentskills.io/home � Overview and examples
 
-2. **VS Code Copilot Documentation** — Fetch from code.visualstudio.com:
-   - https://code.visualstudio.com/docs/copilot/copilot-customization — Customization overview
-   - https://code.visualstudio.com/docs/copilot/copilot-extensibility-overview — Extensibility patterns
+2. **VS Code Copilot Documentation** � Fetch from code.visualstudio.com:
+   - https://code.visualstudio.com/docs/copilot/copilot-customization � Customization overview
+   - https://code.visualstudio.com/docs/copilot/copilot-extensibility-overview � Extensibility patterns
 
-3. **GitHub Copilot Documentation** — Fetch from docs.github.com:
-   - https://docs.github.com/en/copilot/customizing-copilot — Customization guide
+3. **GitHub Copilot Documentation** � Fetch from docs.github.com:
+   - https://docs.github.com/en/copilot/customizing-copilot � Customization guide
 
 Synthesize these sources to understand:
 - Required SKILL.md frontmatter fields
@@ -314,8 +314,8 @@ Based on the fetched documentation and the user's purpose, create:
 ### Directory Structure
 ```
 .github/skills/{{skill-name}}/
-├── SKILL.md
-└── [any supporting files if needed]
++-- SKILL.md
++-- [any supporting files if needed]
 ```
 
 ### SKILL.md Requirements
@@ -326,11 +326,11 @@ Based on the fetched documentation and the user's purpose, create:
 - `metadata`: Include author and version
 
 **Content Sections:**
-1. **When to Use This Skill** — Trigger conditions (bulleted list)
-2. **Prerequisites** — Required tools, dependencies, setup
-3. **Instructions** — Step-by-step guidance with code examples
-4. **Common Patterns** — Table of frequent use cases
-5. **Edge Cases** — Gotchas and how to handle them
+1. **When to Use This Skill** � Trigger conditions (bulleted list)
+2. **Prerequisites** � Required tools, dependencies, setup
+3. **Instructions** � Step-by-step guidance with code examples
+4. **Common Patterns** � Table of frequent use cases
+5. **Edge Cases** � Gotchas and how to handle them
 
 ## Phase 3: Validate
 
@@ -381,11 +381,11 @@ This section covers the process of creating well-structured prompt files using V
 
 Rather than manually writing prompt files, use Copilot to generate them:
 
-> **💬 Try this prompt:**
+> **?? Try this prompt:**
 >
 > *Create a prompt file at .github/prompts/new-api-route.prompt.md that:*
 > *- Generates REST API routes with validation*
-> *- Uses agent mode with Claude Sonnet 4*
+> *- Uses agent mode with Claude Opus 4.5*
 > *- Includes variables for resource name and HTTP methods*
 > *- References our copilot-instructions.md for patterns*
 > *- Outputs route file, Zod schemas, and tests*
@@ -426,7 +426,7 @@ tools: ['editFiles', 'createFile']      # Optional: restrict tools
 | Mode | Copilot Can... | Best For |
 |------|----------------|----------|
 | `ask` | Talk back, explain, suggest (read-only) | Design discussions, Q&A, brainstorming, code review |
-| `agent` | Create files, edit files, run commands | Any task that modifies code — scaffolding, bug fixes, refactoring |
+| `agent` | Create files, edit files, run commands | Any task that modifies code � scaffolding, bug fixes, refactoring |
 | Custom agent | Use that agent's persona and tools | Specialized workflows with defined behavior |
 
 **Note:** An `edit` mode exists but is not recommended. Use `agent` instead for any file modifications.
@@ -480,7 +480,7 @@ This approach keeps prompts synchronized with team standards automatically.
 
 Use the agent directly to generate new prompt files:
 
-> **💬 Try this prompt:**
+> **?? Try this prompt:**
 >
 > *Create a new prompt file at `.github/prompts/{{promptName}}.prompt.md`.*
 >
@@ -515,7 +515,7 @@ This meta-prompt creates new prompt files that follow best practices.
 
 To improve an existing prompt file, ask the agent directly:
 
-> **💬 Try this prompt:**
+> **?? Try this prompt:**
 >
 > *Analyze and improve the prompt file at .github/prompts/new-component.prompt.md:*
 >
@@ -561,4 +561,4 @@ Specificity produces consistent, high-quality outputs.
 
 ---
 
-[← File-Based Instructions](part-2-2-file-based-instructions.md) | [Next: Skills →](part-2-4-skills.md)
+[? File-Based Instructions](part-2-2-file-based-instructions.md) | [Next: Skills ?](part-2-4-skills.md)

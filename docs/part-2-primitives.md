@@ -1,6 +1,6 @@
-﻿# Part II: The Six Primitives
+# Part II: The Six Primitives
 
-[← Back to Guide](../ReadMe.md) | [← Part I: Foundations](part-1-foundations.md)
+[? Back to Guide](../ReadMe.md) | [? Part I: Foundations](part-1-foundations.md)
 
 ---
 
@@ -50,4 +50,4 @@ External service integrations that extend Copilot's capabilities. Connect to dat
 
 ---
 
-[← Part I: Foundations](part-1-foundations.md) | [Next: Part III - Reference →](part-3-reference.md)
+[? Part I: Foundations](part-1-foundations.md) | [Next: Part III - Reference ?](part-3-reference.md)

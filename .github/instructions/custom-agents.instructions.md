@@ -26,7 +26,7 @@ Custom Agents provide specialized AI personas with constrained tool access and d
 name: 'Display Name'
 description: 'Shown in agent picker'
 tools: ['search', 'readFile', 'usages']
-model: 'Claude Sonnet 4'
+model: 'Claude Opus 4.5'
 handoffs:
   - label: 'Hand off label'
     agent: 'target-agent'
@@ -43,7 +43,7 @@ handoffs:
 | `name` | No | Display name in the agent picker |
 | `description` | No | Placeholder text in chat input |
 | `tools` | No | List of tools available to this agent |
-| `model` | No | AI model to use (Claude Sonnet 4, GPT-4o) |
+| `model` | No | AI model to use (Claude Opus 4.5, GPT-4o) |
 | `handoffs` | No | Define transitions to other agents |
 
 ## The Agent Formula
@@ -90,7 +90,7 @@ Custom agents can be invoked as sub-agents for context isolation:
 ---
 name: 'Security Reviewer'
 tools: ['search', 'readFile', 'usages', 'getChangedFiles']
-model: 'Claude Sonnet 4'
+model: 'Claude Opus 4.5'
 ---
 
 You are a security engineer reviewing code for vulnerabilities.

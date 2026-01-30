@@ -1,6 +1,6 @@
-﻿# Custom Agents
+# Custom Agents
 
-[← Skills](part-2-4-skills.md) | [Part II Overview](part-2-primitives.md)
+[? Skills](part-2-4-skills.md) | [Part II Overview](part-2-primitives.md)
 
 ---
 
@@ -29,7 +29,7 @@ Custom Agent files use the `.agent.md` extension and support these frontmatter f
 | `name` | Display name in the agent picker |
 | `description` | Shown as placeholder text in chat input |
 | `tools` | List of tools available to this agent |
-| `model` | AI model to use (e.g., `Claude Sonnet 4`, `GPT-4o`) |
+| `model` | AI model to use (e.g., `Claude Opus 4.5`, `GPT-4o`) |
 | `handoffs` | Define transitions to other agents |
 | `argument-hint` | Hint text for user interaction |
 
@@ -216,9 +216,9 @@ Custom agents can be invoked as **sub-agents** by other workflows. This pattern 
 **The Pattern:**
 ```
 Main conversation: "Implement this feature and create a PR"
-├── Sub-agent 1: Makes code changes (isolated context)
-├── Sub-agent 2: Runs tests (isolated context)  
-└── Sub-agent 3: Creates PR (isolated context)
++-- Sub-agent 1: Makes code changes (isolated context)
++-- Sub-agent 2: Runs tests (isolated context)  
++-- Sub-agent 3: Creates PR (isolated context)
 ```
 
 Each sub-agent focuses on its specific task without inheriting irrelevant context from sibling tasks. The main agent orchestrates and receives summarized results.
@@ -245,7 +245,7 @@ The `handoffs` field creates natural workflow transitions, where one agent can s
 #### 5. Feature Builder (Orchestrator with Sub-Agents)
 **File:** `.github/agents/feature-builder.agent.md`
 
-This example demonstrates the sub-agent pattern — an orchestrator agent that delegates to specialized sub-agents:
+This example demonstrates the sub-agent pattern � an orchestrator agent that delegates to specialized sub-agents:
 
 ```markdown
 ---
@@ -298,7 +298,7 @@ After implementing the feature:
 - Summarize what each sub-agent should focus on
 ```
 
-**Why this works:** The Feature Builder stays focused on implementation. When it's time for security review, tests, or PR creation, it hands off to specialized agents that have their own isolated context. The sub-agents don't inherit the full implementation context — they receive only the relevant prompt and can focus deeply on their specialty.
+**Why this works:** The Feature Builder stays focused on implementation. When it's time for security review, tests, or PR creation, it hands off to specialized agents that have their own isolated context. The sub-agents don't inherit the full implementation context � they receive only the relevant prompt and can focus deeply on their specialty.
 
 ### Prompt vs. Custom Agent Comparison
 
@@ -335,11 +335,11 @@ The recommended approach for creating custom agents is through VS Code's built-i
 
 Rather than manually editing agent files, use Copilot to generate and refine them:
 
-> **💬 Try this prompt:**
+> **?? Try this prompt:**
 >
 > *Create a custom agent for security code review. It should:*
 > *- Focus on OWASP Top 10 vulnerabilities*
-> *- Use Claude Sonnet 4 for its reasoning capabilities*
+> *- Use Claude Opus 4.5 for its reasoning capabilities*
 > *- Have access to search, readFile, and usages tools*
 > *- Include handoffs to an implementation agent after review*
 >
@@ -400,7 +400,7 @@ You are a helpful assistant for reviewing code.
 ```markdown
 You are a principal engineer with 20 years of experience across 
 startups and enterprise. You've seen what works and what becomes 
-technical debt. You're kind but direct—you won't sugarcoat issues 
+technical debt. You're kind but direct�you won't sugarcoat issues 
 but you always explain your reasoning.
 ```
 
@@ -440,7 +440,7 @@ Guardrails prevent the persona from producing off-target responses:
 
 The following prompt generates new custom agent configurations through the agent:
 
-> **💬 Try this prompt:**
+> **?? Try this prompt:**
 >
 > *Create a new custom agent at `.github/agents/{{modeName}}.agent.md`.*
 >
@@ -495,7 +495,7 @@ tools: ['search', 'readFile']
 model: 'Opus 4.5'
 ---
 
-You are a rubber duck. Your job is NOT to solve problems—it's to help 
+You are a rubber duck. Your job is NOT to solve problems�it's to help 
 the user solve them themselves by asking good questions.
 
 ## Your Technique
@@ -513,7 +513,7 @@ the user solve them themselves by asking good questions.
 - "Interesting! What made you think of that?"
 ```
 
-**The Devil's Advocate** – Challenges every decision:
+**The Devil's Advocate** � Challenges every decision:
 
 ```markdown
 ---
@@ -533,11 +533,11 @@ Your job is to find holes in their reasoning.
 - "What would a skeptical stakeholder say?"
 
 ## Important
-You're not being negative—you're being thorough.
+You're not being negative�you're being thorough.
 After challenging, acknowledge good points.
 End with "If you can address these, you've got a solid plan."
 ```
 
 ---
 
-[← Skills](part-2-4-skills.md) | [Next: MCP →](part-2-6-mcp.md)
+[? Skills](part-2-4-skills.md) | [Next: MCP ?](part-2-6-mcp.md)

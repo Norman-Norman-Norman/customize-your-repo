@@ -1,6 +1,6 @@
-﻿# MCP (Model Context Protocol)
+# MCP (Model Context Protocol)
 
-[← Custom Agents](part-2-5-custom-agents.md) | [Part II Overview](part-2-primitives.md)
+[? Custom Agents](part-2-5-custom-agents.md) | [Part II Overview](part-2-primitives.md)
 
 ---
 
@@ -11,7 +11,7 @@ MCP (Model Context Protocol) provides external gateway capabilities for Copilot.
 **Loading:** Session start
 **Best For:** External gateways
 
-> **Scope:** This section covers how GitHub Copilot *consumes* MCP servers — configuration, tool discovery, and invocation. It does not cover MCP server security, authentication implementation, or building custom MCP servers. For those topics, see the [MCP specification](https://modelcontextprotocol.io).
+> **Scope:** This section covers how GitHub Copilot *consumes* MCP servers � configuration, tool discovery, and invocation. It does not cover MCP server security, authentication implementation, or building custom MCP servers. For those topics, see the [MCP specification](https://modelcontextprotocol.io).
 
 ### How MCP Servers Expose Tools
 
@@ -121,18 +121,18 @@ This is an important distinction:
 
 MCP servers and skills serve different purposes, but teams sometimes wonder which to use. The short answer: **use both together.**
 
-- **MCP servers** provide *access* — authentication, API connections, external integrations
-- **Skills** provide *knowledge* — templates, conventions, workflows, domain expertise
+- **MCP servers** provide *access* � authentication, API connections, external integrations
+- **Skills** provide *knowledge* � templates, conventions, workflows, domain expertise
 
 The best setups combine them: an MCP server handles "how to connect to Jira" while a skill handles "how our team formats Jira tickets."
 
 **Quick guidance:**
-- Need to authenticate or call external APIs? → MCP server
-- Need to encode team conventions or workflows? → Skill
-- Need both access AND conventions? → Use both
+- Need to authenticate or call external APIs? ? MCP server
+- Need to encode team conventions or workflows? ? Skill
+- Need both access AND conventions? ? Use both
 
 For a detailed exploration with practical examples (Git, Jira, file operations), see [Skills vs. MCP Servers: When to Use Which](part-2-4-skills.md#skills-vs-mcp-servers-when-to-use-which).
 
 ---
 
-[← Custom Agents](part-2-5-custom-agents.md) | [Next: Part III - Reference →](part-3-reference.md)
+[? Custom Agents](part-2-5-custom-agents.md) | [Next: Part III - Reference ?](part-3-reference.md)

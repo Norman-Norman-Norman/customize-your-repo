@@ -1,6 +1,6 @@
-﻿# Always-On Instructions
+# Always-On Instructions
 
-[← Part I: Foundations](part-1-foundations.md) | [Part II Overview](part-2-primitives.md)
+[? Part I: Foundations](part-1-foundations.md) | [Part II Overview](part-2-primitives.md)
 
 ---
 
@@ -78,7 +78,7 @@ Our team benchmarks showed functional components with hooks reduced our bundle
 size by 15% and made testing significantly easier.
 ```
 
-This helps Copilot understand not just *what* to do, but *why*—leading to better suggestions in edge cases.
+This helps Copilot understand not just *what* to do, but *why*�leading to better suggestions in edge cases.
 
 ### Complete Example: Production Next.js Project
 
@@ -99,19 +99,19 @@ We prioritize reliability over cutting-edge features.
 ### Directory Structure
 ```
 src/
-├── app/                    # Next.js App Router pages
-│   ├── (auth)/            # Auth-required routes (grouped)
-│   ├── (public)/          # Public routes
-│   └── api/               # API routes (webhooks only)
-├── components/
-│   ├── ui/                # Shared UI primitives
-│   └── features/          # Feature-specific components
-├── lib/                   # Shared utilities
-├── server/
-│   ├── actions/           # Server Actions
-│   ├── db/                # Database queries (Prisma)
-│   └── services/          # Business logic
-└── types/                 # Shared TypeScript types
++-- app/                    # Next.js App Router pages
+�   +-- (auth)/            # Auth-required routes (grouped)
+�   +-- (public)/          # Public routes
+�   +-- api/               # API routes (webhooks only)
++-- components/
+�   +-- ui/                # Shared UI primitives
+�   +-- features/          # Feature-specific components
++-- lib/                   # Shared utilities
++-- server/
+�   +-- actions/           # Server Actions
+�   +-- db/                # Database queries (Prisma)
+�   +-- services/          # Business logic
++-- types/                 # Shared TypeScript types
 ```
 
 ### Data Flow
@@ -131,7 +131,7 @@ src/
 
 ### React Patterns
 ```typescript
-// ✅ Good: Custom hook for data fetching
+// ? Good: Custom hook for data fetching
 function useInventoryItems(warehouseId: string) {
   return useQuery({
     queryKey: ['inventory', warehouseId],
@@ -139,7 +139,7 @@ function useInventoryItems(warehouseId: string) {
   });
 }
 
-// ❌ Bad: Fetching in useEffect
+// ? Bad: Fetching in useEffect
 useEffect(() => {
   fetch('/api/inventory').then(/* ... */);
 }, []);
@@ -147,7 +147,7 @@ useEffect(() => {
 
 ### Server Actions
 ```typescript
-// ✅ Good: Validated, authorized, audited
+// ? Good: Validated, authorized, audited
 export async function updateInventory(input: UpdateInventoryInput) {
   const validated = updateInventorySchema.parse(input);
   const session = await auth();
@@ -157,7 +157,7 @@ export async function updateInventory(input: UpdateInventoryInput) {
   return db.inventory.update({ where: { id: validated.id }, data: validated });
 }
 
-// ❌ Bad: No validation, no auth check
+// ? Bad: No validation, no auth check
 export async function updateInventory(data: any) {
   return db.inventory.update({ data });
 }
@@ -177,7 +177,7 @@ export async function updateInventory(data: any) {
 
 ### Testing Patterns
 ```typescript
-// ✅ Good: Descriptive test with clear arrange/act/assert
+// ? Good: Descriptive test with clear arrange/act/assert
 describe('updateInventory', () => {
   it('should update quantity and log audit event', async () => {
     // Arrange
@@ -193,7 +193,7 @@ describe('updateInventory', () => {
   });
 });
 
-// ❌ Bad: Vague test name, no clear structure
+// ? Bad: Vague test name, no clear structure
 test('inventory works', async () => {
   const result = await updateInventory({ id: '1', quantity: 5 });
   expect(result).toBeTruthy();
@@ -217,12 +217,12 @@ Use our custom error hierarchy:
 
 ### Error Pattern
 ```typescript
-// ✅ Good: Specific error with context
+// ? Good: Specific error with context
 if (!warehouse) {
   throw new NotFoundError('Warehouse', warehouseId);
 }
 
-// ❌ Bad: Generic error
+// ? Bad: Generic error
 if (!warehouse) {
   throw new Error('Not found');
 }
@@ -305,7 +305,7 @@ The recommended approach for creating instructions files is through VS Code's bu
 
 Rather than manually writing instructions, let the agent analyze the repository and generate appropriate instructions:
 
-> **💬 Try this prompt:**
+> **?? Try this prompt:**
 >
 > *Analyze this repository and create a .github/copilot-instructions.md file that:*
 >
@@ -357,7 +357,7 @@ Effective instructions files encode team knowledge. Use these questions to surfa
 
 > **Practical tip:** Review the last 10-20 PR comments from the team. Repeated feedback indicates rules that should be codified in the instructions file.
 
-> **💬 Try this prompt:**
+> **?? Try this prompt:**
 >
 > *Analyze the last 20 merged pull requests in this repository. Look at the review comments and identify:*
 >
@@ -375,14 +375,14 @@ Copilot responds more effectively to examples than to abstract rules. Instead of
 ```markdown
 ## Data Transformation
 
-✅ **Preferred:**
+? **Preferred:**
 ```typescript
 const activeUsers = users
   .filter(user => user.isActive)
   .map(user => user.name);
 ```
 
-❌ **Avoid:**
+? **Avoid:**
 ```typescript
 let activeUsers = [];
 for (let i = 0; i < users.length; i++) {
@@ -416,7 +416,7 @@ When Copilot understands intent, it can apply rules more intelligently.
 
 After initial generation, refine the instructions file through conversation:
 
-> **💬 Try this prompt:**
+> **?? Try this prompt:**
 >
 > *Review the .github/copilot-instructions.md file and:*
 >
@@ -446,4 +446,4 @@ If instructions are not being applied, verify:
 
 ---
 
-[← Part I: Foundations](part-1-foundations.md) | [Next: File-Based Instructions →](part-2-2-file-based-instructions.md)
+[? Part I: Foundations](part-1-foundations.md) | [Next: File-Based Instructions ?](part-2-2-file-based-instructions.md)
