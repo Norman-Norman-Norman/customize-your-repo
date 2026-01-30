@@ -1,6 +1,6 @@
 # Part I: Foundations
 
-[? Back to Guide](../ReadMe.md)
+[← Back to Guide](../ReadMe.md)
 
 ---
 
@@ -16,7 +16,7 @@ Now someone asks you to make a change. You do your best. You give them something
 
 It wasn't obvious. It was in a file you hadn't opened yet.
 
-**That's Copilot's reality—*every single time you open a file.***
+**That's Copilot's reality—*every single time you send a prompt.***
 
 It's not hallucinating. It's doing exactly what you'd do: making the best possible guess from incomplete context. The suggestions you reject? Those are reasonable choices for a codebase Copilot hasn't been taught to understand. The "wrong" answers? They're only wrong because Copilot doesn't know your team decided to do things differently.
 
@@ -42,7 +42,7 @@ Think about what makes code easy for *any* new team member to work with:
 - Comprehensive tests that document expected behavior
 - Clear architectural patterns
 
-These same qualities make code easier for Copilot to understand and extend correctly. Code that's maintainable for humans is maintainable for AI. Code that confuses junior developers will confuse Copilot too.
+These same qualities make code easier for Copilot to understand and extend correctly. Code that's maintainable for humans is maintainable for AI. Code that confuses developers will confuse Copilot too.
 
 ### The Three Pillars of Copilot Success
 
@@ -141,21 +141,21 @@ GitHub Copilot provides six customization primitives. Each loads at different po
 
 ```
 User's Message
-     ?
+     ↓
 +-----------------------------------------+
-—     Custom Agent (if activated)         —  ? Modifies entire session
-+-----------------------------------------—
-—    Prompt Template (if invoked)         —  ? Single task
-+-----------------------------------------—
-—   Skills (loaded by description match)  —  ? On-demand knowledge
-+-----------------------------------------—
-—  File-Based Instructions (if matched)   —  ? Context for this file
-+-----------------------------------------—
-—       Always-On Instructions            —  ? Foundation layer
-+-----------------------------------------—
-—    MCP Tools (available throughout)     —  ? External capabilities
+|     Custom Agent (if activated)         |  ← Modifies entire session
++-----------------------------------------|
+|    Prompt Template (if invoked)         |  ← Single task
++-----------------------------------------|
+|   Skills (loaded by description match)  |  ← On-demand knowledge
++-----------------------------------------|
+|  File-Based Instructions (if matched)   |  ← Context for this file
++-----------------------------------------|
+|       Always-On Instructions            |  ← Foundation layer
++-----------------------------------------|
+|    MCP Tools (available throughout)     |  ← External capabilities
 +-----------------------------------------+
-     ?
+     ↓
 Response
 ```
 
@@ -193,7 +193,7 @@ Customization is never "done." Codebases evolve, patterns change, and you learn 
 ### The Feedback Loop
 
 ```
-Use Copilot ? Notice friction ? Update customization ? Repeat
+Use Copilot → Notice friction → Update customization → Repeat
 ```
 
 | Signal | Action |
@@ -203,7 +203,7 @@ Use Copilot ? Notice friction ? Update customization ? Repeat
 | Nobody uses a prompt | Remove it or improve discoverability |
 | Instructions file is huge | Split into file-based instructions |
 | New library/pattern adopted | Update tech stack section |
-| Copilot keeps making the same mistake | Add / example to instructions |
+| Copilot keeps making the same mistake | Add ✅/❌ example to instructions |
 | Deprecated patterns appearing in suggestions | Add explicit "avoid X" rule |
 | Team asks "is there a prompt for X?" | Create one |
 | Instructions feel stale | Audit and update quarterly |
@@ -226,13 +226,13 @@ GitHub Copilot assists across the entire software development lifecycle — from
 
 ```
 +-----------------------------------+
-—     Ultimate Outcomes           —  ? Revenue, costs, markets, features shipped, customer satisfaction
-+-----------------------------------—
-—     Product Metrics             —  ? Velocity, quality, deployment frequency
-+-----------------------------------—
-—     Flow Metrics (Leading)      —  ? Cycle time, lead time, throughput
-+-----------------------------------—
-—     Adoption Metrics            —  ? Usage, engagement, prompt invocations
+|     Ultimate Outcomes             |  ← Revenue, costs, features shipped, customer satisfaction
++-----------------------------------|
+|     Product Metrics               |  ← Velocity, quality, deployment frequency
++-----------------------------------|
+|     Flow Metrics (Leading)        |  ← Cycle time, lead time, throughput
++-----------------------------------|
+|     Adoption Metrics              |  ← Usage, engagement, prompt invocations
 +-----------------------------------+
 ```
 
@@ -287,7 +287,7 @@ If you can't ship a feature in a day, examine:
 
 The bottleneck is rarely the coding. It's everything around the coding—reviews, approvals, deployments, coordination. AI accelerates the work; your processes determine whether that acceleration reaches users.
 
-**Target state:** Issue created in the morning ? designed, coded, tested, reviewed, deployed by end of day.
+**Target state:** Issue created in the morning → designed, coded, tested, reviewed, deployed by end of day.
 
 ### SDLC Coverage
 
@@ -330,7 +330,7 @@ Copilot customization can improve every phase:
 
 2. **Start small** — Begin with 3-5 rules addressing common mistakes. Expand as friction points emerge.
 
-3. **Use examples** — Copilot learns better from / patterns than abstract rules.
+3. **Use examples** — Copilot learns better from ✅/❌ patterns than abstract rules.
 
 4. **Explain rationale** — When you specify a rule, explain *why*. Copilot uses this to make better edge-case decisions.
 
@@ -340,22 +340,5 @@ Copilot customization can improve every phase:
 
 7. **Review quarterly** — Remove deprecated patterns, add new conventions, prune unused prompts.
 
----
 
-## FAQ
-
-**How long does adoption take?**
-Solo dev basic setup: 1-2 hours. Small team: 2-4 weeks. Organization-wide: 1-2 quarters.
-
-**Should we customize incrementally or all at once?**
-Incrementally. Start with instructions, add prompts as needed, then agents and skills.
-
-**What if team members want different conventions?**
-Use file-based instructions for areas of difference. Always-on covers shared conventions.
-
-**Do instructions slow down Copilot?**
-No measurable impact. Instructions load once per session and add minimal tokens.
-
----
-
-[Next: Part II - The Six Primitives ?](part-2-primitives.md)
+[Next: Part II - The Six Primitives →](part-2-primitives.md)
