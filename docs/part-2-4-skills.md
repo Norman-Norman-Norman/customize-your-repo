@@ -437,6 +437,56 @@ Moving ImageMagick to a skill means:
 
 If you find yourself thinking "this is useful, but it doesn't need to be in context all the time" — that's a skill.
 
+### Skills vs. File-Based Instructions: Overlapping Territory
+
+Here's the honest truth: **skills and file-based instructions have significant overlap, and that's okay.**
+
+Both primitives emerged from real needs as the AI coding assistant space evolved. File-based instructions use glob patterns (`applyTo: 'src/api/**/*'`) to load context when working on matching files. Skills use description matching to load context when the user's intent matches. Sometimes the same knowledge could reasonably live in either place.
+
+**There is no definitively "right" answer.** As of January 2026, this is still an emerging space. The boundaries between primitives are fuzzy, and that's by design — it gives teams flexibility to organize knowledge in ways that match their workflows.
+
+#### When They Overlap
+
+Consider "API development guidelines." You could implement this as:
+
+**File-based instruction** (`.github/instructions/api-routes.instructions.md`):
+```yaml
+applyTo: 'src/api/**/*'
+```
+Activates when editing files in `src/api/`.
+
+**Skill** (`.github/skills/api-development/SKILL.md`):
+```yaml
+description: 'Guidelines for building REST APIs. Use when creating endpoints, handling authentication, or designing API responses.'
+```
+Activates when the user asks about API design, regardless of which file is open.
+
+Both approaches work. Neither is wrong.
+
+#### Practical Guidance (Not Rules)
+
+| Scenario | Consider | Reasoning |
+|----------|----------|-----------|
+| Knowledge tied to specific files/folders | File-based instruction | Glob patterns match the context naturally |
+| Knowledge tied to user intent/task | Skill | Description matching aligns with what the user is trying to do |
+| Need portability across AI agents | Skill | agentskills.io spec works in VS Code, GitHub CLI, coding agent |
+| Need supporting files (templates, scripts) | Skill | Skills are directories; instructions are single files |
+| Want automatic activation by file location | File-based instruction | `applyTo` is deterministic |
+| Want automatic activation by conversation | Skill | Description matching is semantic |
+
+#### The Experimentation Mindset
+
+Our recommendation: **try both and see what works for your team.**
+
+Some patterns that teams have found useful:
+- Use file-based instructions for "rules when editing X" (linting rules for tests, conventions for components)
+- Use skills for "how to do Y" (workflows, multi-step processes, domain knowledge)
+- Start with file-based instructions (simpler), graduate to skills when you need portability or supporting files
+
+If you're unsure, start somewhere. You can always refactor later — these are just markdown files in version control. The cost of experimenting is low, and you'll learn what works for your specific codebase and team.
+
+**The goal isn't to pick the "correct" primitive. The goal is to get useful context to the AI when it needs it.** If your current approach does that, it's working.
+
 ### How Skills Load: Description Matching
 
 Unlike file-based instructions (which use `applyTo` patterns), skills load **on-demand via description matching**. Here's what happens under the hood:
