@@ -144,21 +144,16 @@ Use Copilot → Notice friction → Update customization → Repeat
 | Copilot keeps making the same mistake | Add ✅/❌ example to instructions |
 | Deprecated patterns appearing in suggestions | Add explicit "avoid X" rule |
 | Team asks "is there a prompt for X?" | Create one |
-| Instructions feel stale | Audit and update quarterly |
-| New team member struggles with setup | Improve onboarding docs in instructions |
 
 ### Team Iteration
 
-1. **Designate an owner** � Someone responsible for maintaining customizations
-2. **Create a feedback channel** � Slack channel, GitHub Discussions, or regular sync
-3. **Review PRs to .github/** � Treat customizations as code
-4. **Share wins** � When a prompt saves time, tell the team
+Customizations are first-class code. Change them as often as your codebase changes. Use PRs so the team stays aware.
 
 ---
 
 ## Measuring Success
 
-GitHub Copilot assists across the entire software development lifecycle � from planning and coding to testing, deployment, and maintenance. Measuring its impact requires looking at both immediate indicators and ultimate outcomes. Better Copilot outcomes in code should directly translate to better outcomes for your repo, team, and organization.
+GitHub Copilot assists across the entire software development lifecycle — from planning and coding to testing, deployment, and maintenance. Measuring its impact requires looking at both immediate indicators and ultimate outcomes. Better Copilot outcomes in code should directly translate to better outcomes for your repo, team, and organization.
 
 ### The Measurement Hierarchy
 
@@ -206,12 +201,12 @@ These connect developer productivity to business outcomes:
 
 The real measure of success is business impact:
 
-- **Features shipped** � Are you delivering more value?
-- **Time to market** � Are you shipping faster?
+- **Features shipped** — Are you delivering more value?
+- **Time to market** — Are you shipping faster?
 
 ### The New Benchmark: A Feature a Day
 
-With an AI-enhanced SDLC, **a feature a day** becomes the realistic target. Not a massive feature�a well-scoped, user-facing change that ships to production.
+With an AI-enhanced SDLC, **a feature a day** becomes the realistic target. Not a massive feature—a well-scoped, user-facing change that ships to production.
 
 If you can't ship a feature in a day, examine:
 
@@ -223,23 +218,23 @@ If you can't ship a feature in a day, examine:
 | **Environment** | How long does CI/CD take? Are deployments manual or automated? |
 | **Testing** | Is testing blocking delivery? Can Copilot help generate tests faster? |
 
-The bottleneck is rarely the coding. It's everything around the coding�reviews, approvals, deployments, coordination. AI accelerates the work; your processes determine whether that acceleration reaches users.
+The bottleneck is rarely the coding. It's everything around the coding—reviews, approvals, deployments, coordination. AI accelerates the work; your processes determine whether that acceleration reaches users.
 
 **Target state:** Issue created in the morning ? designed, coded, tested, reviewed, deployed by end of day.
 
 ### SDLC Coverage
 
-Copilot customization can improve every phase:
+Copilot customization can improve every phase. Measure what matters — flow and feedback, not activity:
 
 | SDLC Phase | Copilot Helps With | Measure |
 |------------|-------------------|----------|
-| **Planning** | Issue creation, story writing | Time to create well-formed tickets |
-| **Design** | Architecture discussions, API design | Design review cycles |
-| **Coding** | Code generation, refactoring | Lines/features per day |
-| **Testing** | Test generation, coverage | Test coverage %, time to write tests |
-| **Review** | PR reviews, security checks | Review turnaround, issues caught |
-| **Deploy** | Release notes, deployment scripts | Deployment frequency |
-| **Maintain** | Bug diagnosis, documentation | MTTR, onboarding time |
+| **Planning** | Issue creation, story writing | Time from idea to ready-for-work |
+| **Design** | Architecture discussions, API design | Decisions per iteration |
+| **Coding** | Code generation, refactoring | Time in active development |
+| **Testing** | Test generation, test design | Defects escaped to production |
+| **Review** | PR reviews, security checks | Wait time for feedback |
+| **Deploy** | Release notes, deployment scripts | Lead time to production |
+| **Maintain** | Bug diagnosis, documentation | Mean time to recovery |
 
 ### Practical Measurement Approach
 
@@ -264,19 +259,19 @@ Copilot customization can improve every phase:
 
 ## Best Practices
 
-1. **Version control all customizations** � Treat `.github/` as code. Review changes in PRs.
+1. **Version control all customizations** — Treat `.github/` as code. Review changes in PRs.
 
-2. **Start small** � Begin with 3-5 rules addressing common mistakes. Expand as friction points emerge.
+2. **Start small** — Begin with 3-5 rules addressing common mistakes. Expand as friction points emerge.
 
-3. **Use examples** � Copilot learns better from ?/? patterns than abstract rules.
+3. **Use examples** — Copilot learns better from ✅/❌ patterns than abstract rules.
 
-4. **Explain rationale** � When you specify a rule, explain *why*. Copilot uses this to make better edge-case decisions.
+4. **Explain rationale** — When you specify a rule, explain *why*. Copilot uses this to make better edge-case decisions.
 
-5. **Keep instructions focused** � If over 2000 words, split into file-based instructions or skills.
+5. **Keep instructions focused** — If over 2000 words, split into file-based instructions or skills.
 
-6. **Test prompts** � Run 3-5 times with varying inputs before sharing with team.
+6. **Test prompts** — Run 3-5 times with varying inputs before sharing with team.
 
-7. **Review quarterly** � Remove deprecated patterns, add new conventions, prune unused prompts.
+7. **Review quarterly** — Remove deprecated patterns, add new conventions, prune unused prompts.
 
 
 [Next: Part II - The Six Primitives ?](part-2-primitives.md)
