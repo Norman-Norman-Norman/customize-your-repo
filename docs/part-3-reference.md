@@ -4,61 +4,133 @@
 
 ---
 
-## Quick Reference Tables
+## Quick Reference: File Locations
 
-### The Six Primitives at a Glance
+| Primitive | Location | File Extension |
+|-----------|----------|----------------|
+| Always-On Instructions | `.github/copilot-instructions.md` | `.md` (specific name) |
+| File-Based Instructions | `.github/instructions/` | `.instructions.md` |
+| Prompts | `.github/prompts/` | `.prompt.md` |
+| Skills | `.github/skills/*/` | `SKILL.md` |
+| Custom Agents | `.github/agents/` OR anywhere | `.agent.md` or any `.md` in agents/ |
+| MCP Servers | `.vscode/mcp.json` | `.json` |
 
-| What You Want | Use This | Location |
-|---------------|----------|----------|
-| Global coding rules | Always-On Instructions | `.github/copilot-instructions.md` |
-| Rules for specific files | File-Based Instructions | `.github/instructions/*.instructions.md` |
-| Reusable task template | Prompt File | `.github/prompts/*.prompt.md` |
-| Specialized capability | Skill | `.github/skills/*/SKILL.md` |
-| AI persona/behavior | Custom Agent | `.github/agents/*.md` |
-| External tool access | MCP Server | `.vscode/mcp.json` |
+---
 
-### Frontmatter Field Reference
+## Frontmatter Reference
 
-**File-Based Instructions:**
-| Field | Required | Description |
-|-------|----------|-------------|
-| `applyTo` | Yes | Glob pattern for automatic application |
-| `name` | No | Display name (defaults to filename) |
-| `description` | No | Description shown on hover |
+### Always-On Instructions
 
-**Prompt Files:**
-| Field | Required | Description |
-|-------|----------|-------------|
-| `agent` | No | Execution mode: `ask`, `agent`, or agent name |
-| `description` | No | Brief description for `/` menu |
-| `model` | No | AI model to use |
-| `tools` | No | Specific tools available |
+No frontmatter required. Plain markdown file.
 
-**Skills (SKILL.md):**
-| Field | Required | Description |
-|-------|----------|-------------|
-| `name` | Yes | 1-64 chars, lowercase, hyphens only |
-| `description` | Yes | 1-1024 chars, WHAT it does + WHEN to use |
-| `metadata` | No | Key-value pairs (author, version) |
+```markdown
+# Copilot Instructions for [Project Name]
 
-**Custom Agents:**
-| Field | Required | Description |
-|-------|----------|-------------|
-| `name` | No | Display name in agent picker |
-| `description` | No | Placeholder text in chat input |
-| `tools` | No | List of available tools |
-| `model` | No | AI model to use |
-| `handoffs` | No | Transitions to other agents |
+## Tech Stack
+...
+```
 
-### Execution Modes Reference
+### File-Based Instructions
+
+| Field | Required | Type | Description |
+|-------|----------|------|-------------|
+| `applyTo` | **Yes** | string | Glob pattern for automatic activation |
+| `name` | No | string | Display name (defaults to filename) |
+| `description` | No | string | Description shown on hover |
+| `excludeAgent` | No | string[] | Agents to exclude from these instructions |
+
+```yaml
+---
+name: 'React Components'
+description: 'Conventions for React component development'
+applyTo: 'src/components/**/*.tsx'
+---
+```
+
+### Prompt Files
+
+| Field | Required | Type | Description |
+|-------|----------|------|-------------|
+| `agent` | No | string | `ask`, `agent`, or custom agent name |
+| `description` | No | string | Brief description for `/` menu |
+| `model` | No | string | AI model (e.g., `Claude Opus 4.5`, `GPT-4o`) |
+| `tools` | No | string[] | Restrict available tools |
+| `argument-hint` | No | string | Hint text for user input |
+
+```yaml
+---
+agent: 'agent'
+description: 'Generate a new React component with tests'
+model: 'Claude Opus 4.5'
+tools: ['editFiles', 'createFile', 'runInTerminal']
+---
+```
+
+### Skills (SKILL.md)
+
+| Field | Required | Type | Description |
+|-------|----------|------|-------------|
+| `name` | **Yes** | string | 1-64 chars, lowercase, hyphens only |
+| `description` | **Yes** | string | 1-1024 chars, WHAT + WHEN to use |
+| `metadata` | No | object | Key-value pairs (author, version) |
+| `license` | No | string | License name or reference |
+| `compatibility` | No | object | Environment requirements |
+
+```yaml
+---
+name: image-manipulation
+description: Resize, convert, compress images using ImageMagick. Use when the user mentions image optimization or format conversion.
+metadata:
+  author: your-org
+  version: "1.0"
+---
+```
+
+**Name Validation Rules:**
+- ✅ `image-manipulation`, `github-issues`, `web-testing`
+- ❌ `Image-Manipulation` (no uppercase)
+- ❌ `-image` or `image-` (no leading/trailing hyphens)
+- ❌ `image--manipulation` (no consecutive hyphens)
+
+### Custom Agents
+
+| Field | Required | Type | Description |
+|-------|----------|------|-------------|
+| `name` | No | string | Display name in agent picker |
+| `description` | No | string | Placeholder text in chat input |
+| `tools` | No | string[] | Available tools for this agent |
+| `model` | No | string | AI model to use |
+| `handoffs` | No | object[] | Transitions to other agents |
+| `argument-hint` | No | string | Hint text for user interaction |
+
+```yaml
+---
+name: 'Security Reviewer'
+description: 'Reviews code for security vulnerabilities'
+tools: ['search', 'readFile', 'usages']
+model: 'Claude Opus 4.5'
+handoffs:
+  - label: 'Fix Issues'
+    agent: 'agent'
+    prompt: 'Fix the security issues identified above.'
+---
+```
+
+---
+
+## Execution Modes
 
 | Mode | Copilot Can... | Best For |
 |------|----------------|----------|
-| `ask` | Respond conversationally (read-only) | Q&A, explanations, code review |
+| `ask` | Respond conversationally (read-only) | Q&A, explanations, code review, brainstorming |
 | `agent` | Create/edit files, run commands | Any task that modifies code |
 | Custom agent | Use that agent's persona and tools | Specialized workflows |
 
-### Tool Access Reference
+**Note:** `edit` mode exists but is not recommended. Use `agent` for any file modifications.
+
+---
+
+## Available Tools
 
 | Tool | Description |
 |------|-------------|
@@ -71,8 +143,12 @@
 | `fetch` | HTTP requests |
 | `githubRepo` | GitHub API access |
 | `getChangedFiles` | Get PR/branch changes |
+| `terminalLastCommand` | Get last terminal command |
+| `getTerminalOutput` | Get terminal output |
 
-### Glob Pattern Reference
+---
+
+## Glob Pattern Reference
 
 | Pattern | Matches |
 |---------|---------|
@@ -83,18 +159,185 @@
 | `src/**/*.ts` | All .ts files under src/ |
 | `**/*.{ts,tsx}` | All .ts and .tsx files |
 | `**/tests/**` | All files in any tests/ directory |
+| `src/components/**/*` | All files under src/components/ |
+| `!**/node_modules/**` | Exclude node_modules |
 
 ---
 
-## Templates and Starter Files
+## MCP Configuration
 
-### Starter copilot-instructions.md
+### Workspace Config (`.vscode/mcp.json`)
+
+```json
+{
+  "servers": {
+    "server-name": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@package/mcp-server"],
+      "env": {
+        "API_TOKEN": "${env:API_TOKEN}"
+      }
+    }
+  }
+}
+```
+
+### HTTP/SSE Server
+
+```json
+{
+  "servers": {
+    "remote-server": {
+      "type": "sse",
+      "url": "https://example.com/mcp",
+      "headers": { "Authorization": "Bearer ${env:TOKEN}" }
+    }
+  }
+}
+```
+
+### Disabling a Server
+
+```json
+{
+  "servers": {
+    "github": { ... },
+    "azure": { "disabled": true }
+  }
+}
+```
+
+### MCP Configuration Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `type` | string | `stdio` or `sse` |
+| `command` | string | Executable (for stdio) |
+| `args` | string[] | Command arguments |
+| `env` | object | Environment variables |
+| `cwd` | string | Working directory |
+| `envFile` | string | Path to .env file |
+| `url` | string | Server URL (for sse) |
+| `headers` | object | HTTP headers (for sse) |
+| `disabled` | boolean | Disable this server |
+
+### Tool Count Guidance
+
+**Aim for fewer than 70 total tools across all MCP servers.**
+
+- Each tool consumes context (name, description, schema)
+- More tools = slower selection, less accurate invocation
+- Only run servers you actively need
+
+---
+
+## Context Window Guidelines
+
+| Content Type | Recommended Size |
+|--------------|------------------|
+| Always-on instructions | 500-2000 words |
+| File-based instructions | 200-500 words |
+| Individual skill | 500-1500 words |
+| Prompt file | 100-500 words |
+| Custom agent | 200-800 words |
+
+**Total active context:** Keep under 4000 words for optimal performance.
+
+---
+
+## When Primitives Load
+
+| Primitive | Loads When |
+|-----------|------------|
+| Always-On Instructions | Session start (always) |
+| File-Based Instructions | File matches `applyTo` pattern |
+| Prompts | User invokes with `/` |
+| Skills | Description matches user request |
+| Custom Agents | User selects or handoff triggers |
+| MCP Servers | Session start (if configured) |
+
+---
+
+## Quick Decision Guide
+
+| Situation | Use This |
+|-----------|----------|
+| Rules that apply everywhere | Always-On Instructions |
+| Rules for specific file types | File-Based Instructions |
+| Repeatable task template | Prompt File |
+| Reusable capability with resources | Skill |
+| Specialized AI persona | Custom Agent |
+| External API/database access | MCP Server |
+| Rules + external access | Skill + MCP together |
+
+---
+
+## Debugging: What's Loaded?
+
+Ask Copilot:
+> "What instructions, skills, and tools are currently active?"
+
+Check specific primitive:
+> "Are you seeing the React component guidelines?"
+
+Trace a problem:
+> "I expected X but got Y. What rules are you following?"
+
+Verify file location:
+- Always-on: `.github/copilot-instructions.md` (exact name)
+- File-based: `.github/instructions/*.instructions.md`
+- Prompts: `.github/prompts/*.prompt.md`
+- Skills: `.github/skills/*/SKILL.md`
+- Agents: `.github/agents/*.md` or `**/*.agent.md`
+- MCP: `.vscode/mcp.json`
+
+---
+
+## Anti-Patterns to Avoid
+
+### Instructions
+| Don't | Why | Do Instead |
+|-------|-----|------------|
+| Write by hand | Errors, missed patterns | Have agent generate from codebase |
+| Copy from other repos | Wrong conventions | Generate per-repo |
+| Over 2000 words | Dilutes important rules | Split to file-based |
+| No rationale | Poor edge-case handling | Include "why" |
+| Never update | Drift from practice | Treat as code, PR changes |
+
+### Prompts
+| Don't | Why | Do Instead |
+|-------|-----|------------|
+| Vague instructions | Inconsistent results | Be specific |
+| No variables | Not reusable | Use `{{variableName}}` |
+| Use `edit` mode | Less reliable | Use `agent` mode |
+| No model specified | Inconsistent | Specify model |
+
+### Skills
+| Don't | Why | Do Instead |
+|-------|-----|------------|
+| Uppercase in name | Validation fails | Lowercase with hyphens |
+| Weak description | Won't activate | Include WHAT + WHEN + keywords |
+| Generic content | Low value | Domain-specific knowledge |
+
+### MCP
+| Don't | Why | Do Instead |
+|-------|-----|------------|
+| 100+ tools | Slow, inaccurate | Under 70 tools |
+| All servers always on | Wasted context | Disable unused servers |
+| Hardcoded secrets | Security risk | Use `${env:VAR}` |
+
+---
+
+## Starter Templates
+
+### copilot-instructions.md
 
 ```markdown
 # Copilot Instructions for [Project Name]
 
 ## Project Overview
-[One paragraph describing what this project does]
+[One paragraph description]
 
 ## Tech Stack
 - [Primary language/framework]
@@ -107,74 +350,65 @@
 - [Rule 3]
 
 ## Architecture
-[Brief description of how code is organized]
+[Brief description]
 
 ## Testing
 - [Testing framework]
-- [Coverage requirements]
 - [Where tests live]
 
 ## What NOT to Do
 - Don't [anti-pattern 1]
 - Don't [anti-pattern 2]
-- Don't [anti-pattern 3]
 ```
 
-### Starter File-Based Instruction
+### File-Based Instruction
 
 ```markdown
 ---
-name: 'React Components'
-description: 'Conventions for React component development'
-applyTo: 'src/components/**/*.tsx'
+name: 'API Routes'
+description: 'Conventions for REST API endpoints'
+applyTo: 'src/api/**/*'
 ---
 
-# React Component Guidelines
+# API Route Guidelines
 
-## Component Structure
-- Functional components only
-- Props interface above component
-- Custom hooks in separate files
+## Response Format
+[Standard format]
 
-## Naming
-- PascalCase for components
-- camelCase for hooks (use- prefix)
+## Error Handling
+[Error patterns]
 
-## Patterns
-[Add specific patterns here]
+## Authentication
+[Auth requirements]
 ```
 
-### Starter Prompt File
+### Prompt File
 
 ```markdown
 ---
 agent: 'agent'
-description: 'Brief description of what this prompt does'
+description: 'Brief description'
 model: 'Claude Opus 4.5'
 ---
 
-[Clear instruction of what to do]
+[Clear instruction]
 
 **Input:** {{variable1}}
 
 ## Requirements
 1. [Requirement 1]
 2. [Requirement 2]
-3. [Requirement 3]
 
 ## Output Format
-[Describe expected output]
-
-## Reference
-[Point to relevant files or patterns in codebase]
+[Expected output]
 ```
 
-### Starter SKILL.md
+### SKILL.md
 
 ```markdown
 ---
 name: skill-name
-description: What this skill does and when to use it. Use when the user mentions [trigger words].
+description: What this does and when to use it. Use when user mentions [keywords].
 metadata:
   author: your-org
   version: "1.0"
@@ -182,53 +416,43 @@ metadata:
 
 # Skill Name
 
-## When to Use This Skill
-Use this skill when:
-- [Trigger condition 1]
-- [Trigger condition 2]
+## When to Use
+- [Trigger 1]
+- [Trigger 2]
 
 ## Instructions
-[Detailed instructions for the capability]
+[Step-by-step guidance]
 
 ## Examples
-[Show example usage]
-
-## Common Patterns
-| Task | Approach |
-|------|----------|
-| [Task 1] | [How to do it] |
+[Practical examples]
 ```
 
-### Starter Custom Agent
+### Custom Agent
 
 ```markdown
 ---
 name: 'Agent Name'
-description: 'What this agent specializes in'
+description: 'What this agent does'
 tools: ['search', 'readFile']
 model: 'Claude Opus 4.5'
 ---
 
-You are [specific persona description].
+You are [persona description].
 
 ## Your Expertise
 - [Area 1]
 - [Area 2]
 
 ## How You Respond
-- [Response style 1]
-- [Response style 2]
-
-## What You Always Do
-- [Consistent behavior 1]
-- [Consistent behavior 2]
+- [Style 1]
+- [Style 2]
 
 ## What You Never Do
 - [Guardrail 1]
 - [Guardrail 2]
 ```
 
-### Starter MCP Configuration
+### MCP Configuration
 
 ```json
 {
@@ -246,108 +470,76 @@ You are [specific persona description].
 
 ---
 
-## Sample Prompt Library
+## Primitive Comparison
 
-### Prompts for Creating Instructions
-
-> 💬 **Generate instructions from codebase:**
->
-> Analyze this repository and create a `.github/copilot-instructions.md` file that documents:
-> 1. The tech stack and architecture
-> 2. Coding conventions found in existing code
-> 3. Patterns that should be followed
-> 4. Anti-patterns to avoid
-> 5. Testing requirements
-> Include rationale for each guideline.
-
-> 💬 **Improve existing instructions:**
->
-> Review `.github/copilot-instructions.md` and:
-> 1. Check for contradictions
-> 2. Add examples for important rules
-> 3. Include rationale where missing
-> 4. Remove obvious/standard rules
-> 5. Verify accuracy against codebase
-
-### Prompts for Creating Prompts
-
-> 💬 **Create a new prompt file:**
->
-> Create a prompt file at `.github/prompts/{{name}}.prompt.md` that:
-> - Uses agent mode with Claude Opus 4.5
-> - Includes variables for: {{variables}}
-> - References our copilot-instructions.md
-> - Has clear success criteria
-
-### Prompts for Creating Skills
-
-> 💬 **Create a new skill:**
->
-> Create a skill at `.github/skills/{{name}}/SKILL.md` following the agentskills.io spec:
-> - Description optimized for discovery
-> - Clear trigger conditions
-> - Step-by-step instructions
-> - Practical examples
-
-### Prompts for Creating Agents
-
-> 💬 **Create a custom agent:**
->
-> Create a custom agent at `.github/agents/{{name}}.agent.md` with:
-> - Specific expertise area
-> - Clear behavioral guidelines
-> - Response format specification
-> - Appropriate tool restrictions
-> - Guardrails for consistency
-
-### Prompts for Debugging
-
-> 💬 **Check what's loaded:**
->
-> What instructions, skills, and tools are currently active in this conversation?
-
-> 💬 **Trace a problem:**
->
-> I expected [X] but got [Y]. Walk me through:
-> 1. What rules you're following
-> 2. What context you have
-> 3. Why you made this choice
+| | Instructions | File-Based | Prompts | Skills | Agents | MCP |
+|-|--------------|------------|---------|--------|--------|-----|
+| **Always loaded** | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| **User invokes** | ❌ | ❌ | ✅ | ❌ | ✅ | ❌ |
+| **Auto-activates** | ✅ | ✅ | ❌ | ✅ | ❌ | ✅ |
+| **Has frontmatter** | ❌ | ✅ | ✅ | ✅ | ✅ | N/A |
+| **Can include files** | ❌ | ❌ | ❌ | ✅ | ❌ | N/A |
+| **External access** | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| **Portable** | ❌ | ❌ | ❌ | ✅ | ❌ | ✅ |
 
 ---
 
-## Cross-Reference: Primitives by Use Case
+## Variable Syntax
 
-| Use Case | Primary Primitive | Supporting Primitives |
-|----------|-------------------|----------------------|
-| Enforce coding standards | [Always-On Instructions](part-2-1-always-on-instructions.md) | File-Based Instructions for exceptions |
-| Generate components | [Prompts](part-2-3-prompts.md) | Instructions for conventions |
-| Code review | [Custom Agents](part-2-5-custom-agents.md) | Instructions for standards |
-| External API access | [MCP](part-2-6-mcp.md) | Skills for conventions |
-| Domain expertise | [Skills](part-2-4-skills.md) | Instructions for context |
-| File-type specific rules | [File-Based Instructions](part-2-2-file-based-instructions.md) | Always-On for global rules |
+Prompts support variables with `{{variableName}}`:
+
+```markdown
+Create a component called `{{componentName}}` that:
+- Handles {{primaryResponsibility}}
+- Returns {{returnShape}}
+```
+
+Users are prompted for values when invoking.
 
 ---
 
-## Resources
+## Handoffs (Custom Agents)
 
-### Official Documentation
+```yaml
+handoffs:
+  - label: 'Start Implementation'
+    agent: 'agent'
+    prompt: 'Implement the design above.'
+  - label: 'Write Tests'
+    agent: '@workspace'
+    prompt: 'Write tests for this code.'
+```
 
-- [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
-- [VS Code Copilot Extension](https://code.visualstudio.com/docs/copilot)
-- [Awesome Copilot Repository](https://github.com/github/awesome-copilot) — Community examples, prompts, and resources
-- [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) — Building custom integrations
-- [Agent Skills Specification](https://agentskills.io) — Portable skill format
+---
 
-### Community Resources
+## Environment Variables in MCP
 
-The [Awesome Copilot](https://github.com/github/awesome-copilot) repository provides:
-- Production instruction files
-- Tested prompt templates
-- Community custom agents
-- MCP server examples
-- Integration patterns
+Reference environment variables with `${env:VAR_NAME}`:
 
-### Implementation Roadmap
+```json
+{
+  "env": {
+    "API_KEY": "${env:MY_API_KEY}",
+    "DATABASE_URL": "${env:DATABASE_URL}"
+  }
+}
+```
+
+---
+
+## Official Resources
+
+| Resource | URL |
+|----------|-----|
+| GitHub Copilot Docs | https://docs.github.com/en/copilot |
+| VS Code Copilot Docs | https://code.visualstudio.com/docs/copilot |
+| MCP Specification | https://modelcontextprotocol.io |
+| Agent Skills Spec | https://agentskills.io |
+| Awesome Copilot | https://github.com/github/awesome-copilot |
+
+---
+
+## Implementation Roadmap
 
 | Timeline | Action | Outcome |
 |----------|--------|---------|
@@ -355,23 +547,6 @@ The [Awesome Copilot](https://github.com/github/awesome-copilot) repository prov
 | Week 1 | Add 2-3 prompt files for repeated tasks | Consistent task automation |
 | Month 1 | Implement custom agents for specialized workflows | Role-based AI assistance |
 | Quarter 1 | Evaluate MCP servers and Skills | External integrations, portable capabilities |
-
----
-
-## Summary
-
-| Objective | Solution | Learn More |
-|-----------|----------|------------|
-| Set permanent coding rules | Instructions file | [Always-On Instructions](part-2-1-always-on-instructions.md) |
-| Rules for specific file types | File-based instructions | [File-Based Instructions](part-2-2-file-based-instructions.md) |
-| Create a reusable task | Prompt file | [Prompts](part-2-3-prompts.md) |
-| Specialized capability | Skill | [Skills](part-2-4-skills.md) |
-| Define AI persona/behavior | Custom Agent | [Custom Agents](part-2-5-custom-agents.md) |
-| Connect to external data/tools | MCP integration | [MCP](part-2-6-mcp.md) |
-
----
-
-*For additional examples and community contributions, visit [Awesome Copilot](https://github.com/github/awesome-copilot).*
 
 ---
 
