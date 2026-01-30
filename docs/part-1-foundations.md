@@ -161,7 +161,7 @@ GitHub Copilot assists across the entire software development lifecycle — from
 +-----------------------------------+
 |     Ultimate Outcomes             |  ← Revenue, costs, features shipped, customer satisfaction
 +-----------------------------------|
-|     Product Metrics               |  ← Velocity, quality, deployment frequency
+|     Product Metrics               |  ← Deployment frequency, change failure rate, MTTR
 +-----------------------------------|
 |     Flow Metrics (Leading)        |  ← Cycle time, lead time, throughput
 +-----------------------------------|
@@ -177,7 +177,7 @@ These metrics show early impact and predict downstream improvements:
 |--------|------------------|---------------|
 | **Cycle Time** | Time from work started to PR merged | GitHub Insights, LinearB, Jellyfish |
 | **Lead Time** | Time from issue created to deployed | Jira/GitHub + deployment tracking |
-| **Throughput** | PRs merged per developer per week | GitHub API |
+| **Throughput** | PRs merged per week (team) | GitHub API |
 | **PR Review Time** | Time from PR opened to first review | GitHub Insights |
 | **Rework Rate** | % of PRs requiring changes after review | PR comment/commit analysis |
 
@@ -186,16 +186,16 @@ These metrics show early impact and predict downstream improvements:
 - Throughput increasing (more work completed)
 - Rework rate decreasing (higher first-time quality)
 
-### Product Metrics
+### Product Metrics (DORA)
 
-These connect developer productivity to business outcomes:
+The four DORA metrics connect flow to business outcomes:
 
 | Metric | What It Measures | Target Impact |
 |--------|------------------|---------------|
 | **Deployment Frequency** | How often you ship | Increase |
 | **Change Failure Rate** | % of deployments causing incidents | Decrease |
 | **Mean Time to Recovery** | Time to fix production issues | Decrease |
-| **Velocity** | Story points/features per sprint | Increase |
+| **Lead Time for Changes** | Commit to production | Decrease |
 
 ### Ultimate Outcomes
 
@@ -239,7 +239,7 @@ Copilot customization can improve every phase. Measure what matters — flow and
 ### Practical Measurement Approach
 
 **Solo developers:**
-- Track subjective productivity ("Am I shipping faster?")
+- Ask yourself: "Am I shipping faster?"
 - Monitor PR merge time
 - Note tasks that used to take hours but now take minutes
 
