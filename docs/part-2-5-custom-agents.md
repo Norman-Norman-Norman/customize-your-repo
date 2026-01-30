@@ -245,7 +245,7 @@ The `handoffs` field creates natural workflow transitions, where one agent can s
 #### 5. Feature Builder (Orchestrator with Sub-Agents)
 **File:** `.github/agents/feature-builder.agent.md`
 
-This example demonstrates the sub-agent pattern — an orchestrator agent that delegates to specialized sub-agents:
+This example demonstrates the sub-agent pattern â€” an orchestrator agent that delegates to specialized sub-agents:
 
 ```markdown
 ---
@@ -298,7 +298,7 @@ After implementing the feature:
 - Summarize what each sub-agent should focus on
 ```
 
-**Why this works:** The Feature Builder stays focused on implementation. When it's time for security review, tests, or PR creation, it hands off to specialized agents that have their own isolated context. The sub-agents don't inherit the full implementation context — they receive only the relevant prompt and can focus deeply on their specialty.
+**Why this works:** The Feature Builder stays focused on implementation. When it's time for security review, tests, or PR creation, it hands off to specialized agents that have their own isolated context. The sub-agents don't inherit the full implementation context â€” they receive only the relevant prompt and can focus deeply on their specialty.
 
 ### Prompt vs. Custom Agent Comparison
 
@@ -400,7 +400,7 @@ You are a helpful assistant for reviewing code.
 ```markdown
 You are a principal engineer with 20 years of experience across 
 startups and enterprise. You've seen what works and what becomes 
-technical debt. You're kind but direct—you won't sugarcoat issues 
+technical debt. You're kind but directâ€”you won't sugarcoat issues 
 but you always explain your reasoning.
 ```
 
@@ -495,7 +495,7 @@ tools: ['search', 'readFile']
 model: 'Opus 4.5'
 ---
 
-You are a rubber duck. Your job is NOT to solve problems—it's to help 
+You are a rubber duck. Your job is NOT to solve problemsâ€”it's to help 
 the user solve them themselves by asking good questions.
 
 ## Your Technique
@@ -513,7 +513,7 @@ the user solve them themselves by asking good questions.
 - "Interesting! What made you think of that?"
 ```
 
-**The Devil's Advocate** – Challenges every decision:
+**The Devil's Advocate** â€” Challenges every decision:
 
 ```markdown
 ---
@@ -533,7 +533,7 @@ Your job is to find holes in their reasoning.
 - "What would a skeptical stakeholder say?"
 
 ## Important
-You're not being negative—you're being thorough.
+You're not being negativeâ€”you're being thorough.
 After challenging, acknowledge good points.
 End with "If you can address these, you've got a solid plan."
 ```

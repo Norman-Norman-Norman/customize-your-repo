@@ -96,13 +96,13 @@ File-based instructions complement always-on instructions by providing contextua
 
 ### File-Based Instructions vs. Skills
 
-File-based instructions and skills have overlapping use cases. Both can provide context-specific knowledge to Copilot — file-based instructions activate by file pattern, skills activate by description matching.
+File-based instructions and skills have overlapping use cases. Both can provide context-specific knowledge to Copilot â€” file-based instructions activate by file pattern, skills activate by description matching.
 
 **Quick guidance:**
 - **File-based instructions**: Best for rules tied to specific file locations that won't be reused elsewhere
 - **Skills**: Best for reusable knowledge that applies across multiple contexts, or when you need supporting files (templates, scripts)
 
-There's no definitively "right" choice — this space is still evolving. For a detailed exploration of when to use each, see [Skills vs. File-Based Instructions: Overlapping Territory](part-2-4-skills.md#skills-vs-file-based-instructions-overlapping-territory).
+There's no definitively "right" choice â€” this space is still evolving. For a detailed exploration of when to use each, see [Skills vs. File-Based Instructions: Overlapping Territory](part-2-4-skills.md#skills-vs-file-based-instructions-overlapping-territory).
 
 ---
 

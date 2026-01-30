@@ -11,7 +11,7 @@ MCP (Model Context Protocol) provides external gateway capabilities for Copilot.
 **Loading:** Session start
 **Best For:** External gateways
 
-> **Scope:** This section covers how GitHub Copilot *consumes* MCP servers — configuration, tool discovery, and invocation. It does not cover MCP server security, authentication implementation, or building custom MCP servers. For those topics, see the [MCP specification](https://modelcontextprotocol.io).
+> **Scope:** This section covers how GitHub Copilot *consumes* MCP servers â€” configuration, tool discovery, and invocation. It does not cover MCP server security, authentication implementation, or building custom MCP servers. For those topics, see the [MCP specification](https://modelcontextprotocol.io).
 
 ### How MCP Servers Expose Tools
 
@@ -121,8 +121,8 @@ This is an important distinction:
 
 MCP servers and skills serve different purposes, but teams sometimes wonder which to use. The short answer: **use both together.**
 
-- **MCP servers** provide *access* — authentication, API connections, external integrations
-- **Skills** provide *knowledge* — templates, conventions, workflows, domain expertise
+- **MCP servers** provide *access* â€” authentication, API connections, external integrations
+- **Skills** provide *knowledge* â€” templates, conventions, workflows, domain expertise
 
 The best setups combine them: an MCP server handles "how to connect to Jira" while a skill handles "how our team formats Jira tickets."
 

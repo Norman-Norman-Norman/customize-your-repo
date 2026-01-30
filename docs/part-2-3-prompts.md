@@ -52,8 +52,8 @@ The `agent` field in the frontmatter determines how Copilot executes the prompt:
 
 | Mode | What It Does | Best For |
 |------|--------------|----------|
-| `ask` | Read-only — responds conversationally, no file changes | Questions, explanations, brainstorming, code review |
-| `agent` | Takes autonomous action — creates/edits files, runs commands | Multi-file changes, scaffolding, bug fixes, any task that modifies code |
+| `ask` | Read-only â€” responds conversationally, no file changes | Questions, explanations, brainstorming, code review |
+| `agent` | Takes autonomous action â€” creates/edits files, runs commands | Multi-file changes, scaffolding, bug fixes, any task that modifies code |
 
 **Note:** An `edit` mode exists but is not recommended. Use `agent` for any task that requires modifying files.
 
@@ -290,16 +290,16 @@ Create a new Agent Skill for: **{{skillPurpose}}**
 
 Before creating anything, fetch the latest specifications from authoritative sources:
 
-1. **Agent Skills Specification** — Fetch from agentskills.io:
-   - https://agentskills.io/spec — Core specification
-   - https://agentskills.io/home — Overview and examples
+1. **Agent Skills Specification** â€” Fetch from agentskills.io:
+   - https://agentskills.io/spec â€” Core specification
+   - https://agentskills.io/home â€” Overview and examples
 
-2. **VS Code Copilot Documentation** — Fetch from code.visualstudio.com:
-   - https://code.visualstudio.com/docs/copilot/copilot-customization — Customization overview
-   - https://code.visualstudio.com/docs/copilot/copilot-extensibility-overview — Extensibility patterns
+2. **VS Code Copilot Documentation** â€” Fetch from code.visualstudio.com:
+   - https://code.visualstudio.com/docs/copilot/copilot-customization â€” Customization overview
+   - https://code.visualstudio.com/docs/copilot/copilot-extensibility-overview â€” Extensibility patterns
 
-3. **GitHub Copilot Documentation** — Fetch from docs.github.com:
-   - https://docs.github.com/en/copilot/customizing-copilot — Customization guide
+3. **GitHub Copilot Documentation** â€” Fetch from docs.github.com:
+   - https://docs.github.com/en/copilot/customizing-copilot â€” Customization guide
 
 Synthesize these sources to understand:
 - Required SKILL.md frontmatter fields
@@ -326,11 +326,11 @@ Based on the fetched documentation and the user's purpose, create:
 - `metadata`: Include author and version
 
 **Content Sections:**
-1. **When to Use This Skill** — Trigger conditions (bulleted list)
-2. **Prerequisites** — Required tools, dependencies, setup
-3. **Instructions** — Step-by-step guidance with code examples
-4. **Common Patterns** — Table of frequent use cases
-5. **Edge Cases** — Gotchas and how to handle them
+1. **When to Use This Skill** â€” Trigger conditions (bulleted list)
+2. **Prerequisites** â€” Required tools, dependencies, setup
+3. **Instructions** â€” Step-by-step guidance with code examples
+4. **Common Patterns** â€” Table of frequent use cases
+5. **Edge Cases** â€” Gotchas and how to handle them
 
 ## Phase 3: Validate
 
@@ -426,7 +426,7 @@ tools: ['editFiles', 'createFile']      # Optional: restrict tools
 | Mode | Copilot Can... | Best For |
 |------|----------------|----------|
 | `ask` | Talk back, explain, suggest (read-only) | Design discussions, Q&A, brainstorming, code review |
-| `agent` | Create files, edit files, run commands | Any task that modifies code — scaffolding, bug fixes, refactoring |
+| `agent` | Create files, edit files, run commands | Any task that modifies code â€” scaffolding, bug fixes, refactoring |
 | Custom agent | Use that agent's persona and tools | Specialized workflows with defined behavior |
 
 **Note:** An `edit` mode exists but is not recommended. Use `agent` instead for any file modifications.

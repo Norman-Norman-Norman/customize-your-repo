@@ -1,6 +1,6 @@
 # The Definitive Guide to GitHub Copilot Primitives
 
-This is the complete reference for GitHub Copilot's six customization primitives — the configuration files that transform Copilot from a generic assistant into a team-aware coding partner.
+This is the complete reference for GitHub Copilot's six customization primitives â€” the configuration files that transform Copilot from a generic assistant into a team-aware coding partner.
 
 **What you'll learn:**
 - How each primitive works and when it loads

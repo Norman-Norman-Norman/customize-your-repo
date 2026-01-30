@@ -78,7 +78,7 @@ Our team benchmarks showed functional components with hooks reduced our bundle
 size by 15% and made testing significantly easier.
 ```
 
-This helps Copilot understand not just *what* to do, but *why*—leading to better suggestions in edge cases.
+This helps Copilot understand not just *what* to do, but *why*â€”leading to better suggestions in edge cases.
 
 ### Complete Example: Production Next.js Project
 
@@ -100,17 +100,17 @@ We prioritize reliability over cutting-edge features.
 ```
 src/
 +-- app/                    # Next.js App Router pages
-¦   +-- (auth)/            # Auth-required routes (grouped)
-¦   +-- (public)/          # Public routes
-¦   +-- api/               # API routes (webhooks only)
+â€”   +-- (auth)/            # Auth-required routes (grouped)
+â€”   +-- (public)/          # Public routes
+â€”   +-- api/               # API routes (webhooks only)
 +-- components/
-¦   +-- ui/                # Shared UI primitives
-¦   +-- features/          # Feature-specific components
+â€”   +-- ui/                # Shared UI primitives
+â€”   +-- features/          # Feature-specific components
 +-- lib/                   # Shared utilities
 +-- server/
-¦   +-- actions/           # Server Actions
-¦   +-- db/                # Database queries (Prisma)
-¦   +-- services/          # Business logic
+â€”   +-- actions/           # Server Actions
+â€”   +-- db/                # Database queries (Prisma)
+â€”   +-- services/          # Business logic
 +-- types/                 # Shared TypeScript types
 ```
 
