@@ -6,15 +6,15 @@
 
 ## Introduction
 
-Imagine your first day at a new company. Someone hands you a laptop, points at a million lines of code, and says "add a feature to checkout." No architecture docs. No style guide. No one to ask why the last three developers quit.
+Imagine your first day at a new company. Someone hands you a laptop, points at a million lines of code, and says "add a feature to checkout." No architecture docs. No style guide. No idea where to go for help.
 
-You start reading. In one file, 2+2 equals 5. In another file, 2+2 equals 0. Someone invented their own math system three years ago and never documented it. The function called `save()` actually deletes things. The `UserService` doesn't handle users—that's in `AccountManager`, except when it's in `ProfileHandler`, except on Tuesdays.
+You start reading. In one file, 2+2 equals 5. In another file, 2+2 equals 0. Someone invented their own math system three years ago and never documented it. The function called `save()` actually deletes things. The `UserService` doesn't handle users—that's in `AccountManager`, except when it's in `ProfileHandler`, except on front-end which follows it's own logic and makes you regret some decisions.
 
 None of this matches anything you learned. It's not wrong, exactly—it's *bespoke*. Someone built a custom framework on top of a custom ORM on top of a custom router, and the only person who understood it left for a startup in 2019.
 
 Now someone asks you to make a change. You do your best. You give them something reasonable based on everything you've read. They get mad. *"Why would you use Redux? We use React Query! It's obvious!"* 
 
-It wasn't obvious. It was in a file you hadn't opened yet.
+It wasn't obvious. It was in a file you hadn't opened yet because it .depricated folder.
 
 **That's Copilot's reality—*every single time you send a prompt.***
 
@@ -24,7 +24,7 @@ This guide fixes that.
 
 **The right mental model: Copilot is a new developer on your team.**
 
-But here's the twist: this new developer is already an excellent coder. Frontier models like Claude Opus 4.5 know language idioms, common patterns, and industry best practices. They've seen more code than any human ever will. You don't need to teach them how to write a for-loop or when to use async/await.
+But here's the twist: this new developer is already an excellent coder. Frontier models like Claude Opus 4.5, Codex 5.2, Gemini 3 Pro know language idioms, common patterns, and industry best practices. They've seen more code than any human ever will. You don't need to teach them how to write a for-loop or when to use async/await.
 
 Now imagine handing this brilliant new hire a 10,000-line document of coding rules. Every edge case. Every preference. Tabs vs. spaces. Whether to use `index` or `i` in loops. Exactly how many blank lines between functions. They'd be paralyzed—second-guessing every keystroke, drowning in rules instead of shipping code.
 
@@ -40,9 +40,9 @@ Think about what makes code easy for *any* new team member to work with:
 - Small, modular functions with clear responsibilities
 - Good naming conventions (not everything called `i`, `temp`, or `data`)
 - Comprehensive tests that document expected behavior
-- Clear architectural patterns
+- Clear architectural patterns that follow known architectural patterns
 
-These same qualities make code easier for Copilot to understand and extend correctly. Code that's maintainable for humans is maintainable for AI. Code that confuses developers will confuse Copilot too.
+These same qualities make code easier for Copilot to understand and extend correctly. Code that's maintainable for humans is maintainable for AI. Code that confuses  developers will confuse Copilot too.  As you work with Copilot you may want to refactor your code so Copilot can be more effective.  We'll discuss that later.
 
 ### The Three Pillars of Copilot Success
 
@@ -54,7 +54,7 @@ Copilot's output quality depends on three factors:
 | **Codebase Quality** | How well Copilot can understand your code | Write clean, well-documented, modular code |
 | **Repository Configuration** | The context and rules Copilot operates with | **This guide** — the six customization primitives |
 
-Your **model selection** matters more than most people realize. A frontier model with extended thinking will dramatically outperform a model from two years ago—it's not even close. Claude Opus 4.5 with thinking enabled will reason through multi-file refactors, catch edge cases, and produce code that actually works on the first try. Older or faster models may produce syntax-correct code that misses the point entirely.
+Your **model selection** matters more than most people realize. A frontier model with extended thinking will dramatically outperform a model from two years ago—it's not even close. Claude Opus 4.5, Codex 5.2, Gemini Pro 3 with thinking enabled will reason through multi-file refactors, catch edge cases, and produce code that actually works on the first try. Older or faster models may produce syntax-correct code that misses the point entirely.
 
 Different models also *behave* differently, and that's okay. Some are more verbose. Some ask more clarifying questions. Some jump straight to implementation. Learn your model's personality and work with it, not against it. The best model for your workflow might not be the newest or the fastest—it's the one whose behavior matches how you like to work.
 
@@ -211,16 +211,16 @@ Use Copilot → Notice friction → Update customization → Repeat
 
 ### Team Iteration
 
-1. **Designate an owner** — Someone responsible for maintaining customizations
-2. **Create a feedback channel** — Slack channel, GitHub Discussions, or regular sync
-3. **Review PRs to .github/** — Treat customizations as code
-4. **Share wins** — When a prompt saves time, tell the team
+1. **Designate an owner** � Someone responsible for maintaining customizations
+2. **Create a feedback channel** � Slack channel, GitHub Discussions, or regular sync
+3. **Review PRs to .github/** � Treat customizations as code
+4. **Share wins** � When a prompt saves time, tell the team
 
 ---
 
 ## Measuring Success
 
-GitHub Copilot assists across the entire software development lifecycle — from planning and coding to testing, deployment, and maintenance. Measuring its impact requires looking at both immediate indicators and ultimate outcomes. Better Copilot outcomes in code should directly translate to better outcomes for your repo, team, and organization.
+GitHub Copilot assists across the entire software development lifecycle � from planning and coding to testing, deployment, and maintenance. Measuring its impact requires looking at both immediate indicators and ultimate outcomes. Better Copilot outcomes in code should directly translate to better outcomes for your repo, team, and organization.
 
 ### The Measurement Hierarchy
 
@@ -268,12 +268,12 @@ These connect developer productivity to business outcomes:
 
 The real measure of success is business impact:
 
-- **Features shipped** — Are you delivering more value?
-- **Time to market** — Are you shipping faster?
+- **Features shipped** � Are you delivering more value?
+- **Time to market** � Are you shipping faster?
 
 ### The New Benchmark: A Feature a Day
 
-With an AI-enhanced SDLC, **a feature a day** becomes the realistic target. Not a massive feature—a well-scoped, user-facing change that ships to production.
+With an AI-enhanced SDLC, **a feature a day** becomes the realistic target. Not a massive feature�a well-scoped, user-facing change that ships to production.
 
 If you can't ship a feature in a day, examine:
 
@@ -285,9 +285,9 @@ If you can't ship a feature in a day, examine:
 | **Environment** | How long does CI/CD take? Are deployments manual or automated? |
 | **Testing** | Is testing blocking delivery? Can Copilot help generate tests faster? |
 
-The bottleneck is rarely the coding. It's everything around the coding—reviews, approvals, deployments, coordination. AI accelerates the work; your processes determine whether that acceleration reaches users.
+The bottleneck is rarely the coding. It's everything around the coding�reviews, approvals, deployments, coordination. AI accelerates the work; your processes determine whether that acceleration reaches users.
 
-**Target state:** Issue created in the morning → designed, coded, tested, reviewed, deployed by end of day.
+**Target state:** Issue created in the morning ? designed, coded, tested, reviewed, deployed by end of day.
 
 ### SDLC Coverage
 
@@ -326,19 +326,19 @@ Copilot customization can improve every phase:
 
 ## Best Practices
 
-1. **Version control all customizations** — Treat `.github/` as code. Review changes in PRs.
+1. **Version control all customizations** � Treat `.github/` as code. Review changes in PRs.
 
-2. **Start small** — Begin with 3-5 rules addressing common mistakes. Expand as friction points emerge.
+2. **Start small** � Begin with 3-5 rules addressing common mistakes. Expand as friction points emerge.
 
-3. **Use examples** — Copilot learns better from ✅/❌ patterns than abstract rules.
+3. **Use examples** � Copilot learns better from ?/? patterns than abstract rules.
 
-4. **Explain rationale** — When you specify a rule, explain *why*. Copilot uses this to make better edge-case decisions.
+4. **Explain rationale** � When you specify a rule, explain *why*. Copilot uses this to make better edge-case decisions.
 
-5. **Keep instructions focused** — If over 2000 words, split into file-based instructions or skills.
+5. **Keep instructions focused** � If over 2000 words, split into file-based instructions or skills.
 
-6. **Test prompts** — Run 3-5 times with varying inputs before sharing with team.
+6. **Test prompts** � Run 3-5 times with varying inputs before sharing with team.
 
-7. **Review quarterly** — Remove deprecated patterns, add new conventions, prune unused prompts.
+7. **Review quarterly** � Remove deprecated patterns, add new conventions, prune unused prompts.
 
 
-[Next: Part II - The Six Primitives →](part-2-primitives.md)
+[Next: Part II - The Six Primitives ?](part-2-primitives.md)
