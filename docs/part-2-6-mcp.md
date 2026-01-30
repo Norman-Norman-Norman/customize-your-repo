@@ -117,6 +117,22 @@ This is an important distinction:
 
 **Instructions provide knowledge. MCP provides capabilities.**
 
+### MCP vs. Skills: Complementary, Not Competing
+
+MCP servers and skills serve different purposes, but teams sometimes wonder which to use. The short answer: **use both together.**
+
+- **MCP servers** provide *access* — authentication, API connections, external integrations
+- **Skills** provide *knowledge* — templates, conventions, workflows, domain expertise
+
+The best setups combine them: an MCP server handles "how to connect to Jira" while a skill handles "how our team formats Jira tickets."
+
+**Quick guidance:**
+- Need to authenticate or call external APIs? → MCP server
+- Need to encode team conventions or workflows? → Skill
+- Need both access AND conventions? → Use both
+
+For a detailed exploration with practical examples (Git, Jira, file operations), see [Skills vs. MCP Servers: When to Use Which](part-2-4-skills.md#skills-vs-mcp-servers-when-to-use-which).
+
 ---
 
 [← Custom Agents](part-2-5-custom-agents.md) | [Next: Part III - Reference →](part-3-reference.md)
