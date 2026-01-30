@@ -97,12 +97,33 @@ MCP servers are configured in dedicated `mcp.json` files:
 }
 ```
 
+### Keep Your Tool Count Low
+
+Copilot performs best with fewer tools available. Each tool's name, description, and schema consumes context and increases decision complexity. **Aim for fewer than 70 total tools across all MCP servers.**
+
+**Only run the MCP servers you actually need:**
+
+- Working on frontend? Disable database MCP servers.
+- Not deploying to Azure? Turn off Azure MCP.
+- Finished with Jira integration? Remove it from config.
+
+```json
+{
+  "servers": {
+    "github": { ... },
+    "azure": { "disabled": true }  // Not deploying to Azure this sprint
+  }
+}
+```
+
+Fewer tools means faster tool selection, less context consumed, and more accurate tool invocation.
+
 ### Example Use Cases
 
-- **"What's the status of issue #234?"**  GitHub MCP
-- **"Show me all users who signed up this week"**  Database MCP
-- **"Test this API endpoint"**  Fetch MCP
-- **"Take a screenshot of the login page"**  Puppeteer MCP
+- **"What's the status of issue #234?"** → GitHub MCP
+- **"Show me all users who signed up this week"** → Database MCP
+- **"Test this API endpoint"** → Fetch MCP
+- **"Take a screenshot of the login page"** → Puppeteer MCP
 
 ### Instructions vs. MCP Comparison
 

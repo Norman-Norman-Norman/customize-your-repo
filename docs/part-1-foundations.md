@@ -246,7 +246,6 @@ Copilot customization can improve every phase. Measure what matters — flow and
 **Teams:**
 - Baseline metrics before customization
 - Track cycle time and throughput weekly
-- Survey developer satisfaction quarterly
 - Compare rework rates before/after
 
 **Organizations:**
