@@ -31,7 +31,7 @@ When discussing customization options, reference the correct primitive:
 | File-based Instructions | `.github/instructions/*.instructions.md` | Pattern-matched rules |
 | Prompts | `.github/prompts/*.prompt.md` | Reusable task templates |
 | Skills | `.github/skills/` | Portable capabilities |
-| Custom Agents | `.github/agents/*.agent.md` | Specialized personas |
+| Custom Agents | `.github/agents/*.md` | Specialized personas |
 | MCP | `.vscode/mcp.json` | External integrations |
 
 ### Detailed Topic References

@@ -59,6 +59,8 @@ This guide focuses on the customization primitives that help Copilot understand 
 
 **Coming Soon:** A companion guide covering how to refactor and restructure code so AI agents have an easier time understanding and modifying it.
 
+**Open Source Reference:** VS Code and the GitHub Copilot extension are open source. When documentation is unclear or you want to understand exactly how a feature works, the source code at https://github.com/microsoft/vscode is the authoritative reference. Search the codebase for instruction parsing, prompt handling, or MCP integration to see implementation details firsthand.
+
 When properly configured, Copilot can:
 
 - Respect team coding conventions automatically
@@ -81,16 +83,6 @@ Without customization, every Copilot interaction starts from zero. The AI doesn'
 - Certain libraries are deprecated
 
 This information gets repeated in prompts, ignored in suggestions, or caught in PR review. Each instance costs time.
-
-### The "New Developer" Mental Model
-
-The most useful way to think about Copilot is as a highly capable new developer who joined your team five minutes ago.
-
-Like any new developer, Copilot:
-- Has strong general knowledge but doesn't know your specific patterns
-- Will write correct code that doesn't match your conventions
-- Makes reasonable assumptions that may conflict with team decisions
-- Improves dramatically when given context about how things work here
 
 The customization primitives are your onboarding documentation for this AI team member.
 
@@ -121,124 +113,65 @@ See the [Quick Start](../ReadMe.md#quick-start-the-adoption-path) for the step-b
 
 ---
 
-## The Customization Primitives Overview
+## The Six Primitives
 
-GitHub Copilot provides six distinct customization primitives. Each serves a specific purpose and loads at different points in the interaction lifecycle.
+GitHub Copilot provides six customization primitives. Each loads at different points and serves a distinct purpose:
 
-### The Six Primitives at a Glance
+| Primitive | Location | When It Loads | Best For |
+|-----------|----------|---------------|----------|
+| [**Always-on Instructions**](part-2-1-always-on-instructions.md) | `.github/copilot-instructions.md` | Every request | Tech stack, coding conventions |
+| [**File-based Instructions**](part-2-2-file-based-instructions.md) | `.github/instructions/*.instructions.md` | When file pattern matches | Area-specific rules |
+| [**Prompts**](part-2-3-prompts.md) | `.github/prompts/*.prompt.md` | When user invokes `/name` | Repeatable tasks |
+| [**Skills**](part-2-4-skills.md) | `.github/skills/*/SKILL.md` | When description matches intent | Specialized capabilities |
+| [**Custom Agents**](part-2-5-custom-agents.md) | `.github/agents/*.md` | When user activates | Personas, constrained workflows |
+| [**MCP**](part-2-6-mcp.md) | `.vscode/mcp.json` | Session start | External APIs, live data |
 
-| Primitive | Location | Loading | Best For |
-|-----------|----------|---------|----------|
-| [**Always-on Instructions**](part-2-1-always-on-instructions.md) | `.github/copilot-instructions.md` | Every session | Codebase guardrails |
-| [**File-based Instructions**](part-2-2-file-based-instructions.md) | `.github/instructions/*.instructions.md` | Pattern match | Area-specific rules |
-| [**Prompts (Slash Commands)**](part-2-3-prompts.md) | `.github/prompts/*.prompt.md` | User invokes | One-shot workflows |
-| [**Skills**](part-2-4-skills.md) | `.github/skills/*/SKILL.md` | Description match | Reusable capabilities |
-| [**Custom Agents**](part-2-5-custom-agents.md) | `.github/agents/*.agent.md` | Top-level/subagent | Constrained workflows |
-| [**MCP**](part-2-6-mcp.md) | `.vscode/mcp.json` | Session start | External gateways |
-
-### How They Work Together
-
-These primitives form a layered system:
+### How They Layer Together
 
 ```
+User's Message
+     ↓
 ┌─────────────────────────────────────────┐
-│           User's Message                │
+│     Custom Agent (if activated)         │  ← Modifies entire session
 ├─────────────────────────────────────────┤
-│     Custom Agent (if activated)         │
+│    Prompt Template (if invoked)         │  ← Single task
 ├─────────────────────────────────────────┤
-│    Prompt Template (if invoked)         │
+│   Skills (loaded by description match)  │  ← On-demand knowledge
 ├─────────────────────────────────────────┤
-│   Skills (loaded by description match)  │
+│  File-Based Instructions (if matched)   │  ← Context for this file
 ├─────────────────────────────────────────┤
-│  File-Based Instructions (if matched)   │
+│       Always-On Instructions            │  ← Foundation layer
 ├─────────────────────────────────────────┤
-│       Always-On Instructions            │
-├─────────────────────────────────────────┤
-│    MCP Tools (available throughout)     │
+│    MCP Tools (available throughout)     │  ← External capabilities
 └─────────────────────────────────────────┘
+     ↓
+Response
 ```
 
-Each layer adds specificity. Always-on instructions provide the foundation; file-based instructions add context for specific file types; prompts define complete tasks; custom agents modify behavior for entire sessions.
+Each layer adds specificity. The foundation (always-on instructions) applies everywhere; other primitives activate based on context.
 
-### What Each Primitive Does Best
+### Context Window Guidelines
 
-| Primitive | Best For | Not Ideal For |
-|-----------|----------|---------------|
-| [**Always-on Instructions**](part-2-1-always-on-instructions.md) | Universal rules, tech stack, conventions | Specialized capabilities, external integrations |
-| [**File-based Instructions**](part-2-2-file-based-instructions.md) | Language-specific rules, area conventions | Global rules, task automation |
-| [**Prompts**](part-2-3-prompts.md) | Repeatable tasks, team workflows | Persistent behavior changes |
-| [**Skills**](part-2-4-skills.md) | Specialized capabilities, cross-tool knowledge | Simple rules, always-needed context |
-| [**Custom Agents**](part-2-5-custom-agents.md) | Personas, constrained workflows, specialized roles | One-off tasks |
-| [**MCP**](part-2-6-mcp.md) | External APIs, live data, tool integration | Knowledge, conventions, patterns |
+Every primitive consumes tokens. Keep them focused:
 
----
+| Primitive | Recommended Size |
+|-----------|------------------|
+| Always-on instructions | 500-2000 words |
+| File-based instructions | 200-500 words each |
+| Skills | 500-3000 words |
+| Custom agents | 200-1000 words |
 
-## Understanding Context and Loading
-
-### When Each Primitive Loads
-
-Understanding when each primitive enters Copilot's context is essential for effective configuration:
-
-| Primitive | Location | Format | When It Loads | Context Persistence |
-|-----------|----------|--------|---------------|---------------------|
-| Always-on Instructions | `.github/copilot-instructions.md` | Markdown | Session start, every request | Entire session |
-| File-based Instructions | `.github/instructions/*.instructions.md` | Markdown + YAML frontmatter | When working on matching files | While pattern matches |
-| Prompts | `.github/prompts/*.prompt.md` | Markdown + YAML frontmatter | When explicitly invoked (`/promptname`) | Single request |
-| Skills | `.github/skills/*/SKILL.md` | Markdown + YAML frontmatter | When description matches user intent | Single request |
-| Custom Agents | `.github/agents/*.agent.md` | Markdown + YAML frontmatter | When activated by user | Until switched |
-| MCP | `.vscode/mcp.json` | JSON | Session start (tools available) | Entire session |
-
-### Context Window Considerations
-
-Every primitive consumes tokens from the context window. Overloading instructions reduces space for actual code and conversation.
-
-**Guidelines:**
-- Always-on instructions: 500-2000 words
-- File-based instructions: 200-500 words each
-- Prompt files: As long as needed (single-use)
-- Skills: 500-3000 words (loaded on-demand)
-- Custom agents: 200-1000 words
-
-If Copilot seems to "forget" rules from instructions, the file may be too long. Move specialized content to file-based instructions or skills.
-
-### The Loading Lifecycle
-
-```
-1. Session Start
-   ├── Load always-on instructions
-   ├── Load MCP server configurations
-   └── Initialize available tools
-
-2. User Opens File
-   ├── Check applyTo patterns
-   └── Load matching file-based instructions
-
-3. User Sends Message
-   ├── Check for prompt invocation (/name)
-   ├── Match skills by description
-   ├── Check for custom agent activation
-   └── Combine all relevant context
-
-4. Generate Response
-   └── Apply all loaded context to response
-```
+If Copilot seems to "forget" rules, your instructions may be too long. Move specialized content to file-based instructions or skills.
 
 ### Debugging What's Loaded
 
-VS Code provides a debug view to see exactly what context is active:
+To see exactly what context is active:
 
 1. Open Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
-2. Run **"Developer: Show Chat Debug View"**
-3. Send a message in Copilot Chat
-4. Click on the request to expand details
+2. Run **"Chat: Diagnostics"** (from the Configure menu)
+3. This shows loaded instructions, skills, and configuration status
 
-The debug view shows:
-- System prompt content
-- List of active instructions
-- Available skills and tools
-- Token usage breakdown
-
-This is invaluable for understanding why Copilot is or isn't following certain rules.
+For deeper debugging, use **"Developer: Log Chat Input History"** or **"Developer: Inspect Chat Model"** commands.
 
 ---
 
@@ -252,18 +185,6 @@ Customization is never "done." Codebases evolve, patterns change, and you learn 
 Use Copilot → Notice friction → Update customization → Repeat
 ```
 
-**Weekly:** Note where Copilot gets things wrong. Batch updates.
-
-**Monthly:** Review prompt usage. Which are used? Which are ignored? Remove or improve underused prompts.
-
-**Quarterly:** Audit the full configuration:
-- Are instructions still accurate?
-- Do deprecated patterns need removal?
-- What new conventions should be added?
-- Is the team actually using the customizations?
-
-### Signs You Need to Iterate
-
 | Signal | Action |
 |--------|--------|
 | Same PR feedback repeatedly | Add rule to instructions |
@@ -271,8 +192,13 @@ Use Copilot → Notice friction → Update customization → Repeat
 | Nobody uses a prompt | Remove it or improve discoverability |
 | Instructions file is huge | Split into file-based instructions |
 | New library/pattern adopted | Update tech stack section |
+| Copilot keeps making the same mistake | Add ✅/❌ example to instructions |
+| Deprecated patterns appearing in suggestions | Add explicit "avoid X" rule |
+| Team asks "is there a prompt for X?" | Create one |
+| Instructions feel stale | Audit and update quarterly |
+| New team member struggles with setup | Improve onboarding docs in instructions |
 
-### Team Iteration (For Team Rollouts)
+### Team Iteration
 
 1. **Designate an owner** — Someone responsible for maintaining customizations
 2. **Create a feedback channel** — Slack channel, GitHub Discussions, or regular sync
@@ -283,13 +209,13 @@ Use Copilot → Notice friction → Update customization → Repeat
 
 ## Measuring Success
 
-GitHub Copilot assists across the entire software development lifecycle — from planning and coding to testing, deployment, and maintenance. Measuring its impact requires looking at both immediate indicators and ultimate outcomes.
+GitHub Copilot assists across the entire software development lifecycle — from planning and coding to testing, deployment, and maintenance. Measuring its impact requires looking at both immediate indicators and ultimate outcomes. Better Copilot outcomes in code should directly translate to better outcomes for your repo, team, and organization.
 
 ### The Measurement Hierarchy
 
 ```
 ┌───────────────────────────────────┐
-│     Ultimate Outcomes           │  ← Revenue, features shipped, customer satisfaction
+│     Ultimate Outcomes           │  ← Revenue, costs, markets, features shipped, customer satisfaction
 ├───────────────────────────────────┤
 │     Product Metrics             │  ← Velocity, quality, deployment frequency
 ├───────────────────────────────────┤
@@ -333,8 +259,24 @@ The real measure of success is business impact:
 
 - **Features shipped** — Are you delivering more value?
 - **Time to market** — Are you shipping faster?
-- **Developer satisfaction** — Is the team happier?
-- **Onboarding time** — Do new devs ramp up faster?
+
+### The New Benchmark: A Feature a Day
+
+With an AI-enhanced SDLC, **a feature a day** becomes the realistic target. Not a massive feature—a well-scoped, user-facing change that ships to production.
+
+If you can't ship a feature in a day, examine:
+
+| Blocker | Questions to Ask |
+|---------|------------------|
+| **Governance** | How many approvals are required? Can any be automated or parallelized? |
+| **Handoffs** | How many people touch a feature before release? Can the same person carry it further? |
+| **Feature Size** | Are you scoping features small enough? Can this be split into independently shippable slices? |
+| **Environment** | How long does CI/CD take? Are deployments manual or automated? |
+| **Testing** | Is testing blocking delivery? Can Copilot help generate tests faster? |
+
+The bottleneck is rarely the coding. It's everything around the coding—reviews, approvals, deployments, coordination. AI accelerates the work; your processes determine whether that acceleration reaches users.
+
+**Target state:** Issue created in the morning → designed, coded, tested, reviewed, deployed by end of day.
 
 ### SDLC Coverage
 
@@ -373,84 +315,35 @@ Copilot customization can improve every phase:
 
 ## Best Practices
 
-### 1. Version Control All Customizations
+1. **Version control all customizations** — Treat `.github/` as code. Review changes in PRs.
 
-Treat `.github/` as code:
-- Review changes in pull requests
-- Link to architectural decisions (ADRs)
-- Update when patterns evolve
+2. **Start small** — Begin with 3-5 rules addressing common mistakes. Expand as friction points emerge.
 
-### 2. Start Small and Iterate
+3. **Use examples** — Copilot learns better from ✅/❌ patterns than abstract rules.
 
-Begin with the three most common mistakes. Expand as friction points emerge.
+4. **Explain rationale** — When you specify a rule, explain *why*. Copilot uses this to make better edge-case decisions.
 
-### 3. Provide Examples in Your Instructions
+5. **Keep instructions focused** — If over 2000 words, split into file-based instructions or skills.
 
-Copilot learns better from examples than abstract rules. Show preferred vs. avoided patterns with ✅/❌ markers.
+6. **Test prompts** — Run 3-5 times with varying inputs before sharing with team.
 
-### 4. Explain Rationale
-
-Context improves compliance. When you specify a rule, explain why — Copilot uses this context to make better decisions.
-
-### 5. Keep Instructions Focused
-
-If your file exceeds 2000 words:
-- Move specialized rules to file-based instructions
-- Create skills for domain-specific knowledge
-- Link to external documentation
-
-### 6. Test Prompts Before Sharing
-
-1. Run the prompt 3-5 times with varying inputs
-2. Verify output consistency
-3. Have someone else test without guidance
-
-### 7. Review Quarterly
-
-- Remove deprecated patterns
-- Add new conventions
-- Incorporate team feedback
-- Prune unused prompts
+7. **Review quarterly** — Remove deprecated patterns, add new conventions, prune unused prompts.
 
 ---
 
-## Frequently Asked Questions
+## FAQ
 
-### How long does adoption take?
+**How long does adoption take?**
+Solo dev basic setup: 1-2 hours. Small team: 2-4 weeks. Organization-wide: 1-2 quarters.
 
-| Scope | Timeline |
-|-------|----------|
-| Solo dev, basic setup | 1-2 hours |
-| Solo dev, comprehensive | 1-2 weeks |
-| Small team (3-5) | 2-4 weeks |
-| Large team (10+) | 1-2 months |
-| Organization-wide | 1-2 quarters |
+**Should we customize incrementally or all at once?**
+Incrementally. Start with instructions, add prompts as needed, then agents and skills.
 
-### Should we customize incrementally or all at once?
+**What if team members want different conventions?**
+Use file-based instructions for areas of difference. Always-on covers shared conventions.
 
-**Incrementally.** Start with instructions, add prompts as needed, then agents and skills. You'll learn what your team actually needs.
-
-### What if different team members want different conventions?
-
-Use file-based instructions for areas of difference. The always-on file covers shared conventions; file-based instructions handle variations.
-
-### How do we handle disagreements about rules?
-
-Treat `.github/` changes like code — PRs, reviews, and discussion. If a rule is controversial, try it for a sprint and evaluate.
-
-### Can we use this with other AI assistants?
-
-Skills are portable via the agentskills.io spec. Instructions and prompts are Copilot-specific but often transferable with minor adjustments.
-
-### What's the ROI calculation?
-
-Simplified: `(Time saved per developer × Developer count × Hourly rate) - Setup time`
-
-Most teams report 20-40% reduction in boilerplate tasks after customization.
-
-### Do instructions slow down Copilot?
-
-No measurable impact. Instructions load once per session and add minimal tokens compared to conversation history.
+**Do instructions slow down Copilot?**
+No measurable impact. Instructions load once per session and add minimal tokens.
 
 ---
 

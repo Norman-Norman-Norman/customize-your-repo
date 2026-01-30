@@ -499,18 +499,18 @@ This helps hosts decide whether to surface a skill in their environment.
 
 ### Debugging Skills: See What's Loaded
 
-VS Code's **Chat Debug View** reveals exactly what skills and instructions are loaded for each request. This is invaluable for understanding why a skill did or didn't activate:
+VS Code's **Chat Diagnostics** reveals exactly what skills and instructions are loaded. This is invaluable for understanding why a skill did or didn't activate:
 
-1. Open the Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
-2. Run **"Developer: Show Chat Debug View"**
-3. Send a request in Copilot Chat
-4. Click on the request in the debug panel to see:
-   - Full system prompt
+1. In the Chat view, click the **gear icon** (Configure Chat)
+2. Select **Diagnostics**
+3. Review the loaded configuration showing:
    - List of available skills (with descriptions)
    - List of available instructions
-   - Which skills were loaded for this request
+   - Configuration status and any errors
 
-This view shows that skills appear as a list of descriptions in every system prompt. When you see a skill wasn't activated, check whether its description clearly matches what the user asked for.
+For deeper inspection, use **Developer: Log Chat Input History** or **Developer: Inspect Chat Model** from the Command Palette.
+
+When you see a skill wasn't activated, check whether its description clearly matches what the user asked for.
 
 ### Skills vs. MCP Servers: When to Use Which
 

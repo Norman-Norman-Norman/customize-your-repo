@@ -30,7 +30,7 @@ Prompt files use the `.prompt.md` extension and support these frontmatter fields
 agent: 'agent'
 description: 'Generate a new React component with tests'
 model: 'Opus 4.5'
-tools: ['editFiles', 'createFile', 'terminalCommand']
+tools: ['editFiles', 'createFile', 'runInTerminal']
 ---
 
 Create a new React component called `{{componentName}}` that:
@@ -202,7 +202,7 @@ This example demonstrates how prompts can call MCP tools directly. With the GitH
 agent: 'agent'
 description: 'Create a GitHub issue from a bug report or feature request'
 model: 'Opus 4.5'
-tools: ['githubIssue']
+tools: ['githubRepo']
 ---
 
 Create a GitHub issue based on the following:
@@ -222,7 +222,7 @@ Create a GitHub issue based on the following:
    - feature → `enhancement`, `needs-discussion`
    - documentation → `documentation`
 
-3. Use the GitHub MCP tool to create the issue in this repository
+3. Use the GitHub MCP server to create the issue in this repository
 
 4. Return the issue URL when complete
 ```
@@ -369,12 +369,13 @@ This section covers the process of creating well-structured prompt files using V
 ### Creating via the Configure Menu (Recommended)
 
 1. In the Chat view, click the **gear icon** (Configure Chat)
-2. Select **Prompt Files** > **New prompt file**
-3. Choose the storage location:
+2. Select an option that opens the prompt file picker
+3. Choose **New prompt file...** from the picker
+4. Select the storage location:
    - **Workspace:** `.github/prompts/` folder (shared with team via version control)
    - **User Profile:** Personal prompts across all workspaces
-4. Provide a name for the prompt
-5. Use the agent to generate and refine the prompt content
+5. Provide a name for the prompt
+6. Use the agent to generate and refine the prompt content
 
 ### Agent-Driven Prompt Creation (Best Practice)
 

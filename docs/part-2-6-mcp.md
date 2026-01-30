@@ -62,18 +62,36 @@ A configuration might include an instruction stating "always use our inventory A
 
 ### Configuring MCP Servers
 
-MCP servers can be configured in VS Code settings or project configuration:
+MCP servers are configured in dedicated `mcp.json` files:
 
-**VS Code Settings (.vscode/settings.json):**
+**Workspace Configuration (.vscode/mcp.json):**
 ```json
 {
-  "github.copilot.chat.mcpServers": {
+  "servers": {
     "my-mcp-server": {
+      "type": "stdio",
       "command": "npx",
       "args": ["-y", "@example/mcp-server"],
       "env": {
         "API_KEY": "${env:API_KEY}"
       }
+    }
+  }
+}
+```
+
+**User Configuration:** Use Command Palette > **"MCP: Open User Configuration"** to edit `~/.vscode/mcp.json`.
+
+**Additional fields for stdio servers:** `cwd` (working directory), `envFile` (path to .env file).
+
+**For HTTP/SSE servers:**
+```json
+{
+  "servers": {
+    "remote-server": {
+      "type": "sse",
+      "url": "https://example.com/mcp",
+      "headers": { "Authorization": "Bearer ${env:TOKEN}" }
     }
   }
 }

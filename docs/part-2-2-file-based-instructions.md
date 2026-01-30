@@ -25,6 +25,7 @@ File-based instructions use the `.instructions.md` extension with YAML frontmatt
 | `description` | Description shown on hover in Chat view |
 | `name` | Display name (defaults to filename) |
 | `applyTo` | Glob pattern for automatic application |
+| `excludeAgent` | Optional array of agents to exclude from these instructions |
 
 ### Example
 
@@ -71,9 +72,10 @@ return NextResponse.json({ error: 'Not found' }, { status: 404 });
 ### Creating File-Based Instructions
 
 1. In the Chat view, click the **gear icon** (Configure Chat)
-2. Select **Chat Instructions** > **New instruction file**
-3. Choose **Workspace** to store in `.github/instructions/`
-4. Use the agent to generate context-specific rules
+2. Select an option that opens the instruction file picker
+3. Choose **New instruction file...** from the picker
+4. Select **Workspace** to store in `.github/instructions/`
+5. Use the agent to generate context-specific rules
 
 Alternatively, ask the agent directly:
 

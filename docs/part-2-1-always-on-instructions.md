@@ -294,11 +294,12 @@ The recommended approach for creating instructions files is through VS Code's bu
 ### Creating via the Configure Menu (Recommended)
 
 1. In the Chat view, click the **gear icon** (Configure Chat)
-2. Select **Chat Instructions** > **New instruction file**
-3. Choose the storage location:
+2. Select an option that opens the instruction file picker
+3. Choose **New instruction file...** from the picker
+4. Select the storage location:
    - **Workspace:** `.github/` folder (shared with team via version control)
    - **User Profile:** Personal instructions across all workspaces
-4. Use the agent to generate the initial content
+5. Use the agent to generate the initial content
 
 ### Agent-Driven Generation (Advanced)
 

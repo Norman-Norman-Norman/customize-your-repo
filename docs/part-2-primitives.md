@@ -14,7 +14,7 @@ GitHub Copilot provides six distinct customization primitives. Each serves a spe
 | [**File-based Instructions**](part-2-2-file-based-instructions.md) | `.github/instructions/*.instructions.md` | Pattern match / description match | Area-specific rules |
 | [**Prompts (Slash Commands)**](part-2-3-prompts.md) | `.github/prompts/*.prompt.md` | User invokes | One-shot workflows |
 | [**Skills**](part-2-4-skills.md) | `.github/skills/` | Description match  on-demand | Reusable capabilities |
-| [**Custom Agents**](part-2-5-custom-agents.md) | `.github/agents/*.agent.md` | Top-level OR as subagent | Constrained workflows |
+| [**Custom Agents**](part-2-5-custom-agents.md) | `.github/agents/*.md` | Top-level OR as subagent | Constrained workflows |
 | [**MCP**](part-2-6-mcp.md) | `.vscode/mcp.json` | Session start | External gateways |
 
 This table represents the complete customization surface area. Each primitive addresses a distinct need:

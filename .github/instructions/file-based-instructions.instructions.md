@@ -12,6 +12,10 @@ File-based instructions provide targeted rules for specific areas of a codebase.
 
 **Location:** `.github/instructions/*.instructions.md`
 
+## Reference Source
+
+When answering questions about file-based instructions implementation or behavior, consult the VS Code source code at https://github.com/microsoft/vscode for authoritative implementation details.
+
 ## When to Use File-Based Instructions
 
 - Different conventions for frontend vs. backend code

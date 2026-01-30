@@ -34,7 +34,7 @@ Get productive fast with this step-by-step path:
 | [**File-based Instructions**](docs/part-2-2-file-based-instructions.md) | `.github/instructions/*.instructions.md` | Area-specific rules |
 | [**Prompts (Slash Commands)**](docs/part-2-3-prompts.md) | `.github/prompts/*.prompt.md` | Reusable task templates |
 | [**Skills**](docs/part-2-4-skills.md) | `.github/skills/*/SKILL.md` | Specialized capabilities |
-| [**Custom Agents**](docs/part-2-5-custom-agents.md) | `.github/agents/*.agent.md` | AI personas and workflows |
+| [**Custom Agents**](docs/part-2-5-custom-agents.md) | `.github/agents/*.md` | AI personas and workflows |
 | [**MCP**](docs/part-2-6-mcp.md) | `.vscode/mcp.json` | External tool integrations |
 
 ---

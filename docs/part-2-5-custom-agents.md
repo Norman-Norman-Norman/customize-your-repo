@@ -11,7 +11,7 @@ Custom Agents provide specialized AI personas with constrained tool access and d
 **Loading:** Top-level OR as subagent
 **Best For:** Constrained workflows
 
-**Location:** `.github/agents/*.agent.md`
+**Location:** `.github/agents/*.md` (any `.md` file except `README.md`) or `**/*.agent.md` anywhere in the workspace
 
 ### When to Use Custom Agents
 
@@ -145,7 +145,7 @@ You are a patient senior developer mentoring a junior team member.
 ---
 name: 'Debug Detective'
 description: 'Methodical bug hunting and diagnosis'
-tools: ['search', 'readFile', 'usages', 'terminalLastCommand']
+tools: ['search', 'readFile', 'usages', 'terminalLastCommand', 'getTerminalOutput']
 model: 'Opus 4.5'
 ---
 
@@ -178,7 +178,7 @@ You are a systematic debugging expert who approaches problems methodically.
 ---
 name: 'Code Reviewer'
 description: 'Thorough code review focused on quality'
-tools: ['search', 'readFile', 'usages', 'getChangedFiles']
+tools: ['search', 'readFile', 'usages', 'changes']
 model: 'Opus 4.5'
 ---
 
@@ -323,12 +323,13 @@ The recommended approach for creating custom agents is through VS Code's built-i
 ### Creating via the Configure Menu (Recommended)
 
 1. In the Chat view, click the **gear icon** (Configure Chat)
-2. Select **Custom Agents** > **Create new custom agent**
-3. Choose the storage location:
+2. Select an option that opens the agent picker
+3. Choose **Create new custom agent...** from the picker
+4. Select the storage location:
    - **Workspace:** `.github/agents/` folder (shared with team via version control)
    - **User Profile:** Personal agents across all workspaces
-4. Provide a name for the agent
-5. Use the agent itself to refine the configuration
+5. Provide a name for the agent
+6. Use the agent itself to refine the configuration
 
 ### Agent-Driven Iteration (Best Practice)
 

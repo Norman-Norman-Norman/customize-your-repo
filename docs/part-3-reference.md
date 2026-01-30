@@ -14,7 +14,7 @@
 | Rules for specific files | File-Based Instructions | `.github/instructions/*.instructions.md` |
 | Reusable task template | Prompt File | `.github/prompts/*.prompt.md` |
 | Specialized capability | Skill | `.github/skills/*/SKILL.md` |
-| AI persona/behavior | Custom Agent | `.github/agents/*.agent.md` |
+| AI persona/behavior | Custom Agent | `.github/agents/*.md` |
 | External tool access | MCP Server | `.vscode/mcp.json` |
 
 ### Frontmatter Field Reference

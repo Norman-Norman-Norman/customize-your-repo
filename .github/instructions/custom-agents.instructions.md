@@ -10,7 +10,7 @@ applyTo: '**/agents/**,**/*.agent.md'
 
 Custom Agents provide specialized AI personas with constrained tool access and defined behaviors. They can operate as top-level assistants or as subagents invoked by other workflows.
 
-**Location:** `.github/agents/*.agent.md`
+**Location:** `.github/agents/*.md` (any `.md` file except `README.md`) or `**/*.agent.md` anywhere
 
 ## When to Use Custom Agents
 
