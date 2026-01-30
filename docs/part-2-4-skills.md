@@ -487,6 +487,36 @@ If you're unsure, start somewhere. You can always refactor later — these are j
 
 **The goal isn't to pick the "correct" primitive. The goal is to get useful context to the AI when it needs it.** If your current approach does that, it's working.
 
+#### A Mental Model for Choosing
+
+When you have new knowledge to encode, ask yourself these questions:
+
+```
+Is this needed on EVERY request?
+├── Yes → Always-on instructions (.github/copilot-instructions.md)
+│         BUT check if your instructions file is getting overloaded.
+│         If it's huge, consider moving specialized content elsewhere.
+│
+└── No → Is this reusable across multiple contexts/files?
+         ├── Yes → Skill (.github/skills/)
+         │         Skills shine when the same knowledge applies
+         │         in multiple places throughout the repo.
+         │
+         └── No → File-based instruction (.github/instructions/)
+                  Good for single-purpose rules tied to specific
+                  file patterns that won't be needed elsewhere.
+```
+
+**Our current recommendation (January 2026):** Start with skills as your default. Skills are:
+- Portable across AI agents (VS Code, GitHub CLI, coding agent)
+- Only loaded when relevant (keeps context lean)
+- Self-contained directories (can include templates, scripts, examples)
+- Easy to share across repos or with the community
+
+Use always-on instructions for the core stuff that truly applies everywhere — your tech stack, universal coding conventions, security requirements. Use file-based instructions when you have rules that are genuinely file-pattern-specific and won't be reused.
+
+> **📝 Editor's Note:** We're still learning what works best. The primitives overlap because this space is evolving rapidly. GitHub and the community are actively experimenting with these patterns. What we recommend today may shift as we learn more. The best approach is to try things, see what helps your team, and share what you learn.
+
 ### How Skills Load: Description Matching
 
 Unlike file-based instructions (which use `applyTo` patterns), skills load **on-demand via description matching**. Here's what happens under the hood:
