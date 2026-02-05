@@ -2,15 +2,23 @@
 
 [? Part I: Foundations](part-1-foundations.md) | [Part II Overview](part-2-primitives.md)
 
+*Published: February 5, 2026. This guide serves as a primer for GitHub Copilot customization. File paths, configuration options, and feature availability may change as Copilot evolves—always verify against the [official documentation](https://code.visualstudio.com/docs/copilot).*
+
 ---
 
 ### Overview
 
 Always-on instructions (also known as the **Copilot Instructions File**) represent the foundational layer of Copilot customization. These instructions load automatically at the start of every Copilot session and apply to all interactions within the repository.
 
-**Location:** `.github/copilot-instructions.md`
+**Location:** `.github/copilot-instructions.md` or `.github/AGENTS.md` [*](https://code.visualstudio.com/docs/copilot)
 
-When this file exists in a repository, Copilot reads and applies its contents as persistent context. Every code suggestion, chat response, and generated output will respect these guidelines without requiring explicit invocation.
+> **New in VS Code 1.109:** Both `copilot-instructions.md` and `AGENTS.md` are now recognized as workspace instruction files. The `/init` command can discover and update either format.
+
+**Required Setting:** `github.copilot.chat.codeGeneration.useInstructionFiles` must be enabled in VS Code settings for the instructions file to be applied. [*](https://code.visualstudio.com/docs/copilot/customization/custom-instructions)
+
+When this file exists in a repository and the setting is enabled, Copilot reads and applies its contents as persistent context. Chat responses and code generation will respect these guidelines without requiring explicit invocation.
+
+**Note:** Custom instructions are *not* applied to inline suggestions (ghost text) as you type in the editor—they only affect Copilot Chat interactions.
 
 ### When to Use Always-On Instructions
 
@@ -285,21 +293,40 @@ Follow Conventional Commits:
 - `test(warehouse): add integration tests for transfer`
 ``````
 
+For a product management approach to workspace instructions, see [product-brain](https://github.com/digitarald/product-brain) — a template that structures AI interactions around product requirements, user stories, and feature specifications.
+
 ---
 
 ## Creating an Instructions File
 
 The recommended approach for creating instructions files is through VS Code's built-in interface combined with agent-assisted generation.
 
-### Creating via the Configure Menu (Recommended)
+### Using the /init Command (Fastest)
+
+The quickest way to generate instructions for your workspace:
+
+1. Open Copilot Chat
+2. Type `/init` in the chat input box
+3. Review the generated `.github/copilot-instructions.md` file
+4. Make any necessary edits and save
+
+The `/init` command follows a structured workflow:
+
+1. **Discovery** — Searches for existing AI conventions in your workspace (such as `copilot-instructions.md` or `AGENTS.md`)
+2. **Analysis** — Examines your project structure and coding patterns
+3. **Generation** — Creates comprehensive workspace instructions tailored to your project
+
+> **New in VS Code 1.109:** The `/init` command is implemented as a contributed prompt file, meaning you can customize its behavior by modifying the underlying prompt in your workspace.
+
+### Creating via the Configure Menu
 
 1. In the Chat view, click the **gear icon** (Configure Chat)
-2. Select an option that opens the instruction file picker
-3. Choose **New instruction file...** from the picker
+2. Select **Generate Chat Instructions** to auto-generate, or
+3. Select **Chat Instructions** > **New instruction file...** for manual creation
 4. Select the storage location:
-   - **Workspace:** `.github/` folder (shared with team via version control)
+   - **Workspace:** `.github/` folder [*](https://code.visualstudio.com/docs/copilot) (shared with team via version control)
    - **User Profile:** Personal instructions across all workspaces
-5. Use the agent to generate the initial content
+5. Author the instructions or let the agent generate initial content
 
 ### Agent-Driven Generation (Advanced)
 
@@ -440,9 +467,46 @@ To verify the instructions file is working correctly:
 4. Generate sample code and verify it follows the defined rules
 
 If instructions are not being applied, verify:
-- File is named exactly `copilot-instructions.md`
-- File is located in the `.github/` folder
+- The `github.copilot.chat.codeGeneration.useInstructionFiles` setting is enabled
+- File is named exactly `copilot-instructions.md` or `AGENTS.md`
+- File is located in the `.github/` folder [*](https://code.visualstudio.com/docs/copilot)
 - VS Code window has been reloaded after creating the file
+
+**Using Diagnostics:** Right-click in the Chat view and select **Diagnostics** to see all loaded instruction files, custom agents, prompt files, and skills—along with any errors.
+
+### Cross-Editor Compatibility
+
+The `.github/copilot-instructions.md` file is recognized by GitHub Copilot across multiple environments:
+- VS Code
+- Visual Studio
+- GitHub.com (Copilot Chat, coding agent, code review)
+
+This means the same instructions file works whether your team uses different editors or interacts with Copilot on the web.
+
+### Instruction Priority
+
+When multiple types of custom instructions exist, Copilot applies them in this priority order:
+
+1. **Personal instructions** (highest priority)
+2. **Repository instructions** (`.github/copilot-instructions.md` or `AGENTS.md`)
+3. **Organization instructions** (lowest priority)
+
+All relevant instructions are provided to Copilot, but higher-priority instructions take precedence when conflicts occur.
+
+### Organization-Wide Instructions
+
+> **New in VS Code 1.109:** Organization-level custom instructions are now supported in VS Code.
+
+If your GitHub organization has configured custom instructions for Copilot, they are automatically applied to your chat sessions, ensuring consistent guidance across your team. This feature is enabled by default.
+
+**Setting:** `github.copilot.chat.organizationInstructions.enabled`
+
+Set to `false` to disable organization instructions if you need to override them for a specific workspace.
+
+Organization instructions are particularly valuable for:
+- Enforcing company-wide coding standards
+- Maintaining compliance requirements across repositories
+- Sharing best practices without duplicating instructions in every repo
 
 ---
 
