@@ -1,5 +1,7 @@
 ﻿# The Definitive Guide to Customizing GitHub Copilot
 
+*Published: February 5, 2026. File paths, configuration options, and feature availability may change as Copilot evolves—always verify against the [official documentation](https://code.visualstudio.com/docs/copilot).*
+
 GitHub Copilot is more than autocomplete. When properly configured, it becomes a context-aware development partner that understands your architecture, follows your conventions, and produces code that passes review on the first try.
 
 This guide is the complete reference for GitHub Copilot's six customization primitives—the configuration files and patterns that transform Copilot from a generic AI assistant into a team member who knows your codebase.
@@ -25,6 +27,8 @@ By the end of this guide, you will understand:
 - **Iteration strategies** — How to refine your configuration based on feedback
 - **Measurement approaches** — How to track whether customization is working
 
+You can start anywhere using the table of contents below, but if you're new to Copilot customization, start with [Part I: Foundations](docs/part-1-foundations.md).
+
 ---
 
 ## The Six Primitives
@@ -33,7 +37,7 @@ GitHub Copilot provides six customization primitives. Each serves a distinct pur
 
 | Primitive | Location | Purpose |
 |-----------|----------|---------|
-| [**Always-on Instructions**](docs/part-2-1-always-on-instructions.md) | `.github/copilot-instructions.md` | Global rules applied to every Copilot request |
+| [**Always-on Instructions**](docs/part-2-1-always-on-instructions.md) | `.github/copilot-instructions.md` or `AGENTS.md` | Global rules applied to every Copilot request |
 | [**File-based Instructions**](docs/part-2-2-file-based-instructions.md) | `.github/instructions/*.instructions.md` | Rules that activate when working with specific file patterns |
 | [**Prompts**](docs/part-2-3-prompts.md) | `.github/prompts/*.prompt.md` | Reusable task templates invoked as slash commands |
 | [**Skills**](docs/part-2-4-skills.md) | `.github/skills/*/SKILL.md` | Procedural knowledge Copilot can discover and apply |
@@ -81,3 +85,4 @@ For teams adopting Copilot customization, consider reading through the guide ind
 - [VS Code Copilot Extension](https://code.visualstudio.com/docs/copilot)
 - [Model Context Protocol](https://modelcontextprotocol.io/)
 - [VS Code Source Code](https://github.com/microsoft/vscode) — The authoritative reference when documentation is unclear
+- [product-brain](https://github.com/digitarald/product-brain) — A product management approach to workspace instructions
