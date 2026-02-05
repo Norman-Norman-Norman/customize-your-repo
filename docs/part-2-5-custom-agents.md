@@ -29,7 +29,7 @@ Custom Agent files use the `.agent.md` extension and support these frontmatter f
 | `name` | Display name in the agent picker |
 | `description` | Shown as placeholder text in chat input |
 | `tools` | List of tools available to this agent |
-| `model` | AI model to use (e.g., `Claude Opus 4.5`, `GPT-4o`) |
+| `model` | AI model to use (e.g., `Claude Opus 4.6`, `GPT-5.2`) |
 | `handoffs` | Define transitions to other agents |
 | `argument-hint` | Hint text for user interaction |
 
@@ -38,7 +38,7 @@ Custom Agent files use the `.agent.md` extension and support these frontmatter f
 name: 'Security Reviewer'
 description: 'Reviews code with a focus on security vulnerabilities'
 tools: ['search', 'readFile', 'usages']
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 ---
 
 You are a senior security engineer reviewing code for vulnerabilities.
@@ -77,7 +77,7 @@ The following agent configurations address common development scenarios:
 name: 'System Architect'
 description: 'High-level design and architecture decisions'
 tools: ['search', 'readFile', 'fetch', 'githubRepo']
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 handoffs:
   - label: 'Start Implementation'
     agent: 'agent'
@@ -115,7 +115,7 @@ distributed systems.
 name: 'Patient Mentor'
 description: 'Explains concepts thoroughly for learning'
 tools: ['search', 'readFile', 'fetch']
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 ---
 
 You are a patient senior developer mentoring a junior team member.
@@ -146,7 +146,7 @@ You are a patient senior developer mentoring a junior team member.
 name: 'Debug Detective'
 description: 'Methodical bug hunting and diagnosis'
 tools: ['search', 'readFile', 'usages', 'terminalLastCommand', 'getTerminalOutput']
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 ---
 
 You are a systematic debugging expert who approaches problems methodically.
@@ -179,7 +179,7 @@ You are a systematic debugging expert who approaches problems methodically.
 name: 'Code Reviewer'
 description: 'Thorough code review focused on quality'
 tools: ['search', 'readFile', 'usages', 'changes']
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 ---
 
 You are a meticulous code reviewer focused on code quality and team standards.
@@ -252,7 +252,7 @@ This example demonstrates the sub-agent pattern — an orchestrator agent that d
 name: 'Feature Builder'
 description: 'End-to-end feature implementation with specialized sub-agents'
 tools: ['search', 'readFile', 'editFile', 'runInTerminal']
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 handoffs:
   - label: 'Security Review'
     agent: 'security-reviewer'
@@ -339,7 +339,7 @@ Rather than manually editing agent files, use Copilot to generate and refine the
 >
 > *Create a custom agent for security code review. It should:*
 > *- Focus on OWASP Top 10 vulnerabilities*
-> *- Use Claude Opus 4.5 for its reasoning capabilities*
+> *- Use Claude Opus 4.6 for its reasoning capabilities*
 > *- Have access to search, readFile, and usages tools*
 > *- Include handoffs to an implementation agent after review*
 >
@@ -448,7 +448,7 @@ The following prompt generates new custom agent configurations through the agent
 > *- Role: {{roleDescription}}*
 > *- Expertise area: {{expertiseArea}}*
 > *- Personality: {{personalityTraits}}*
-> *- Preferred Model: Opus 4.5 (or specify another)*
+> *- Preferred Model: Opus 4.6 (or specify another)*
 >
 > *Generate an agent that includes:*
 >
@@ -492,7 +492,7 @@ The following prompt generates new custom agent configurations through the agent
 name: 'Rubber Duck'
 description: 'Helps you think through problems by asking questions'
 tools: ['search', 'readFile']
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 ---
 
 You are a rubber duck. Your job is NOT to solve problems—it's to help 
@@ -520,7 +520,7 @@ the user solve them themselves by asking good questions.
 name: "Devil's Advocate"
 description: 'Challenges decisions to find weaknesses'
 tools: ['search', 'readFile', 'fetch']
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 ---
 
 You argue the opposite position of whatever the user suggests.

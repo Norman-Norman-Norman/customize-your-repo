@@ -26,7 +26,7 @@ Custom Agents provide specialized AI personas with constrained tool access and d
 name: 'Display Name'
 description: 'Shown in agent picker'
 tools: ['search', 'readFile', 'usages']
-model: 'Claude Opus 4.5'
+model: 'Claude Opus 4.6'
 handoffs:
   - label: 'Hand off label'
     agent: 'target-agent'
@@ -43,7 +43,7 @@ handoffs:
 | `name` | No | Display name in the agent picker |
 | `description` | No | Placeholder text in chat input |
 | `tools` | No | List of tools available to this agent |
-| `model` | No | AI model to use (Claude Opus 4.5, GPT-4o) |
+| `model` | No | AI model to use (Claude Opus 4.6, GPT-5.2) |
 | `handoffs` | No | Define transitions to other agents |
 
 ## The Agent Formula
@@ -90,7 +90,7 @@ Custom agents can be invoked as sub-agents for context isolation:
 ---
 name: 'Security Reviewer'
 tools: ['search', 'readFile', 'usages', 'getChangedFiles']
-model: 'Claude Opus 4.5'
+model: 'Claude Opus 4.6'
 ---
 
 You are a security engineer reviewing code for vulnerabilities.
@@ -111,7 +111,7 @@ You are a security engineer reviewing code for vulnerabilities.
 ---
 name: 'Rubber Duck'
 tools: ['search', 'readFile']
-model: 'GPT-4o'
+model: 'GPT-5.2'
 ---
 
 You are a rubber duck. Your job is NOT to solve problems—it's to help the user solve them by asking good questions.

@@ -21,7 +21,7 @@ Prompt files use the `.prompt.md` extension and support these frontmatter fields
 | `name` | Display name shown when typing `/` in chat |
 | `description` | Brief description of what the prompt does |
 | `agent` | Execution mode: `ask`, `edit`, `agent`, or a custom agent name |
-| `model` | AI model to use (e.g., `Claude Opus 4.5`, `GPT-4o`) |
+| `model` | AI model to use (e.g., `Claude Opus 4.6`, `GPT-5.2`) |
 | `tools` | Specific tools available for this prompt |
 | `argument-hint` | Hint text for user interaction |
 
@@ -29,7 +29,7 @@ Prompt files use the `.prompt.md` extension and support these frontmatter fields
 ---
 agent: 'agent'
 description: 'Generate a new React component with tests'
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 tools: ['editFiles', 'createFile', 'runInTerminal']
 ---
 
@@ -68,7 +68,7 @@ The following prompt templates address common development workflows:
 ---
 agent: 'agent'
 description: 'Scaffold a new React component with all the trimmings'
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 ---
 
 Create a new component called `{{componentName}}` in `src/components/{{componentName}}/`:
@@ -96,7 +96,7 @@ Look at existing components for patterns. Follow the style guide in copilot-inst
 ---
 agent: 'agent'
 description: 'Create a new API endpoint with validation and error handling'
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 ---
 
 Create a new API route at `src/app/api/{{resourceName}}/route.ts`:
@@ -121,7 +121,7 @@ Create a new API route at `src/app/api/{{resourceName}}/route.ts`:
 ---
 agent: 'agent'
 description: 'Analyze and fix a bug with explanation'
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 ---
 
 Analyze the selected code and fix the bug described below:
@@ -144,7 +144,7 @@ Analyze the selected code and fix the bug described below:
 ---
 agent: 'ask'
 description: 'Prepare code for review'
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 ---
 
 Review the selected code and provide:
@@ -176,7 +176,7 @@ Review the selected code and provide:
 ---
 agent: 'agent'
 description: 'Generate comprehensive documentation'
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 ---
 
 Add documentation to the selected code including:
@@ -201,7 +201,7 @@ This example demonstrates how prompts can call MCP tools directly. With the GitH
 ---
 agent: 'agent'
 description: 'Create a GitHub issue from a bug report or feature request'
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 tools: ['githubRepo']
 ---
 
@@ -238,7 +238,7 @@ This example shows how prompts can use the built-in `fetch` tool to retrieve inf
 ---
 agent: 'agent'
 description: 'Research a topic and summarize findings'
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 tools: ['fetch']
 ---
 
@@ -280,7 +280,7 @@ This advanced example demonstrates how to create a prompt that fetches authorita
 ---
 agent: 'agent'
 description: 'Create a new Agent Skill with live documentation lookup'
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 tools: ['fetch', 'createFile']
 ---
 
@@ -385,7 +385,7 @@ Rather than manually writing prompt files, use Copilot to generate them:
 >
 > *Create a prompt file at .github/prompts/new-api-route.prompt.md that:*
 > *- Generates REST API routes with validation*
-> *- Uses agent mode with Claude Opus 4.5*
+> *- Uses agent mode with Claude Opus 4.6*
 > *- Includes variables for resource name and HTTP methods*
 > *- References our copilot-instructions.md for patterns*
 > *- Outputs route file, Zod schemas, and tests*
@@ -403,7 +403,7 @@ Every prompt file consists of two parts:
 ---
 agent: 'agent'                          # Execution mode or custom agent
 description: 'What this prompt does'    # Appears in the / menu
-model: 'Opus 4.5'                # Optional: specific model
+model: 'Opus 4.6'                # Optional: specific model
 tools: ['editFiles', 'createFile']      # Optional: restrict tools
 ---
 
@@ -439,7 +439,7 @@ Use `{{variableName}}` syntax to create parameterized prompts:
 ---
 agent: 'agent'
 description: 'Create a new {{frameworkType}} hook'
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 ---
 
 Create a custom hook called `use{{hookName}}` that:
@@ -462,7 +462,7 @@ Prompts can reference the instructions file to maintain consistency:
 ---
 agent: 'agent'
 description: 'Generate component following our standards'
-model: 'Opus 4.5'
+model: 'Opus 4.6'
 ---
 
 Create a new component following the patterns defined in our 
@@ -487,7 +487,7 @@ Use the agent directly to generate new prompt files:
 > *Prompt Requirements:*
 > *- Purpose: {{purposeDescription}}*
 > *- Mode: `ask` (read-only) or `agent` (makes changes)*
-> *- Model: Opus 4.5 (or specify)*
+> *- Model: Opus 4.6 (or specify)*
 >
 > *Prompt Structure Guidelines:*
 > *1. Start with a clear, specific instruction*

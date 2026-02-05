@@ -24,7 +24,7 @@ This guide fixes that.
 
 **The right mental model: Copilot is a new developer on your team.**
 
-But here's the twist: this new developer is already an excellent coder. Frontier models like Claude Opus 4.5, Codex 5.2, Gemini 3 Pro know language idioms, common patterns, and industry best practices. They've seen more code than any human ever will. You don't need to teach them how to write a for-loop or when to use async/await.
+But here's the twist: this new developer is already an excellent coder. Frontier models like Claude Opus 4.6, GPT-5.2-Codex, Gemini 3 Pro know language idioms, common patterns, and industry best practices. They've seen more code than any human ever will. You don't need to teach them how to write a for-loop or when to use async/await.
 
 Now imagine handing this brilliant new hire a 10,000-line document of coding rules. Every edge case. Every preference. Tabs vs. spaces. Whether to use `index` or `i` in loops. Exactly how many blank lines between functions. They'd be paralyzed—second-guessing every keystroke, drowning in rules instead of shipping code.
 
@@ -54,7 +54,7 @@ Copilot's output quality depends on three factors:
 | **Codebase Quality** | How well Copilot can understand your code | Write clean, well-documented, modular code |
 | **Repository Configuration** | The context and rules Copilot operates with | **This guide** — the six customization primitives |
 
-Your **model selection** matters more than most people realize. A frontier model with extended thinking will dramatically outperform a model from two years ago—it's not even close. Claude Opus 4.5, Codex 5.2, Gemini Pro 3 with thinking enabled will reason through multi-file refactors, catch edge cases, and produce code that actually works on the first try. Older or faster models may produce syntax-correct code that misses the point entirely.
+Your **model selection** matters more than most people realize. A frontier model with extended thinking will dramatically outperform a model from two years ago—it's not even close. Claude Opus 4.6, GPT-5.2-Codex, Gemini Pro 3 with thinking enabled will reason through multi-file refactors, catch edge cases, and produce code that actually works on the first try. Older or faster models may produce syntax-correct code that misses the point entirely.
 
 Different models also *behave* differently, and that's okay. Some are more verbose. Some ask more clarifying questions. Some jump straight to implementation. Learn your model's personality and work with it, not against it. The best model for your workflow might not be the newest or the fastest—it's the one whose behavior matches how you like to work.
 

@@ -53,7 +53,7 @@ applyTo: 'src/components/**/*.tsx'
 |-------|----------|------|-------------|
 | `agent` | No | string | `ask`, `agent`, or custom agent name |
 | `description` | No | string | Brief description for `/` menu |
-| `model` | No | string | AI model (e.g., `Claude Opus 4.5`, `GPT-4o`) |
+| `model` | No | string | AI model (e.g., `Claude Opus 4.6`, `GPT-5.2`) |
 | `tools` | No | string[] | Restrict available tools |
 | `argument-hint` | No | string | Hint text for user input |
 
@@ -61,7 +61,7 @@ applyTo: 'src/components/**/*.tsx'
 ---
 agent: 'agent'
 description: 'Generate a new React component with tests'
-model: 'Claude Opus 4.5'
+model: 'Claude Opus 4.6'
 tools: ['editFiles', 'createFile', 'runInTerminal']
 ---
 ```
@@ -108,7 +108,7 @@ metadata:
 name: 'Security Reviewer'
 description: 'Reviews code for security vulnerabilities'
 tools: ['search', 'readFile', 'usages']
-model: 'Claude Opus 4.5'
+model: 'Claude Opus 4.6'
 handoffs:
   - label: 'Fix Issues'
     agent: 'agent'
@@ -388,7 +388,7 @@ applyTo: 'src/api/**/*'
 ---
 agent: 'agent'
 description: 'Brief description'
-model: 'Claude Opus 4.5'
+model: 'Claude Opus 4.6'
 ---
 
 [Clear instruction]
@@ -434,7 +434,7 @@ metadata:
 name: 'Agent Name'
 description: 'What this agent does'
 tools: ['search', 'readFile']
-model: 'Claude Opus 4.5'
+model: 'Claude Opus 4.6'
 ---
 
 You are [persona description].
