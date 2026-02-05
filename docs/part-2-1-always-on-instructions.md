@@ -1,12 +1,12 @@
 # Always-On Instructions
 
-[? Part I: Foundations](part-1-foundations.md) | [Part II Overview](part-2-primitives.md)
+[← Part I: Foundations](part-1-foundations.md) | [Part II Overview](part-2-primitives.md)
 
 *Published: February 5, 2026. This guide serves as a primer for GitHub Copilot customization. File paths, configuration options, and feature availability may change as Copilot evolves—always verify against the [official documentation](https://code.visualstudio.com/docs/copilot).*
 
 ---
 
-### Overview
+## Overview
 
 Always-on instructions (also known as the **Copilot Instructions File**) represent the foundational layer of Copilot customization. These instructions load automatically at the start of every Copilot session and apply to all interactions within the repository.
 
@@ -20,7 +20,7 @@ When this file exists in a repository and the setting is enabled, Copilot reads 
 
 **Note:** Custom instructions are *not* applied to inline suggestions (ghost text) as you type in the editor—they only affect Copilot Chat interactions.
 
-### When to Use Always-On Instructions
+## When to Use Always-On Instructions
 
 - Coding style and conventions that apply universally
 - Technology stack declarations and preferences
@@ -30,7 +30,7 @@ When this file exists in a repository and the setting is enabled, Copilot reads 
 - Error handling approaches
 - Deprecated patterns to avoid
 
-### Anatomy of Effective Instructions
+## Anatomy of Effective Instructions
 
 A well-structured instructions file typically includes the following sections:
 
@@ -69,7 +69,7 @@ A well-structured instructions file typically includes the following sections:
 - Don't write inline CSS
 ```
 
-### Including Rationale (Appraisals)
+## Including Rationale (Appraisals)
 
 Instructions files become more effective when they include the reasoning behind rules. This context helps Copilot make better decisions in edge cases:
 
@@ -88,7 +88,7 @@ size by 15% and made testing significantly easier.
 
 This helps Copilot understand not just *what* to do, but *why*—leading to better suggestions in edge cases.
 
-### Complete Example: Production Next.js Project
+## Complete Example: Production Next.js Project
 
 ``````markdown
 # Project Guidelines for Copilot
@@ -174,7 +174,7 @@ export async function updateInventory(data: any) {
 ## Testing Requirements
 
 ### Test Structure
-- Co-locate unit tests with source: `Component.tsx`  `Component.test.tsx`
+- Co-locate unit tests with source: `Component.tsx` → `Component.test.tsx`
 - Integration tests in `__tests__/integration/`
 - E2E tests in `e2e/` using Playwright
 
@@ -301,7 +301,7 @@ For a product management approach to workspace instructions, see [product-brain]
 
 The recommended approach for creating instructions files is through VS Code's built-in interface combined with agent-assisted generation.
 
-### Using the /init Command (Fastest)
+## Using the /init Command (Fastest)
 
 The quickest way to generate instructions for your workspace:
 
@@ -318,7 +318,7 @@ The `/init` command follows a structured workflow:
 
 > **New in VS Code 1.109:** The `/init` command is implemented as a contributed prompt file, meaning you can customize its behavior by modifying the underlying prompt in your workspace.
 
-### Creating via the Configure Menu
+## Creating via the Configure Menu
 
 1. In the Chat view, click the **gear icon** (Configure Chat)
 2. Select **Generate Chat Instructions** to auto-generate, or
@@ -328,11 +328,11 @@ The `/init` command follows a structured workflow:
    - **User Profile:** Personal instructions across all workspaces
 5. Author the instructions or let the agent generate initial content
 
-### Agent-Driven Generation (Advanced)
+## Agent-Driven Generation (Advanced)
 
 Rather than manually writing instructions, let the agent analyze the repository and generate appropriate instructions:
 
-> **?? Try this prompt:**
+> **💬 Try this prompt:**
 >
 > *Analyze this repository and create a .github/copilot-instructions.md file that:*
 >
@@ -351,7 +351,7 @@ This approach ensures:
 - Human-verifiable output for PR review
 - No syntax errors or typos
 
-### Anti-Patterns to Avoid
+## Anti-Patterns to Avoid
 
 | Anti-Pattern | Why It's Problematic | Better Approach |
 |--------------|---------------------|------------------|
@@ -362,7 +362,7 @@ This approach ensures:
 | **Conflicting rules** | Copilot produces inconsistent results | Have agent check for contradictions |
 | **Never updating** | Instructions drift from actual practice | Review quarterly, use agent to refresh |
 
-### Using Copilot Coding Agent (GitHub.com)
+## Using Copilot Coding Agent (GitHub.com)
 
 On GitHub.com, the Copilot coding agent can generate instructions for you:
 
@@ -373,18 +373,18 @@ On GitHub.com, the Copilot coding agent can generate instructions for you:
 
 This is particularly effective because the agent validates build commands and tests them before documenting.
 
-### Gathering Team Knowledge
+## Gathering Team Knowledge
 
 Effective instructions files encode team knowledge. Use these questions to surface the most valuable rules:
 
-1. **"What does Copilot frequently get wrong?"**  These become explicit rules
-2. **"What feedback appears repeatedly in PR reviews?"**  These become guidelines
-3. **"What would a new hire need to know on day one?"**  This becomes context
-4. **"What libraries or patterns have been deprecated?"**  This becomes the "avoid" list
+1. **"What does Copilot frequently get wrong?"** — These become explicit rules
+2. **"What feedback appears repeatedly in PR reviews?"** — These become guidelines
+3. **"What would a new hire need to know on day one?"** — This becomes context
+4. **"What libraries or patterns have been deprecated?"** — This becomes the "avoid" list
 
 > **Practical tip:** Review the last 10-20 PR comments from the team. Repeated feedback indicates rules that should be codified in the instructions file.
 
-> **?? Try this prompt:**
+> **💬 Try this prompt:**
 >
 > *Analyze the last 20 merged pull requests in this repository. Look at the review comments and identify:*
 >
@@ -395,7 +395,7 @@ Effective instructions files encode team knowledge. Use these questions to surfa
 >
 > *Summarize these as candidate rules for our copilot-instructions.md file.*
 
-### Use the "Good vs Bad" Pattern
+## Use the "Good vs Bad" Pattern
 
 Copilot responds more effectively to examples than to abstract rules. Instead of stating "prefer functional patterns," demonstrate the preference:
 
@@ -423,7 +423,7 @@ for (let i = 0; i < users.length; i++) {
 Our eslint config will flag the imperative version anyway.
 ```
 
-### Include Rationale
+## Include Rationale
 
 Copilot performs better when it understands the reasoning behind rules. Including the "why" enables better decision-making in edge cases:
 
@@ -439,11 +439,11 @@ This was identified as a root cause during the Q3 2024 incident analysis.
 
 When Copilot understands intent, it can apply rules more intelligently.
 
-### Iterating with the Agent
+## Iterating with the Agent
 
 After initial generation, refine the instructions file through conversation:
 
-> **?? Try this prompt:**
+> **💬 Try this prompt:**
 >
 > *Review the .github/copilot-instructions.md file and:*
 >
@@ -457,7 +457,7 @@ After initial generation, refine the instructions file through conversation:
 
 This creates a feedback loop where the agent refines its own guidelines based on human review.
 
-### Validating the Configuration
+## Validating the Configuration
 
 To verify the instructions file is working correctly:
 
@@ -474,7 +474,7 @@ If instructions are not being applied, verify:
 
 **Using Diagnostics:** Right-click in the Chat view and select **Diagnostics** to see all loaded instruction files, custom agents, prompt files, and skills—along with any errors.
 
-### Cross-Editor Compatibility
+## Cross-Editor Compatibility
 
 The `.github/copilot-instructions.md` file is recognized by GitHub Copilot across multiple environments:
 - VS Code
@@ -483,7 +483,7 @@ The `.github/copilot-instructions.md` file is recognized by GitHub Copilot acros
 
 This means the same instructions file works whether your team uses different editors or interacts with Copilot on the web.
 
-### Instruction Priority
+## Instruction Priority
 
 When multiple types of custom instructions exist, Copilot applies them in this priority order:
 
@@ -493,7 +493,7 @@ When multiple types of custom instructions exist, Copilot applies them in this p
 
 All relevant instructions are provided to Copilot, but higher-priority instructions take precedence when conflicts occur.
 
-### Organization-Wide Instructions
+## Organization-Wide Instructions
 
 > **New in VS Code 1.109:** Organization-level custom instructions are now supported in VS Code.
 
@@ -510,4 +510,4 @@ Organization instructions are particularly valuable for:
 
 ---
 
-[? Part I: Foundations](part-1-foundations.md) | [Next: File-Based Instructions ?](part-2-2-file-based-instructions.md)
+[← Part I: Foundations](part-1-foundations.md) | [Next: File-Based Instructions →](part-2-2-file-based-instructions.md)
